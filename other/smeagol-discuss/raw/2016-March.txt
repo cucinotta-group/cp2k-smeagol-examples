@@ -1,0 +1,141 @@
+From sabazulfiqar05 at gmail.com  Thu Mar 31 19:16:03 2016
+From: sabazulfiqar05 at gmail.com (saba zulfiqar)
+Date: Thu, 31 Mar 2016 23:16:03 +0500
+Subject: [Smeagol-discuss] compilation errors
+Message-ID: <CAGODY0AXN68a1ArTpS8uMZpbHnAgOVap+Vzw58TtRziqB9Tbtw@mail.gmail.com>
+
+Dear user
+
+I recently downloaded  smeagol and siesta1.3f1. I am trying to compile the
+code by following instructions given in README file and  when i do that I
+am getting an error as follows
+
+siesta.F:736.28:
+
+           write(6,'(a47)') 'smeagol: The size of the cell is being expa
+                            1
+Error: Unterminated character constant beginning at (1)
+siesta.F:737.28:
+
+           write(6,'(a46)') 'smeagol:  along the perpendicular direction
+                            1
+Error: Unterminated character constant beginning at (1)
+make: *** [siesta.o] Error 1
+
+
+However,  I cleared that error.
+
+
+Now I have errors in negf.f file. The compilation errors are  below.
+
+
+../NETransport/negf.F:483.72:
+        CALL MPI_BCAST(Nenerg_div,1,MPI_INTEGER,0,MPI_COMM_WORLD,MPIerro
+                                                                        1
+Error: Syntax error in argument list at (1)
+../NETransport/negf.F:550.72:
+
+        ALLOCATE(EiCompL(Nenerg_div),EiCompR(Nenerg_div),CONST(Nenerg_di
+                                                                        1
+Error: Invalid form of array reference at (1)
+../NETransport/negf.F:777.23:
+
+         ALLOCATE(rho0L(N1,N1,NSPIN),rho0R(N1,N1,NSPIN))
+                       1
+Error: Syntax error in ALLOCATE statement at (1)
+../NETransport/negf.F:802.15:
+
+        ELSE IF ((Iprime+MyNode*NenergImNode).LE.NEnerg1+NEnerg2+NPOLES)
+               1
+Error: Unexpected junk after ELSE statement at (1)
+
+../NETransport/negf.F:840.12:
+
+            rho0L(II,JJ,ISPIN)=rho0L(II,JJ,ISPIN)+
+            1
+Error: Unclassifiable statement at (1)
+../NETransport/negf.F:863.30:
+
+         CALL MPI_REDUCE(rho0L(1,1,1),rho0L_par(1,1,1),N1*N1*NSPIN,
+                              1
+Error: Syntax error in argument list at (1)
+../NETransport/negf.F:872.50:
+ALLOCATE(DeltarhoL(N1,N1,NSPIN),DeltarhoR(N1,N1,NSPIN))
+                                                  1
+Error: Syntax error in ALLOCATE statement at (1)
+../NETransport/negf.F:970.15:
+
+               DeltarhoR(II,JJ,ISPIN)=DeltarhoR(II,JJ,ISPIN) +
+               1
+Error: Unclassifiable statement at (1)
+../NETransport/negf.F:1055.34:
+  CALL MPI_REDUCE(DeltarhoR(1,1,1),DrhoR_par(1,1,1),
+                                  1
+Error: Syntax error in argument list at (1)
+../NETransport/negf.F:874.16:
+
+       DeltarhoR=0.D0
+                1
+Error: Symbol 'deltarhor' at (1) has no IMPLICIT type
+../NETransport/negf.F:778.12:
+
+       rho0L=0.D0
+            1
+Error: Symbol 'rho0l' at (1) has no IMPLICIT type
+make: *** [negf.o] Error 1
+
+
+Here is my arch.make file.
+
+
+SIESTA_ARCH=pg-mpif90
+#
+FC= /opt/openmpi/bin/mpif90
+FC_ASIS=$(FC)
+
+#FFLAGS=  -m64 -mtune=opteron -mieee-fp -zerouv -OPT:Ofast -O2
+#LDFLAGS= -m64 -mtune=opteron -mieee-fp -zerouv -OPT:Ofast -O2
+COMP_LIBS=  dc_lapack.a
+TRANSPORTFLAGS= -m64 -mtune=opteron -mieee-fp -zerouv -OPT:Ofast -O2 -c
+
+SOURCE_DIR=/home/smeagol.1.0b
+EXEC = smeagol
+
+#NETCDF_LIBS=/usr/local/netcdf-3.5/lib/pgi/libnetcdf.a
+NETCDF_INTERFACE=libnetcdf_f90.a
+DEFS_CDF=-DCDF
+
+MPI_INTERFACE=libmpi_f90.a
+MPI_INCLUDE=/home/saba_QU/new_lib/mpich-1.2.7/include
+DEFS_MPI=-DMPI
+BLACS= /home/saba_QU/Lib/Lib/Lib/Blacs/BLACS/LIB/libblacsF77init.a
+
+LAPACK=/home/saba_QU/Lib/Lib/scalapack-2.0.2/lib/libscalapack.a
+
+LIBS= -lpthread  /home/saba_QU/new_lib/lib/gnu64/lib/libacml.a -llapack
+$(LAPACK) $(BLAS) $(BLACS)
+
+
+RANLIB=echo
+SYS=bsd
+DEFS= $(DEFS_CDF) $(DEFS_MPI)
+#
+.F.o:
+        $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f.o:
+        $(FC) -c $(FFLAGS)   $<
+.F90.o:
+
+  $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f90.o:
+        $(FC) -c $(FFLAGS)   $<
+
+
+It will be of great help if you could help me resolve this issue and I will
+be thankful if someone shares the arch.make file with me.
+
+regards
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20160331/f86932dc/attachment.html>
+

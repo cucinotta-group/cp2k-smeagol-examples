@@ -1,0 +1,555 @@
+From fisher.xyk at gmail.com  Tue Aug 14 04:11:28 2012
+From: fisher.xyk at gmail.com (Yunkun Xie)
+Date: Mon, 13 Aug 2012 23:11:28 -0400
+Subject: [Smeagol-discuss] Smeagol.1.0b Segmentation fault
+Message-ID: <CAOixi-N8Suy9+tKjPeK0H-3jQ=Eb3n1GYgC4_GzY4j6pys9WZA@mail.gmail.com>
+
+Dear Smeagol developers:
+
+      My name is Yunkun Xie and I?m a Ph.D. student at the University of
+Virginia. I tried to compile parallel version of Smeagol on our school's
+linux server. The system I?m working on is a Intel Xeon cluster with MPICH2
+and intel compiler. I have compiled the code with Siesta 1.3f1p using
+mpich2-eth-intel/1.3. There was no error in compiling. However, when I
+tried to run the leads calculation in the smeagol.1.0/Examples/gamma/leads
+directory. On one processor it worked fine but when I tried to run it on
+several processors I got segmentation fault errors. Then I
+recompiled Smeagol with -CB(So that I can have more information when
+running program) and run the leads calculation again. It gave me messages
+like this: forrtl: severe (408): fort: (2): Subscript #1 of the array
+INDXUO has value 6 which is greater than the upper bound of 2 (Different
+numbers for different systems, basis size etc.) Is this a problem you
+recognize and know how to solve?
+
+     I've attached the output of Smeagol and also the arch.make file. Hope
+they can help you find out where goes wrong.
+
+Output:
+ *          ......*
+*           ......*
+*siesta: Atomic coordinates (Bohr) and species*
+*siesta:      0.00000   0.00000   0.00000  1        1*
+*siesta:      0.00000   0.00000   5.29124  1        2*
+*initatomlists: Number of atoms, orbitals, and projectors:      2     2
+8*
+** ProcessorY, Blocksize:    1   1*
+
+*siesta: System type = chain*
+*siesta: k-grid: Number of k-points =    51
+siesta: k-grid: Cutoff             =     6.000 Ang
+siesta: k-grid: Supercell and displacements
+siesta: k-grid:    1   0   0      0.000
+siesta: k-grid:    0   1   0      0.000
+siesta: k-grid:    0   0 100      0.000
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  12.1666 22.6767   1
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  12.1666 22.6767   2
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  12.1666 10.5825   3*
+*superc: Internal auxiliary supercell:     1 x     1 x     3  =       3
+superc: Number of atoms, orbitals, and projectors:      6     6    24
+ In memory.F printing memory            0           0*
+** Maximum dynamic memory allocated =     1 MB
+ Made it through printmemory            0
+ In memory.F printing memory            0           1*
+*siesta:                 ===============================
+                            Begin MD step =      1
+                        ===============================
+ Made it through printmemory            1*
+*superc: Internal auxiliary supercell:     1 x     1 x     3  =       3
+superc: Number of atoms, orbitals, and projectors:      6     6    24*
+*InitMesh: MESH =   108 x   108 x    48 =      559872
+InitMesh: Mesh cutoff (required, used) =   200.000   203.052 Ry
+forrtl: severe (408): fort: (2): Subscript #1 of the array INDXUO has value
+6 wh ich is greater than the upper bound of 2*
+*Image              PC                Routine            Line
+Source
+libintlc.so.5      00002BA5214E1F7A  Unknown               Unknown  Unknown
+libintlc.so.5      00002BA5214E0AF5  Unknown               Unknown  Unknown
+libifcore.so.5     00002BA5208BC1F2  Unknown               Unknown  Unknown
+libifcore.so.5     00002BA5208315FB  Unknown               Unknown  Unknown
+libifcore.so.5     00002BA520831A87  Unknown               Unknown  Unknown
+smeagol            000000000097444A  Unknown               Unknown  Unknown
+smeagol            00000000006B4C31  Unknown               Unknown  Unknown
+smeagol            0000000000BF2BAB  Unknown               Unknown  Unknown
+smeagol            000000000040B60C  Unknown               Unknown  Unknown
+libc.so.6          000000333781D994  Unknown               Unknown  Unknown
+smeagol            000000000040B519  Unknown               Unknown  Unknown
+[mpiexec at fir-s.itc.virginia.edu] ONE OF THE PROCESSES TERMINATED BADLY:
+CLEANING  UP*
+
+
+arch.make:
+
+
+*SIESTA_ARCH=mpif90
+#
+FC=mpif90
+FC_ASIS=$(FC)*
+**
+*FFLAGS= -g -O0 -CB -mcmodel=medium -shared-intel
+LDFLAGS= -O0 -shared-intel*
+*
+
+COMP_LIBS=
+TRANSPORTFLAGS= -c -O0
+SOURCE_DIR=/home/yx3ga/DFT/smeagol_no_optimization/smeagol.1.0b
+EXEC = smeagol
+*
+*#NETCDF_LIBS=/usr/local/netcdf-3.5/lib/pgi/libnetcdf.a
+#NETCDF_INTERFACE=libnetcdf_f90.a
+#DEFS_CDF=-DCDF*
+**
+*MPI_INTERFACE=libmpi_f90.a
+MPI_INCLUDE=.
+DEFS_MPI=-DMPI*
+**
+*HOME_LIB=/share/apps
+BLAS_LIBS=-lblas
+LAPACK_LIBS=-llapack
+BLACS_LIBS=$(HOME_LIB)/blacsmpi/blacsmpi-1.2/intel/lib/libblacs.a
+/share/apps/blacsmpi/blacsmpi-1.2/intel/lib/libblacsCinit.a
+/share/apps/blacsmpi/blacsmpi-1.2/intel/lib/libblacsF77init.a
+$(HOME_LIB)/blacsmpi/blacsmpi-1.2/intel/lib/libblacs.a
+SCALAPACK_LIBS=/share/apps/scalapack/scalapack-1.8.0/intel/lib/libscalapack.a
+*
+*COMP_LIBS=dc_lapack.a*
+**
+*LIBS=$(SCALAPACK_LIBS) $(BLACS_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS)
+$(NETCDF_LIBS)*
+**
+*RANLIB=echo
+SYS=bsd
+DEFS= $(DEFS_CDF) $(DEFS_MPI)
+#
+.F.o:
+        $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f.o:
+        $(FC) -c $(FFLAGS)   $<
+.F90.o:
+        $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f90.o:
+        $(FC) -c $(FFLAGS)   $<*
+**
+
+
+Sincerely,
+
+Yunkun Xie
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120813/6c5ba008/attachment.html>
+
+From runggeri at tcd.ie  Tue Aug 14 15:31:01 2012
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Tue, 14 Aug 2012 15:31:01 +0100
+Subject: [Smeagol-discuss] Smeagol.1.0b Segmentation fault
+In-Reply-To: <CAOixi-N8Suy9+tKjPeK0H-3jQ=Eb3n1GYgC4_GzY4j6pys9WZA@mail.gmail.com>
+References: <CAOixi-N8Suy9+tKjPeK0H-3jQ=Eb3n1GYgC4_GzY4j6pys9WZA@mail.gmail.com>
+Message-ID: <CAF1YTY-MVVfSrmcRG4LHCtC7B+POkkOnA0YFXrtsn-=KMP1oeA@mail.gmail.com>
+
+Hello Yunkun,
+
+  in this case it might be that the system is too small to be run in
+parallel. The maximum number of processors is in principle given by the
+number of orbitals in your unit cell (when a BlockSize 1 is used). I
+suggest to try to run a system that is a bit larger on maybe 2, 4
+processors.
+
+Cheers,
+
+Ivan
+
+On 14 August 2012 04:11, Yunkun Xie <fisher.xyk at gmail.com> wrote:
+
+> Dear Smeagol developers:
+>
+>       My name is Yunkun Xie and I?m a Ph.D. student at the University of
+> Virginia. I tried to compile parallel version of Smeagol on our school's
+> linux server. The system I?m working on is a Intel Xeon cluster with MPICH2
+> and intel compiler. I have compiled the code with Siesta 1.3f1p using
+> mpich2-eth-intel/1.3. There was no error in compiling. However, when I
+> tried to run the leads calculation in the smeagol.1.0/Examples/gamma/leads
+> directory. On one processor it worked fine but when I tried to run it on
+> several processors I got segmentation fault errors. Then I
+> recompiled Smeagol with -CB(So that I can have more information when
+> running program) and run the leads calculation again. It gave me messages
+> like this: forrtl: severe (408): fort: (2): Subscript #1 of the array
+> INDXUO has value 6 which is greater than the upper bound of 2 (Different
+> numbers for different systems, basis size etc.) Is this a problem you
+> recognize and know how to solve?
+>
+>      I've attached the output of Smeagol and also the arch.make file. Hope
+> they can help you find out where goes wrong.
+>
+> Output:
+>  *          ......*
+> *           ......*
+> *siesta: Atomic coordinates (Bohr) and species*
+> *siesta:      0.00000   0.00000   0.00000  1        1*
+> *siesta:      0.00000   0.00000   5.29124  1        2*
+> *initatomlists: Number of atoms, orbitals, and projectors:      2
+> 2     8*
+> ** ProcessorY, Blocksize:    1   1*
+>
+> *siesta: System type = chain*
+> *siesta: k-grid: Number of k-points =    51
+> siesta: k-grid: Cutoff             =     6.000 Ang
+> siesta: k-grid: Supercell and displacements
+> siesta: k-grid:    1   0   0      0.000
+> siesta: k-grid:    0   1   0      0.000
+> siesta: k-grid:    0   0 100      0.000
+> siesta: overlap:  rmaxh   veclen  direction
+> siesta: overlap:  12.1666 22.6767   1
+> siesta: overlap:  rmaxh   veclen  direction
+> siesta: overlap:  12.1666 22.6767   2
+> siesta: overlap:  rmaxh   veclen  direction
+> siesta: overlap:  12.1666 10.5825   3*
+> *superc: Internal auxiliary supercell:     1 x     1 x     3  =       3
+> superc: Number of atoms, orbitals, and projectors:      6     6    24
+>  In memory.F printing memory            0           0*
+> ** Maximum dynamic memory allocated =     1 MB
+>  Made it through printmemory            0
+>  In memory.F printing memory            0           1*
+> *siesta:                 ===============================
+>                             Begin MD step =      1
+>                         ===============================
+>  Made it through printmemory            1*
+> *superc: Internal auxiliary supercell:     1 x     1 x     3  =       3
+> superc: Number of atoms, orbitals, and projectors:      6     6    24*
+> *InitMesh: MESH =   108 x   108 x    48 =      559872
+> InitMesh: Mesh cutoff (required, used) =   200.000   203.052 Ry
+> forrtl: severe (408): fort: (2): Subscript #1 of the array INDXUO has
+> value 6 wh ich is greater than the upper bound of 2*
+> *Image              PC                Routine            Line
+> Source
+> libintlc.so.5      00002BA5214E1F7A  Unknown               Unknown  Unknown
+> libintlc.so.5      00002BA5214E0AF5  Unknown               Unknown  Unknown
+> libifcore.so.5     00002BA5208BC1F2  Unknown               Unknown  Unknown
+> libifcore.so.5     00002BA5208315FB  Unknown               Unknown  Unknown
+> libifcore.so.5     00002BA520831A87  Unknown               Unknown  Unknown
+> smeagol            000000000097444A  Unknown               Unknown  Unknown
+> smeagol            00000000006B4C31  Unknown               Unknown  Unknown
+> smeagol            0000000000BF2BAB  Unknown               Unknown  Unknown
+> smeagol            000000000040B60C  Unknown               Unknown  Unknown
+> libc.so.6          000000333781D994  Unknown               Unknown  Unknown
+> smeagol            000000000040B519  Unknown               Unknown  Unknown
+> [mpiexec at fir-s.itc.virginia.edu] ONE OF THE PROCESSES TERMINATED BADLY:
+> CLEANING  UP*
+>
+>
+> arch.make:
+>
+>
+> *SIESTA_ARCH=mpif90
+> #
+> FC=mpif90
+> FC_ASIS=$(FC)*
+> **
+> *FFLAGS= -g -O0 -CB -mcmodel=medium -shared-intel
+> LDFLAGS= -O0 -shared-intel*
+> *
+>
+> COMP_LIBS=
+> TRANSPORTFLAGS= -c -O0
+> SOURCE_DIR=/home/yx3ga/DFT/smeagol_no_optimization/smeagol.1.0b
+> EXEC = smeagol
+> *
+> *#NETCDF_LIBS=/usr/local/netcdf-3.5/lib/pgi/libnetcdf.a
+> #NETCDF_INTERFACE=libnetcdf_f90.a
+> #DEFS_CDF=-DCDF*
+> **
+> *MPI_INTERFACE=libmpi_f90.a
+> MPI_INCLUDE=.
+> DEFS_MPI=-DMPI*
+> **
+> *HOME_LIB=/share/apps
+> BLAS_LIBS=-lblas
+> LAPACK_LIBS=-llapack
+> BLACS_LIBS=$(HOME_LIB)/blacsmpi/blacsmpi-1.2/intel/lib/libblacs.a
+> /share/apps/blacsmpi/blacsmpi-1.2/intel/lib/libblacsCinit.a
+> /share/apps/blacsmpi/blacsmpi-1.2/intel/lib/libblacsF77init.a
+> $(HOME_LIB)/blacsmpi/blacsmpi-1.2/intel/lib/libblacs.a
+>
+> SCALAPACK_LIBS=/share/apps/scalapack/scalapack-1.8.0/intel/lib/libscalapack.a
+> *
+> *COMP_LIBS=dc_lapack.a*
+> **
+> *LIBS=$(SCALAPACK_LIBS) $(BLACS_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS)
+> $(NETCDF_LIBS)*
+> **
+> *RANLIB=echo
+> SYS=bsd
+> DEFS= $(DEFS_CDF) $(DEFS_MPI)
+> #
+> .F.o:
+>         $(FC) -c $(FFLAGS)  $(DEFS) $<
+> .f.o:
+>         $(FC) -c $(FFLAGS)   $<
+> .F90.o:
+>         $(FC) -c $(FFLAGS)  $(DEFS) $<
+> .f90.o:
+>         $(FC) -c $(FFLAGS)   $<*
+> **
+>
+>
+> Sincerely,
+>
+> Yunkun Xie
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120814/b86ac4b6/attachment.html>
+
+From fisher.xyk at gmail.com  Tue Aug 21 20:44:19 2012
+From: fisher.xyk at gmail.com (Yunkun Xie)
+Date: Tue, 21 Aug 2012 15:44:19 -0400
+Subject: [Smeagol-discuss] Fe leads calculation problem
+In-Reply-To: <CAOixi-PE8zrosNi6=HMPDsXuuYo5iaeADC465RLTrFAqXCFQZQ@mail.gmail.com>
+References: <CAOixi-PE8zrosNi6=HMPDsXuuYo5iaeADC465RLTrFAqXCFQZQ@mail.gmail.com>
+Message-ID: <CAOixi-N7SYCn7t4SPFmNnSpYXs0qdzPZkuN5orX17au_C4qHFQ@mail.gmail.com>
+
+Dear Smeagol Users :
+
+             I am Yunkun Xie from the ECE department of  University of
+Virginia. Recently I am learning Smeagol but face some problems. I tried to
+calculate the Fe/MgO/Fe system. First, I did the lead calculation. I
+modified Au_bulk.fdf(the example for Smeagol, I simply changed the element,
+Basis set, LatticeVectors and atomicCoordinates accordingly) and built the
+Fe(100) structure for lead calculation, the program gave out the following
+error information. I checked my Fe.fdf file but couldn't figure out where
+goes wrong. Hope you can give me some advice on that and I will be very
+appreciated. I've attached my Fe.fdf file below.
+
+*Error information:*
+...
+...
+
+siesta: System type = bulk
+
+siesta: k-grid: Number of k-points = 11475
+siesta: k-grid: Cutoff             =    21.525 Ang
+siesta: k-grid: Supercell and displacements
+siesta: k-grid:   15   0   0      0.000
+siesta: k-grid:    0  15   0      0.000
+siesta: k-grid:    0   0 100      0.000
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  12.6169  5.4235   1
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  12.6169  5.4235   2
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  12.6169  5.4235   3
+BulkTransport ERROR:
+Overlap to second nearest slabs:    2
+Increase the size of the unit cell along z.
+application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+
+*Fe.fdf:*
+
+# Sample file for programs SIESTA
+# Alexandre Rocha, May 2003
+
+SystemName        Fe LDA # Descriptive name of the system
+SystemLabel FebccCap # Short name for naming files
+NumberOfAtoms 2 # Number of atoms
+NumberOfSpecies 1               # Number of species
+
+PAO.BasisType split # Type of basis ('nones', 'nonodes', 'split')
+PAO.SplitNorm 0.15 # Amount of norm carried by the second zeta
+
+%block ChemicalSpeciesLabel
+  1  26  Fe
+%endblock ChemicalSpeciesLabel
+
+%block PAO.Basis
+  Fe  2
+  0  2  P
+  6. 0.
+  2  2
+  0. 0.
+%endblock PAO.Basis
+
+
+
+LatticeConstant         2.87 Ang
+
+%block LatticeVectors
+  1.000   0.000   0.000
+  0.000   1.000   0.000
+  0.000   0.000   1.000
+%endblock LatticeVectors
+
+
+AtomicCoordinatesFormat   ScaledCartesian
+
+%block AtomicCoordinatesAndAtomicSpecies
+  0.000   0.000   0.000    1  Fe   1
+  0.500   0.500   0.500    1  Fe   2
+%endblock AtomicCoordinatesAndAtomicSpecies
+
+%block kgrid_Monkhorst_Pack
+ 15   0   0    0.0
+  0  15   0    0.0
+  0   0  100   0.0
+%endblock kgrid_Monkhorst_Pack
+
+BandLinesScale ReciprocalLatticeVectors
+
+%block BandLines
+1   0.000   0.000   0.000   \Gamma
+100  0.000   0.000   0.500   N
+%endblock BandLines
+
+#87  0.500  -0.500   0.500   H
+#70  0.000   0.000   0.500   N
+#50  0.000   0.000   0.000   \Gamma
+#43  0.250   0.250   0.250   P
+
+xc.functional LDA # 'LDA', 'GGA'
+xc.authors  CA #'CA'='PZ', 'PW92', 'PBE'
+SpinPolarized F # 'T', 'F'
+FixSpin                         F
+TotalSpin                       0.0
+NonCollinearSpin F # 'T', 'F'
+MeshCutoff  300. Ry # Equivalent plane wave cutoff for the grid
+MaxSCFIterations 300
+
+DM.MixingWeight 0.05
+
+DM.PulayOnFile F # Store in memory ('F') or in files ('T')
+DM.Tolerance 0.5E-5
+NeglNonOverlapInt T # 'F'=do not neglect
+
+SolutionMethod diagon
+ElectronicTemperature 300 K # Default value
+
+DM.UseSaveDM T
+
+%block SaveBiasSteps
+ 0
+%endblock SaveBiasSteps
+
+SaveElectrostaticPotential      T
+WriteCoorXmol F # Write Atoms coordinates
+SaveHS F # Save the Hamiltonian and Overlap matrices
+SaveRho T # Save the valence pseudocharge density
+SaveDeltaRho F
+WriteDenchar F # Write Denchar output
+
+WriteEigenvalues F
+
+%%block LocalDensityOfStates
+%   -15.00 15.00 eV
+%%endblock LocalDensityOfStates
+
+WriteMullikenPop 1
+
+% MD.TypeOfRun CG # Type of MD Run. 'CG'=conjugate gradients
+% MD.NumCGsteps 30        # Number of conjugate gradient minimization
+% MD.MaxCGDispl 0.3 Bohr # Maximum atomic displacement
+% MD.MaxForceTol 0.00001 eV/Ang # Force Tollerance
+% MD.MaxStressTol          0.001 GPa       # Stress Tollerance
+% MD.VariableCell         T         # Unit cell relaxation
+
+% WriteMDXmol T # Write Coordinate for movie
+% WriteMDhistory T # Molecular Dynamics Trajectory
+
+BulkTransport T
+BulkLeads LR
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120821/9d1253ee/attachment.html>
+
+From runggeri at tcd.ie  Mon Aug 27 09:57:00 2012
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Mon, 27 Aug 2012 09:57:00 +0100
+Subject: [Smeagol-discuss] Fe leads calculation problem
+In-Reply-To: <CAOixi-N7SYCn7t4SPFmNnSpYXs0qdzPZkuN5orX17au_C4qHFQ@mail.gmail.com>
+References: <CAOixi-PE8zrosNi6=HMPDsXuuYo5iaeADC465RLTrFAqXCFQZQ@mail.gmail.com>
+	<CAOixi-N7SYCn7t4SPFmNnSpYXs0qdzPZkuN5orX17au_C4qHFQ@mail.gmail.com>
+Message-ID: <503B365C.4050407@tcd.ie>
+
+Hello Yunkun,
+
+  the error is due to the fact that your leads unit cell is too short 
+along z, because you have overlap to the second-nearest neighbors cell 
+along z:
+> BulkTransport ERROR:
+> Overlap to second nearest slabs:    2
+> Increase the size of the unit cell along z.
+> application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+In this case you have to double the unit cell along z, then it should be 
+OK.
+
+Cheers,
+
+Ivan
+
+From fisher.xyk at gmail.com  Thu Aug 30 16:17:59 2012
+From: fisher.xyk at gmail.com (Yunkun Xie)
+Date: Thu, 30 Aug 2012 11:17:59 -0400
+Subject: [Smeagol-discuss] Fe/MgO/Fe calculation problem
+Message-ID: <CAOixi-Nf3d+WaYF1Q0W1Af-VXXrcjrObXKep_yW-S1yFsmFOfQ@mail.gmail.com>
+
+Dear Ivan:
+
+             I'm Yunkun from the University of Virginia. In order to make a
+benchmark on the future calculations, I tried to reproduce your result on
+Fe/MgO/Fe system which was published on several papers. But since I am a
+beginner to Smeagol and the input parameters were not fully stated in your
+papers, my results for zero-bias transmission coefficient versus energy
+seem to be far from yours. I hope you can point out the errors in my input
+file to help me learn Smeagol.
+
+             The attachments are input files for channel calculation for
+both parallel and antiparallel configurations. For leads calculations, I
+followed the rules you mentioned in the Smeagol Discussion
+Forum(do separate calculations in anti-parallel case. Only one
+calculation for parallel configuration).  I have to mention that this is
+only a coarse calculation(low cutoff energy etc) but I don't think it would
+affect the results so much(But if it does, please figure it out to me). I
+also attached my plotting for Transmission coefficient as a function of
+energy.
+
+
+Thanks
+
+-Yunkun
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120830/dd47cd8e/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: FeMgOFe_antiparallel.fdf
+Type: application/octet-stream
+Size: 4532 bytes
+Desc: not available
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120830/dd47cd8e/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: FeMgOFe_parallel
+Type: application/octet-stream
+Size: 4532 bytes
+Desc: not available
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120830/dd47cd8e/attachment-0001.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Tr_antiparallel.png
+Type: image/png
+Size: 4567 bytes
+Desc: not available
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120830/dd47cd8e/attachment.png>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Tr_parallel.png
+Type: image/png
+Size: 4141 bytes
+Desc: not available
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120830/dd47cd8e/attachment-0001.png>
+

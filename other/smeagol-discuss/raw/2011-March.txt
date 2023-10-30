@@ -1,0 +1,446 @@
+From zyzhang at stanford.edu  Mon Mar 21 06:41:39 2011
+From: zyzhang at stanford.edu (Zhiyong Zhang)
+Date: Sun, 20 Mar 2011 23:41:39 -0700 (PDT)
+Subject: [Smeagol-discuss] problem running Smeagol in parallel
+In-Reply-To: <665349296.286968.1300688856544.JavaMail.root@zm04.stanford.edu>
+Message-ID: <1785389213.287381.1300689699596.JavaMail.root@zm04.stanford.edu>
+
+Dear All, 
+
+I have compiled Smeagol but having problem running it in parallel. 
+
+I can run the compiled program in serial without problem but when I run it in parallel I got the following error: 
+
+InitMesh: MESH =    16 x    16 x    16 =        4096
+InitMesh: Mesh cutoff (required, used) =   150.000   171.794 Ry
+ 
+* Maximum dynamic memory allocated =     8 MB
+[nx5:02823] *** Process received signal ***
+[nx5:02823] Signal: Segmentation fault (11)
+[nx5:02823] Signal code: Address not mapped (1)
+[nx5:02823] Failing at address: 0xf3
+[nx5:02821] *** Process received signal ***
+[nx5:02821] Signal: Segmentation fault (11)
+[nx5:02821] Signal code: Address not mapped (1)
+[nx5:02821] Failing at address: 0xf3
+[nx5:02823] [ 0] /lib64/tls/libpthread.so.0 [0x3e1300c5b0]
+[nx5:02823] [ 1] /home/paulzim/openmpi-1.3_10.1/lib/libmpi.so.0(MPI_Comm_size+0x60) [0x2a95e8e9e0]
+[nx5:02823] [ 2] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(Cblacs_pinfo+0x9d) [0x84dc95]
+[nx5:02823] [ 3] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(blacs_get__+0x1e0) [0x84aaa8]
+[nx5:02823] [ 4] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(cdiag_+0x28e) [0x5df07a]
+[nx5:02823] [ 5] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagk_+0x7a0) [0x50a40c]
+[nx5:02823] [ 6] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagon_+0x1019) [0x4f588d]
+[nx5:02823] [ 7] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(MAIN__+0xe950) [0x5fd5b0]
+[nx5:02823] [ 8] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(main+0x2a) [0x4260e2]
+[nx5:02823] [ 9] /lib64/tls/libc.so.6(__libc_start_main+0xdb) [0x3e1251c40b]
+[nx5:02823] [10] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(ztrsm_+0x6a) [0x42602a]
+
+Here are the object files linked in: 
+/home/paulzim/openmpi-1.3_10.1/bin/mpif90 -o smeagol \
+       -w -mp -O3  precision.o atom.o atmparams.o atmfuncs.o listsc.o memoryinfo.o numbvect.o  parallel.o sorting.o atomlist.o ionew.o atm_types.o old_atmfuncs.o radial.o parsing.o alloc.o phonon.o spher_harm.o periodic_table.o version.o basis_types.o pseudopotential.o basis_specs.o sys.o basis_io.o chemical.o xml.o writewave.o arw.o  atomlwf.o bands.o bessph.o cgwf.o chkdim.o chkgmx.o chempot.o coceri.o conjgr.o constr.o coxmol.o cross.o denmat.o detover.o dfscf.o dhscf.o diagon.o digcel.o fft3d.o diagg.o diagk.o diagkp.o diag2g.o diag2k.o diagpol.o diagsprl.o dipole.o dismin.o dnaefs.o dot.o dynamics.o efield.o egandd.o ener3.o extrapol.o extrapolon.o fermid.o fermispin.o fixed.o forhar.o gradient.o grdsam.o hsparse.o idiag.o  initatom.o initdm.o inver.o iodm.o iohs.o iolwf.o iorho.o ioxv.o ipack.o kgrid.o kgridinit.o kinefsm.o ksv.o ksvinit.o madelung.o matel.o meshmatrix.o memory.o meshsubs.o minvec.o mulliken.o naefs.o neighb.o nlefsm.o on_subs.o ordern.o outcell.o outcoor.o overfsm.o paste.o pdos.o pdosg.o pdosk.o phirphi.o pixmol.o plcharge.o timestamp.o propor.o pulayx.o ranger.o ran3.o recipes.o reclat.o redata.o redcel.o reinit.o reord.o rhoofd.o rhoofdsp.o rhooda.o savepsi.o shaper.o timer.o vmb.o vmat.o vmatsp.o volcel.o xc.o xijorb.o cellxc.o cdiag.o rdiag.o cgvc.o iocg.o ioeig.o iofa.o iokp.o iomd.o repol.o typecell.o ofc.o poison.o readsp.o radfft.o siesta.o io.o spin_init.o coor.o transfer.o broadcast_basis.o sig.o eggbox.o linpack.o  bsd.o libfdf.a \
+       leads_complex.o negf.o identify.o diagonal_alex.o misc.o selfenergy.o gauleg.o transm.o invert.o decimate_leads.o gensvd.o rank.o negfk.o negf2g.o negf2k.o localdos.o gaucheb.o  dmbk.o emt2g.o emt2k.o emtg.o emtk.o emtrans.o bulktrans.o vmattr.o vvbias.o hsleads.o hsl.o hslk.o reademtr.o pasbias.o shifth.o absdiff.o\
+       libmpi_f90.a \
+                 -L/opt/intel/mkl/10.0.5.025/lib/em64t/ -lmkl_scalapack_lp64 -lmkl_solver_lp64_sequential -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_lp64 -Wl,--end-group -lpthread
+
+As you see I am using mkl/10.0.5.025/lib/em64t/.
+
+The parallel execution env is as follows,
+PATH=/usr/local/bin/:/home/paulzim/openmpi-1.3_10.1/bin/
+LD_LIBRARY_PATH=/opt/intel/mkl/10.0.5.025/lib/em64t/:/home/paulzim/openmpi-1.3_10.1/lib/:/opt/intel/fce/10.0.023/lib:/usr/lib64/:/lib64/tls
+
+Thank you so much!
+Zhiyong
+
+From runggeri at tcd.ie  Mon Mar 21 11:14:22 2011
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Mon, 21 Mar 2011 11:14:22 +0000
+Subject: [Smeagol-discuss] problem running Smeagol in parallel
+In-Reply-To: <1785389213.287381.1300689699596.JavaMail.root@zm04.stanford.edu>
+References: <1785389213.287381.1300689699596.JavaMail.root@zm04.stanford.edu>
+Message-ID: <4D87330E.1040801@tcd.ie>
+
+Hello Zhiyong,
+ 
+  can you send the input file? It might just be that the system is too 
+small to run in parallel, you might try to run it on 1 or 2 processors 
+in parallel, and see if it runs.
+
+Cheers,
+
+ Ivan
+
+Zhiyong Zhang wrote:
+> Dear All, 
+>
+> I have compiled Smeagol but having problem running it in parallel. 
+>
+> I can run the compiled program in serial without problem but when I run it in parallel I got the following error: 
+>
+> InitMesh: MESH =    16 x    16 x    16 =        4096
+> InitMesh: Mesh cutoff (required, used) =   150.000   171.794 Ry
+>  
+> * Maximum dynamic memory allocated =     8 MB
+> [nx5:02823] *** Process received signal ***
+> [nx5:02823] Signal: Segmentation fault (11)
+> [nx5:02823] Signal code: Address not mapped (1)
+> [nx5:02823] Failing at address: 0xf3
+> [nx5:02821] *** Process received signal ***
+> [nx5:02821] Signal: Segmentation fault (11)
+> [nx5:02821] Signal code: Address not mapped (1)
+> [nx5:02821] Failing at address: 0xf3
+> [nx5:02823] [ 0] /lib64/tls/libpthread.so.0 [0x3e1300c5b0]
+> [nx5:02823] [ 1] /home/paulzim/openmpi-1.3_10.1/lib/libmpi.so.0(MPI_Comm_size+0x60) [0x2a95e8e9e0]
+> [nx5:02823] [ 2] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(Cblacs_pinfo+0x9d) [0x84dc95]
+> [nx5:02823] [ 3] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(blacs_get__+0x1e0) [0x84aaa8]
+> [nx5:02823] [ 4] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(cdiag_+0x28e) [0x5df07a]
+> [nx5:02823] [ 5] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagk_+0x7a0) [0x50a40c]
+> [nx5:02823] [ 6] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagon_+0x1019) [0x4f588d]
+> [nx5:02823] [ 7] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(MAIN__+0xe950) [0x5fd5b0]
+> [nx5:02823] [ 8] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(main+0x2a) [0x4260e2]
+> [nx5:02823] [ 9] /lib64/tls/libc.so.6(__libc_start_main+0xdb) [0x3e1251c40b]
+> [nx5:02823] [10] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(ztrsm_+0x6a) [0x42602a]
+>
+> Here are the object files linked in: 
+> /home/paulzim/openmpi-1.3_10.1/bin/mpif90 -o smeagol \
+>        -w -mp -O3  precision.o atom.o atmparams.o atmfuncs.o listsc.o memoryinfo.o numbvect.o  parallel.o sorting.o atomlist.o ionew.o atm_types.o old_atmfuncs.o radial.o parsing.o alloc.o phonon.o spher_harm.o periodic_table.o version.o basis_types.o pseudopotential.o basis_specs.o sys.o basis_io.o chemical.o xml.o writewave.o arw.o  atomlwf.o bands.o bessph.o cgwf.o chkdim.o chkgmx.o chempot.o coceri.o conjgr.o constr.o coxmol.o cross.o denmat.o detover.o dfscf.o dhscf.o diagon.o digcel.o fft3d.o diagg.o diagk.o diagkp.o diag2g.o diag2k.o diagpol.o diagsprl.o dipole.o dismin.o dnaefs.o dot.o dynamics.o efield.o egandd.o ener3.o extrapol.o extrapolon.o fermid.o fermispin.o fixed.o forhar.o gradient.o grdsam.o hsparse.o idiag.o  initatom.o initdm.o inver.o iodm.o iohs.o iolwf.o iorho.o ioxv.o ipack.o kgrid.o kgridinit.o kinefsm.o ksv.o ksvinit.o madelung.o matel.o meshmatrix.o memory.o meshsubs.o minvec.o mulliken.o naefs.o neighb.o nlefsm.o on_subs.o ordern.o outcell.o outco
+>  or.o overfsm.o paste.o pdos.o pdosg.o pdosk.o phirphi.o pixmol.o plcharge.o timestamp.o propor.o pulayx.o ranger.o ran3.o recipes.o reclat.o redata.o redcel.o reinit.o reord.o rhoofd.o rhoofdsp.o rhooda.o savepsi.o shaper.o timer.o vmb.o vmat.o vmatsp.o volcel.o xc.o xijorb.o cellxc.o cdiag.o rdiag.o cgvc.o iocg.o ioeig.o iofa.o iokp.o iomd.o repol.o typecell.o ofc.o poison.o readsp.o radfft.o siesta.o io.o spin_init.o coor.o transfer.o broadcast_basis.o sig.o eggbox.o linpack.o  bsd.o libfdf.a \
+>        leads_complex.o negf.o identify.o diagonal_alex.o misc.o selfenergy.o gauleg.o transm.o invert.o decimate_leads.o gensvd.o rank.o negfk.o negf2g.o negf2k.o localdos.o gaucheb.o  dmbk.o emt2g.o emt2k.o emtg.o emtk.o emtrans.o bulktrans.o vmattr.o vvbias.o hsleads.o hsl.o hslk.o reademtr.o pasbias.o shifth.o absdiff.o\
+>        libmpi_f90.a \
+>                  -L/opt/intel/mkl/10.0.5.025/lib/em64t/ -lmkl_scalapack_lp64 -lmkl_solver_lp64_sequential -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_lp64 -Wl,--end-group -lpthread
+>
+> As you see I am using mkl/10.0.5.025/lib/em64t/.
+>
+> The parallel execution env is as follows,
+> PATH=/usr/local/bin/:/home/paulzim/openmpi-1.3_10.1/bin/
+> LD_LIBRARY_PATH=/opt/intel/mkl/10.0.5.025/lib/em64t/:/home/paulzim/openmpi-1.3_10.1/lib/:/opt/intel/fce/10.0.023/lib:/usr/lib64/:/lib64/tls
+>
+> Thank you so much!
+> Zhiyong
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+>   
+
+
+
+From zyzhang at stanford.edu  Mon Mar 21 13:17:32 2011
+From: zyzhang at stanford.edu (Zhiyong Zhang)
+Date: Mon, 21 Mar 2011 06:17:32 -0700 (PDT)
+Subject: [Smeagol-discuss] problem running Smeagol in parallel
+In-Reply-To: <4D87330E.1040801@tcd.ie>
+Message-ID: <717619897.293373.1300713452384.JavaMail.root@zm04.stanford.edu>
+
+Hello Ivan, 
+
+Thank you very much for the suggestions. I am using the examples in the Example directory. I used 1 processor only and it works. If I use two processor then it doesn't work. 
+
+Regards,
+Zhiyong
+
+----- Original Message -----
+From: "Ivan Rungger" <runggeri at tcd.ie>
+To: "Zhiyong Zhang" <zyzhang at stanford.edu>
+Cc: smeagol-discuss at lists.tchpc.tcd.ie
+Sent: Monday, March 21, 2011 4:14:22 AM
+Subject: Re: [Smeagol-discuss] problem running Smeagol in parallel
+
+Hello Zhiyong,
+ 
+  can you send the input file? It might just be that the system is too 
+small to run in parallel, you might try to run it on 1 or 2 processors 
+in parallel, and see if it runs.
+
+Cheers,
+
+ Ivan
+
+Zhiyong Zhang wrote:
+> Dear All, 
+>
+> I have compiled Smeagol but having problem running it in parallel. 
+>
+> I can run the compiled program in serial without problem but when I run it in parallel I got the following error: 
+>
+> InitMesh: MESH =    16 x    16 x    16 =        4096
+> InitMesh: Mesh cutoff (required, used) =   150.000   171.794 Ry
+>  
+> * Maximum dynamic memory allocated =     8 MB
+> [nx5:02823] *** Process received signal ***
+> [nx5:02823] Signal: Segmentation fault (11)
+> [nx5:02823] Signal code: Address not mapped (1)
+> [nx5:02823] Failing at address: 0xf3
+> [nx5:02821] *** Process received signal ***
+> [nx5:02821] Signal: Segmentation fault (11)
+> [nx5:02821] Signal code: Address not mapped (1)
+> [nx5:02821] Failing at address: 0xf3
+> [nx5:02823] [ 0] /lib64/tls/libpthread.so.0 [0x3e1300c5b0]
+> [nx5:02823] [ 1] /home/paulzim/openmpi-1.3_10.1/lib/libmpi.so.0(MPI_Comm_size+0x60) [0x2a95e8e9e0]
+> [nx5:02823] [ 2] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(Cblacs_pinfo+0x9d) [0x84dc95]
+> [nx5:02823] [ 3] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(blacs_get__+0x1e0) [0x84aaa8]
+> [nx5:02823] [ 4] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(cdiag_+0x28e) [0x5df07a]
+> [nx5:02823] [ 5] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagk_+0x7a0) [0x50a40c]
+> [nx5:02823] [ 6] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagon_+0x1019) [0x4f588d]
+> [nx5:02823] [ 7] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(MAIN__+0xe950) [0x5fd5b0]
+> [nx5:02823] [ 8] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(main+0x2a) [0x4260e2]
+> [nx5:02823] [ 9] /lib64/tls/libc.so.6(__libc_start_main+0xdb) [0x3e1251c40b]
+> [nx5:02823] [10] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(ztrsm_+0x6a) [0x42602a]
+>
+> Here are the object files linked in: 
+> /home/paulzim/openmpi-1.3_10.1/bin/mpif90 -o smeagol \
+>        -w -mp -O3  precision.o atom.o atmparams.o atmfuncs.o listsc.o memoryinfo.o numbvect.o  parallel.o sorting.o atomlist.o ionew.o atm_types.o old_atmfuncs.o radial.o parsing.o alloc.o phonon.o spher_harm.o periodic_table.o version.o basis_types.o pseudopotential.o basis_specs.o sys.o basis_io.o chemical.o xml.o writewave.o arw.o  atomlwf.o bands.o bessph.o cgwf.o chkdim.o chkgmx.o chempot.o coceri.o conjgr.o constr.o coxmol.o cross.o denmat.o detover.o dfscf.o dhscf.o diagon.o digcel.o fft3d.o diagg.o diagk.o diagkp.o diag2g.o diag2k.o diagpol.o diagsprl.o dipole.o dismin.o dnaefs.o dot.o dynamics.o efield.o egandd.o ener3.o extrapol.o extrapolon.o fermid.o fermispin.o fixed.o forhar.o gradient.o grdsam.o hsparse.o idiag.o  initatom.o initdm.o inver.o iodm.o iohs.o iolwf.o iorho.o ioxv.o ipack.o kgrid.o kgridinit.o kinefsm.o ksv.o ksvinit.o madelung.o matel.o meshmatrix.o memory.o meshsubs.o minvec.o mulliken.o naefs.o neighb.o nlefsm.o on_subs.o ordern.o outcell.o out
+ co
+>  or.o overfsm.o paste.o pdos.o pdosg.o pdosk.o phirphi.o pixmol.o plcharge.o timestamp.o propor.o pulayx.o ranger.o ran3.o recipes.o reclat.o redata.o redcel.o reinit.o reord.o rhoofd.o rhoofdsp.o rhooda.o savepsi.o shaper.o timer.o vmb.o vmat.o vmatsp.o volcel.o xc.o xijorb.o cellxc.o cdiag.o rdiag.o cgvc.o iocg.o ioeig.o iofa.o iokp.o iomd.o repol.o typecell.o ofc.o poison.o readsp.o radfft.o siesta.o io.o spin_init.o coor.o transfer.o broadcast_basis.o sig.o eggbox.o linpack.o  bsd.o libfdf.a \
+>        leads_complex.o negf.o identify.o diagonal_alex.o misc.o selfenergy.o gauleg.o transm.o invert.o decimate_leads.o gensvd.o rank.o negfk.o negf2g.o negf2k.o localdos.o gaucheb.o  dmbk.o emt2g.o emt2k.o emtg.o emtk.o emtrans.o bulktrans.o vmattr.o vvbias.o hsleads.o hsl.o hslk.o reademtr.o pasbias.o shifth.o absdiff.o\
+>        libmpi_f90.a \
+>                  -L/opt/intel/mkl/10.0.5.025/lib/em64t/ -lmkl_scalapack_lp64 -lmkl_solver_lp64_sequential -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_lp64 -Wl,--end-group -lpthread
+>
+> As you see I am using mkl/10.0.5.025/lib/em64t/.
+>
+> The parallel execution env is as follows,
+> PATH=/usr/local/bin/:/home/paulzim/openmpi-1.3_10.1/bin/
+> LD_LIBRARY_PATH=/opt/intel/mkl/10.0.5.025/lib/em64t/:/home/paulzim/openmpi-1.3_10.1/lib/:/opt/intel/fce/10.0.023/lib:/usr/lib64/:/lib64/tls
+>
+> Thank you so much!
+> Zhiyong
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+>   
+
+
+
+
+From runggeri at tcd.ie  Mon Mar 21 13:32:56 2011
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Mon, 21 Mar 2011 13:32:56 +0000
+Subject: [Smeagol-discuss] problem running Smeagol in parallel
+In-Reply-To: <717619897.293373.1300713452384.JavaMail.root@zm04.stanford.edu>
+References: <717619897.293373.1300713452384.JavaMail.root@zm04.stanford.edu>
+Message-ID: <4D875388.4080908@tcd.ie>
+
+Hi Zhiyong,
+
+  does the code run in parallel with emtransport F, i.e. running siesta?
+
+Cheers,
+
+ Ivan
+
+Zhiyong Zhang wrote:
+> Hello Ivan, 
+>
+> Thank you very much for the suggestions. I am using the examples in the Example directory. I used 1 processor only and it works. If I use two processor then it doesn't work. 
+>
+> Regards,
+> Zhiyong
+>
+> ----- Original Message -----
+> From: "Ivan Rungger" <runggeri at tcd.ie>
+> To: "Zhiyong Zhang" <zyzhang at stanford.edu>
+> Cc: smeagol-discuss at lists.tchpc.tcd.ie
+> Sent: Monday, March 21, 2011 4:14:22 AM
+> Subject: Re: [Smeagol-discuss] problem running Smeagol in parallel
+>
+> Hello Zhiyong,
+>  
+>   can you send the input file? It might just be that the system is too 
+> small to run in parallel, you might try to run it on 1 or 2 processors 
+> in parallel, and see if it runs.
+>
+> Cheers,
+>
+>  Ivan
+>
+> Zhiyong Zhang wrote:
+>   
+>> Dear All, 
+>>
+>> I have compiled Smeagol but having problem running it in parallel. 
+>>
+>> I can run the compiled program in serial without problem but when I run it in parallel I got the following error: 
+>>
+>> InitMesh: MESH =    16 x    16 x    16 =        4096
+>> InitMesh: Mesh cutoff (required, used) =   150.000   171.794 Ry
+>>  
+>> * Maximum dynamic memory allocated =     8 MB
+>> [nx5:02823] *** Process received signal ***
+>> [nx5:02823] Signal: Segmentation fault (11)
+>> [nx5:02823] Signal code: Address not mapped (1)
+>> [nx5:02823] Failing at address: 0xf3
+>> [nx5:02821] *** Process received signal ***
+>> [nx5:02821] Signal: Segmentation fault (11)
+>> [nx5:02821] Signal code: Address not mapped (1)
+>> [nx5:02821] Failing at address: 0xf3
+>> [nx5:02823] [ 0] /lib64/tls/libpthread.so.0 [0x3e1300c5b0]
+>> [nx5:02823] [ 1] /home/paulzim/openmpi-1.3_10.1/lib/libmpi.so.0(MPI_Comm_size+0x60) [0x2a95e8e9e0]
+>> [nx5:02823] [ 2] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(Cblacs_pinfo+0x9d) [0x84dc95]
+>> [nx5:02823] [ 3] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(blacs_get__+0x1e0) [0x84aaa8]
+>> [nx5:02823] [ 4] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(cdiag_+0x28e) [0x5df07a]
+>> [nx5:02823] [ 5] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagk_+0x7a0) [0x50a40c]
+>> [nx5:02823] [ 6] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagon_+0x1019) [0x4f588d]
+>> [nx5:02823] [ 7] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(MAIN__+0xe950) [0x5fd5b0]
+>> [nx5:02823] [ 8] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(main+0x2a) [0x4260e2]
+>> [nx5:02823] [ 9] /lib64/tls/libc.so.6(__libc_start_main+0xdb) [0x3e1251c40b]
+>> [nx5:02823] [10] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(ztrsm_+0x6a) [0x42602a]
+>>
+>> Here are the object files linked in: 
+>> /home/paulzim/openmpi-1.3_10.1/bin/mpif90 -o smeagol \
+>>        -w -mp -O3  precision.o atom.o atmparams.o atmfuncs.o listsc.o memoryinfo.o numbvect.o  parallel.o sorting.o atomlist.o ionew.o atm_types.o old_atmfuncs.o radial.o parsing.o alloc.o phonon.o spher_harm.o periodic_table.o version.o basis_types.o pseudopotential.o basis_specs.o sys.o basis_io.o chemical.o xml.o writewave.o arw.o  atomlwf.o bands.o bessph.o cgwf.o chkdim.o chkgmx.o chempot.o coceri.o conjgr.o constr.o coxmol.o cross.o denmat.o detover.o dfscf.o dhscf.o diagon.o digcel.o fft3d.o diagg.o diagk.o diagkp.o diag2g.o diag2k.o diagpol.o diagsprl.o dipole.o dismin.o dnaefs.o dot.o dynamics.o efield.o egandd.o ener3.o extrapol.o extrapolon.o fermid.o fermispin.o fixed.o forhar.o gradient.o grdsam.o hsparse.o idiag.o  initatom.o initdm.o inver.o iodm.o iohs.o iolwf.o iorho.o ioxv.o ipack.o kgrid.o kgridinit.o kinefsm.o ksv.o ksvinit.o madelung.o matel.o meshmatrix.o memory.o meshsubs.o minvec.o mulliken.o naefs.o neighb.o nlefsm.o on_subs.o ordern.o outcell.o out
+>>     
+>  co
+>   
+>>  or.o overfsm.o paste.o pdos.o pdosg.o pdosk.o phirphi.o pixmol.o plcharge.o timestamp.o propor.o pulayx.o ranger.o ran3.o recipes.o reclat.o redata.o redcel.o reinit.o reord.o rhoofd.o rhoofdsp.o rhooda.o savepsi.o shaper.o timer.o vmb.o vmat.o vmatsp.o volcel.o xc.o xijorb.o cellxc.o cdiag.o rdiag.o cgvc.o iocg.o ioeig.o iofa.o iokp.o iomd.o repol.o typecell.o ofc.o poison.o readsp.o radfft.o siesta.o io.o spin_init.o coor.o transfer.o broadcast_basis.o sig.o eggbox.o linpack.o  bsd.o libfdf.a \
+>>        leads_complex.o negf.o identify.o diagonal_alex.o misc.o selfenergy.o gauleg.o transm.o invert.o decimate_leads.o gensvd.o rank.o negfk.o negf2g.o negf2k.o localdos.o gaucheb.o  dmbk.o emt2g.o emt2k.o emtg.o emtk.o emtrans.o bulktrans.o vmattr.o vvbias.o hsleads.o hsl.o hslk.o reademtr.o pasbias.o shifth.o absdiff.o\
+>>        libmpi_f90.a \
+>>                  -L/opt/intel/mkl/10.0.5.025/lib/em64t/ -lmkl_scalapack_lp64 -lmkl_solver_lp64_sequential -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_lp64 -Wl,--end-group -lpthread
+>>
+>> As you see I am using mkl/10.0.5.025/lib/em64t/.
+>>
+>> The parallel execution env is as follows,
+>> PATH=/usr/local/bin/:/home/paulzim/openmpi-1.3_10.1/bin/
+>> LD_LIBRARY_PATH=/opt/intel/mkl/10.0.5.025/lib/em64t/:/home/paulzim/openmpi-1.3_10.1/lib/:/opt/intel/fce/10.0.023/lib:/usr/lib64/:/lib64/tls
+>>
+>> Thank you so much!
+>> Zhiyong
+>> _______________________________________________
+>> Smeagol-discuss mailing list
+>> Smeagol-discuss at lists.tchpc.tcd.ie
+>> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>>
+>>   
+>>     
+>
+>
+>
+>
+>
+>   
+
+
+
+From zyzhang at stanford.edu  Mon Mar 21 16:45:15 2011
+From: zyzhang at stanford.edu (Zhiyong Zhang)
+Date: Mon, 21 Mar 2011 09:45:15 -0700 (PDT)
+Subject: [Smeagol-discuss] problem running Smeagol in parallel
+In-Reply-To: <4D875388.4080908@tcd.ie>
+Message-ID: <1227815901.300975.1300725915266.JavaMail.root@zm04.stanford.edu>
+
+Hi Ivan, 
+
+I could run the gamma example in the Examples directory both in parallel and serial but not the Fe example in parallel. 
+
+Zhiyong
+
+----- Original Message -----
+From: "Ivan Rungger" <runggeri at tcd.ie>
+To: "Zhiyong Zhang" <zyzhang at stanford.edu>
+Cc: smeagol-discuss at lists.tchpc.tcd.ie
+Sent: Monday, March 21, 2011 6:32:56 AM
+Subject: Re: [Smeagol-discuss] problem running Smeagol in parallel
+
+Hi Zhiyong,
+
+  does the code run in parallel with emtransport F, i.e. running siesta?
+
+Cheers,
+
+ Ivan
+
+Zhiyong Zhang wrote:
+> Hello Ivan, 
+>
+> Thank you very much for the suggestions. I am using the examples in the Example directory. I used 1 processor only and it works. If I use two processor then it doesn't work. 
+>
+> Regards,
+> Zhiyong
+>
+> ----- Original Message -----
+> From: "Ivan Rungger" <runggeri at tcd.ie>
+> To: "Zhiyong Zhang" <zyzhang at stanford.edu>
+> Cc: smeagol-discuss at lists.tchpc.tcd.ie
+> Sent: Monday, March 21, 2011 4:14:22 AM
+> Subject: Re: [Smeagol-discuss] problem running Smeagol in parallel
+>
+> Hello Zhiyong,
+>  
+>   can you send the input file? It might just be that the system is too 
+> small to run in parallel, you might try to run it on 1 or 2 processors 
+> in parallel, and see if it runs.
+>
+> Cheers,
+>
+>  Ivan
+>
+> Zhiyong Zhang wrote:
+>   
+>> Dear All, 
+>>
+>> I have compiled Smeagol but having problem running it in parallel. 
+>>
+>> I can run the compiled program in serial without problem but when I run it in parallel I got the following error: 
+>>
+>> InitMesh: MESH =    16 x    16 x    16 =        4096
+>> InitMesh: Mesh cutoff (required, used) =   150.000   171.794 Ry
+>>  
+>> * Maximum dynamic memory allocated =     8 MB
+>> [nx5:02823] *** Process received signal ***
+>> [nx5:02823] Signal: Segmentation fault (11)
+>> [nx5:02823] Signal code: Address not mapped (1)
+>> [nx5:02823] Failing at address: 0xf3
+>> [nx5:02821] *** Process received signal ***
+>> [nx5:02821] Signal: Segmentation fault (11)
+>> [nx5:02821] Signal code: Address not mapped (1)
+>> [nx5:02821] Failing at address: 0xf3
+>> [nx5:02823] [ 0] /lib64/tls/libpthread.so.0 [0x3e1300c5b0]
+>> [nx5:02823] [ 1] /home/paulzim/openmpi-1.3_10.1/lib/libmpi.so.0(MPI_Comm_size+0x60) [0x2a95e8e9e0]
+>> [nx5:02823] [ 2] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(Cblacs_pinfo+0x9d) [0x84dc95]
+>> [nx5:02823] [ 3] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(blacs_get__+0x1e0) [0x84aaa8]
+>> [nx5:02823] [ 4] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(cdiag_+0x28e) [0x5df07a]
+>> [nx5:02823] [ 5] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagk_+0x7a0) [0x50a40c]
+>> [nx5:02823] [ 6] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(diagon_+0x1019) [0x4f588d]
+>> [nx5:02823] [ 7] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(MAIN__+0xe950) [0x5fd5b0]
+>> [nx5:02823] [ 8] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(main+0x2a) [0x4260e2]
+>> [nx5:02823] [ 9] /lib64/tls/libc.so.6(__libc_start_main+0xdb) [0x3e1251c40b]
+>> [nx5:02823] [10] /home/zzhang/Smeagol/smeagol.1.0b/Src/smeagol(ztrsm_+0x6a) [0x42602a]
+>>
+>> Here are the object files linked in: 
+>> /home/paulzim/openmpi-1.3_10.1/bin/mpif90 -o smeagol \
+>>        -w -mp -O3  precision.o atom.o atmparams.o atmfuncs.o listsc.o memoryinfo.o numbvect.o  parallel.o sorting.o atomlist.o ionew.o atm_types.o old_atmfuncs.o radial.o parsing.o alloc.o phonon.o spher_harm.o periodic_table.o version.o basis_types.o pseudopotential.o basis_specs.o sys.o basis_io.o chemical.o xml.o writewave.o arw.o  atomlwf.o bands.o bessph.o cgwf.o chkdim.o chkgmx.o chempot.o coceri.o conjgr.o constr.o coxmol.o cross.o denmat.o detover.o dfscf.o dhscf.o diagon.o digcel.o fft3d.o diagg.o diagk.o diagkp.o diag2g.o diag2k.o diagpol.o diagsprl.o dipole.o dismin.o dnaefs.o dot.o dynamics.o efield.o egandd.o ener3.o extrapol.o extrapolon.o fermid.o fermispin.o fixed.o forhar.o gradient.o grdsam.o hsparse.o idiag.o  initatom.o initdm.o inver.o iodm.o iohs.o iolwf.o iorho.o ioxv.o ipack.o kgrid.o kgridinit.o kinefsm.o ksv.o ksvinit.o madelung.o matel.o meshmatrix.o memory.o meshsubs.o minvec.o mulliken.o naefs.o neighb.o nlefsm.o on_subs.o ordern.o outcell.o ou
+ t
+>>     
+>  co
+>   
+>>  or.o overfsm.o paste.o pdos.o pdosg.o pdosk.o phirphi.o pixmol.o plcharge.o timestamp.o propor.o pulayx.o ranger.o ran3.o recipes.o reclat.o redata.o redcel.o reinit.o reord.o rhoofd.o rhoofdsp.o rhooda.o savepsi.o shaper.o timer.o vmb.o vmat.o vmatsp.o volcel.o xc.o xijorb.o cellxc.o cdiag.o rdiag.o cgvc.o iocg.o ioeig.o iofa.o iokp.o iomd.o repol.o typecell.o ofc.o poison.o readsp.o radfft.o siesta.o io.o spin_init.o coor.o transfer.o broadcast_basis.o sig.o eggbox.o linpack.o  bsd.o libfdf.a \
+>>        leads_complex.o negf.o identify.o diagonal_alex.o misc.o selfenergy.o gauleg.o transm.o invert.o decimate_leads.o gensvd.o rank.o negfk.o negf2g.o negf2k.o localdos.o gaucheb.o  dmbk.o emt2g.o emt2k.o emtg.o emtk.o emtrans.o bulktrans.o vmattr.o vvbias.o hsleads.o hsl.o hslk.o reademtr.o pasbias.o shifth.o absdiff.o\
+>>        libmpi_f90.a \
+>>                  -L/opt/intel/mkl/10.0.5.025/lib/em64t/ -lmkl_scalapack_lp64 -lmkl_solver_lp64_sequential -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_lp64 -Wl,--end-group -lpthread
+>>
+>> As you see I am using mkl/10.0.5.025/lib/em64t/.
+>>
+>> The parallel execution env is as follows,
+>> PATH=/usr/local/bin/:/home/paulzim/openmpi-1.3_10.1/bin/
+>> LD_LIBRARY_PATH=/opt/intel/mkl/10.0.5.025/lib/em64t/:/home/paulzim/openmpi-1.3_10.1/lib/:/opt/intel/fce/10.0.023/lib:/usr/lib64/:/lib64/tls
+>>
+>> Thank you so much!
+>> Zhiyong
+>> _______________________________________________
+>> Smeagol-discuss mailing list
+>> Smeagol-discuss at lists.tchpc.tcd.ie
+>> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>>
+>>   
+>>     
+>
+>
+>
+>
+>
+>   
+
+
+
+

@@ -1,0 +1,279 @@
+From xhzheng at foxmail.com  Thu Jun 17 15:38:45 2010
+From: xhzheng at foxmail.com (Xiaohong Zheng)
+Date: Thu, 17 Jun 2010 22:38:45 +0800
+Subject: [Smeagol-discuss] What's wrong with the Pulay mixing?
+Message-ID: <4C1A3375.9010703@foxmail.com>
+
+Hello, Dear All,
+
+Pulay mixing is a convergency accelerator. However, in a very simple
+test, it was found that it slowed down the convergence. The
+"DM.NumberPulay" was set to 5 and "DM.MixingWeight" is set to 0.1. In
+the scf process, we can see that for every 5 steps, "dDmax" does not get
+better, but gets worse. It is oscilating!
+
+However, if I set "DM.NumberPulay 5" and "DM.MixingWeight 0.2" or just
+set "DM.NumberPulay 1", then it works very well and converges with 5 or
+6 steps. Thus, I think there must be some problem with the Pulay mixing.
+Does anybody know why?
+
+The input and output files and the pseudopotential file is attached.
+Thank you very much.
+
+Xiaohong
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: lead2.fdf
+Type: application/vnd.fdf
+Size: 2114 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100617/1bb80315/attachment-0001.bin 
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: lead2.out
+Url: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100617/1bb80315/attachment.pl 
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: Li.psf
+Url: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100617/1bb80315/attachment-0001.pl 
+
+From runggeri at tcd.ie  Tue Jun 22 19:12:37 2010
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Tue, 22 Jun 2010 19:12:37 +0100
+Subject: [Smeagol-discuss] What's wrong with the Pulay mixing?
+In-Reply-To: <4C1A3375.9010703@foxmail.com>
+References: <4C1A3375.9010703@foxmail.com>
+Message-ID: <4C20FD15.7040509@tcd.ie>
+
+Hello Xiaohong,
+
+here is a patch for the pulayx.F file that should remove the
+oscillations in the convergence. You can copy the file into the Src
+directory and then run "patch pulayx.F pulay_mixing.patch".
+Alternatively you can also read the patch file and just change the few
+lines by hand in pulayx.F.
+
+Cheers,
+
+Ivan
+
+Xiaohong Zheng wrote:
+> Hello, Dear All,
+>
+> Pulay mixing is a convergency accelerator. However, in a very simple
+> test, it was found that it slowed down the convergence. The
+> "DM.NumberPulay" was set to 5 and "DM.MixingWeight" is set to 0.1. In
+> the scf process, we can see that for every 5 steps, "dDmax" does not get
+> better, but gets worse. It is oscilating!
+>
+> However, if I set "DM.NumberPulay 5" and "DM.MixingWeight 0.2" or just
+> set "DM.NumberPulay 1", then it works very well and converges with 5 or
+> 6 steps. Thus, I think there must be some problem with the Pulay mixing.
+> Does anybody know why?
+>
+> The input and output files and the pseudopotential file is attached.
+> Thank you very much.
+>
+> Xiaohong
+>   
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pulay_mixing.patch
+Type: text/x-patch
+Size: 1419 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100622/1ec818b1/attachment.bin 
+
+From xhzheng at foxmail.com  Wed Jun 23 02:11:38 2010
+From: xhzheng at foxmail.com (Xiaohong Zheng)
+Date: Wed, 23 Jun 2010 09:11:38 +0800
+Subject: [Smeagol-discuss] What's wrong with the Pulay mixing?
+In-Reply-To: <4C20FD15.7040509@tcd.ie>
+References: <4C1A3375.9010703@foxmail.com> <4C20FD15.7040509@tcd.ie>
+Message-ID: <4C215F4A.702@foxmail.com>
+
+Hello, Dear Ivan,
+
+With this patch, the oscillations are gone and it works very well now.
+Thank you so much for your nice work.
+
+Sincerely,
+Xiaohong
+
+
+
+
+Ivan Rungger wrote:
+> Hello Xiaohong,
+>
+> here is a patch for the pulayx.F file that should remove the
+> oscillations in the convergence. You can copy the file into the Src
+> directory and then run "patch pulayx.F pulay_mixing.patch".
+> Alternatively you can also read the patch file and just change the few
+> lines by hand in pulayx.F.
+>
+> Cheers,
+>
+> Ivan
+>
+> Xiaohong Zheng wrote:
+>   
+>> Hello, Dear All,
+>>
+>> Pulay mixing is a convergency accelerator. However, in a very simple
+>> test, it was found that it slowed down the convergence. The
+>> "DM.NumberPulay" was set to 5 and "DM.MixingWeight" is set to 0.1. In
+>> the scf process, we can see that for every 5 steps, "dDmax" does not get
+>> better, but gets worse. It is oscilating!
+>>
+>> However, if I set "DM.NumberPulay 5" and "DM.MixingWeight 0.2" or just
+>> set "DM.NumberPulay 1", then it works very well and converges with 5 or
+>> 6 steps. Thus, I think there must be some problem with the Pulay mixing.
+>> Does anybody know why?
+>>
+>> The input and output files and the pseudopotential file is attached.
+>> Thank you very much.
+>>
+>> Xiaohong
+>>   
+>> ------------------------------------------------------------------------
+>>
+>> _______________________________________________
+>> Smeagol-discuss mailing list
+>> Smeagol-discuss at lists.tchpc.tcd.ie
+>> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>>     
+>
+>   
+
+
+From ulman at jncasr.ac.in  Thu Jun 24 10:54:32 2010
+From: ulman at jncasr.ac.in (ulman at jncasr.ac.in)
+Date: Thu, 24 Jun 2010 15:24:32 +0530
+Subject: [Smeagol-discuss] How to decide HartreeLeadsBottom for
+ spinpolarised calculations: Antiparallel Leads.
+Message-ID: <1277373272.4c232b5881c6f@mercury.jncasr.ac.in>
+
+
+Dear All,
+
+I am doing spinpolarized transport calculations with a molecule
+between two Nickel leads. I find that in the case the spin polarzation
+in the two leads is oriented antiparallel to each other, the fermi
+energies are slightly different for both the leads and so are the
+values of HartreeLeadsBottom. The difference in Fermi energy is of the
+order of 0.0001eV and that in HartreeLeadsBottom is about 0.002eV. How
+should I set the HartreeLeadsBottom flag in the transport
+calculations? I also found a discussion on this forum where one has to
+equate the Fermi energy by appropriately setting the
+HartreeLeadsBottom flag. Do I need to do that for this case? If so
+what should be the order of magnitude of the difference in the Fermi
+energy? 
+
+Thanks in advance.
+
+regards,
+
+Kanchan Ulman.
+? 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100624/c42460f4/attachment.html 
+
+From ulman at jncasr.ac.in  Thu Jun 24 11:18:13 2010
+From: ulman at jncasr.ac.in (ulman at jncasr.ac.in)
+Date: Thu, 24 Jun 2010 15:48:13 +0530
+Subject: [Smeagol-discuss] How to decide HartreeLeadsBottom for
+ spinpolarised calculations: Antiparallel Leads.
+Message-ID: <1277374693.4c2330e56d826@mercury.jncasr.ac.in>
+
+
+Dear All,
+
+I am doing spinpolarized transport calculations with a molecule
+between two Nickel leads. I find that in the case the spin polarzation
+in the two leads is oriented antiparallel to each other, the fermi
+energies are slightly different for both the leads and so are the
+values of HartreeLeadsBottom. The difference in Fermi energy is of the
+order of 0.0001eV and that in HartreeLeadsBottom is about 0.002eV. How
+should I set the HartreeLeadsBottom flag in the transport
+calculations? I also found a discussion on this forum where one has to
+equate the Fermi energy by appropriately setting the
+HartreeLeadsBottom flag. Do I need to do that for this case? If so
+what should be the order of magnitude of the difference in the Fermi
+energy? 
+
+Thanks in advance.
+
+regards,
+
+Kanchan Ulman.
+? 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100624/b098a151/attachment.html 
+
+From runggeri at tcd.ie  Fri Jun 25 07:52:58 2010
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Fri, 25 Jun 2010 07:52:58 +0100
+Subject: [Smeagol-discuss] How to decide HartreeLeadsBottom for
+ spinpolarised calculations: Antiparallel Leads.
+In-Reply-To: <1277374693.4c2330e56d826@mercury.jncasr.ac.in>
+References: <1277374693.4c2330e56d826@mercury.jncasr.ac.in>
+Message-ID: <4C24524A.7000106@tcd.ie>
+
+Hello Kanchan,
+
+  the differences you have for leads up and leads down are small. 
+Changes in 0.0001eV in the Fermi energy or 0.002eV in the 
+HartreeLeadsBottom will not affect the final results for the transport. 
+If you want to reduce this difference you might run the leads 
+calculation with a tolerance of about 1e-6. But you can just use the 
+value obtained from the leads up calculation for both parallel and 
+anti-parallel orientations.
+
+Cheers,
+
+ Ivan
+
+ulman at jncasr.ac.in wrote:
+>
+> Dear All,
+>
+> I am doing spinpolarized transport calculations with a molecule 
+> between two Nickel leads. I find that in the case the spin polarzation 
+> in the two leads is oriented antiparallel to each other, the fermi 
+> energies are slightly different for both the leads and so are the 
+> values of HartreeLeadsBottom. The difference in Fermi energy is of the 
+> order of 0.0001eV and that in HartreeLeadsBottom is about 0.002eV. How 
+> should I set the HartreeLeadsBottom flag in the transport 
+> calculations? I also found a discussion on this forum where one has to 
+> equate the Fermi energy by appropriately setting the 
+> HartreeLeadsBottom flag. Do I need to do that for this case? If so 
+> what should be the order of magnitude of the difference in the Fermi 
+> energy?
+>
+> Thanks in advance.
+>
+> regards,
+>
+>
+> Kanchan Ulman.
+>  
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+

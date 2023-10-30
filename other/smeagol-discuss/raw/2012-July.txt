@@ -1,0 +1,310 @@
+From fallah at iust.ac.ir  Sat Jul 14 10:29:38 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Sat, 14 Jul 2012 12:59:38 +0330
+Subject: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+Message-ID: <WC20120714092938.466674@iust.ac.ir>
+
+While compiling smeagol I encounter the following error
+
+
+../NETransport/negf2k.F(1176): error #6404: This name does not have a type, and must have an explicit type.   [ISPIN]
+              rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+--------------------------------------^
+../NETransport/negf2k.F(1176): error #6351: The number of subscripts is incorrect.   [RHO0L]
+              rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+--------------------------^
+compilation aborted for ../NETransport/negf2k.F (code 1)
+make: *** [negf2k.o] Error 1
+
+removing ISPIN from the source code seems to resolve the problem but it is OK to do so?
+
+
+
+From runggeri at tcd.ie  Mon Jul 16 15:08:24 2012
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Mon, 16 Jul 2012 15:08:24 +0100
+Subject: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+In-Reply-To: <WC20120714092938.466674@iust.ac.ir>
+References: <WC20120714092938.466674@iust.ac.ir>
+Message-ID: <CAF1YTY_AiRKYrYMwGKry4i-vqJm01fm0AbbN-L28YPHOCPEN2w@mail.gmail.com>
+
+Hello Farhang,
+
+  in the file negf2k.F you need to remove the ispin index (replace
+rho0L(ii,jj,ispin) with rho0L(ii,jj)). I think there should be an older
+email in the mailing list where the bug is corrected.
+
+Cheers,
+
+Ivan
+
+On 14 July 2012 10:29, farhang fallah <fallah at iust.ac.ir> wrote:
+
+> While compiling smeagol I encounter the following error
+>
+>
+> ../NETransport/negf2k.F(1176): error #6404: This name does not have a
+> type, and must have an explicit type.   [ISPIN]
+>               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+> --------------------------------------^
+> ../NETransport/negf2k.F(1176): error #6351: The number of subscripts is
+> incorrect.   [RHO0L]
+>               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+> --------------------------^
+> compilation aborted for ../NETransport/negf2k.F (code 1)
+> make: *** [negf2k.o] Error 1
+>
+> removing ISPIN from the source code seems to resolve the problem but it is
+> OK to do so?
+>
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120716/185dfdfc/attachment.html>
+
+From fallah at iust.ac.ir  Tue Jul 17 10:42:02 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Tue, 17 Jul 2012 13:12:02 +0330
+Subject: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+In-Reply-To: <CAF1YTY_AiRKYrYMwGKry4i-vqJm01fm0AbbN-L28YPHOCPEN2w@mail.gmail.com>
+References: <WC20120714092938.466674@iust.ac.ir>
+	<CAF1YTY_AiRKYrYMwGKry4i-vqJm01fm0AbbN-L28YPHOCPEN2w@mail.gmail.com>
+Message-ID: <WC20120717094202.36741C@iust.ac.ir>
+
+Thank you very much for your reply. After resolving this error, I encounter another error while compiling emt2k.F:
+
+/opt/intel/bin/ia32/ifort -c -w -O3 -mp    ../Interface/emt2k.F
+../Interface/emt2k.F(392): error #6404: This name does not have a type, and must have an explicit type.   [DCOJG]
+     .                    rhoG(nuo+iuo,juo)*dcojg(sckxij))
+--------------------------------------------^
+compilation aborted for ../Interface/emt2k.F (code 1)
+make: *** [emt2k.o] Error 1
+
+Can you please tell me how to resolve this?
+
+-----Original Message-----
+From: Ivan Rungger <runggeri at tcd.ie>
+To: farhang fallah <fallah at iust.ac.ir>
+Cc: smeagol-discuss at lists.tchpc.tcd.ie
+Date: Mon, 16 Jul 2012 15:08:24 +0100
+Subject: Re: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+
+> Hello Farhang,
+> 
+>   in the file negf2k.F you need to remove the ispin index (replace
+> rho0L(ii,jj,ispin) with rho0L(ii,jj)). I think there should be an older
+> email in the mailing list where the bug is corrected.
+> 
+> Cheers,
+> 
+> Ivan
+> 
+> On 14 July 2012 10:29, farhang fallah <fallah at iust.ac.ir> wrote:
+> 
+> > While compiling smeagol I encounter the following error
+> >
+> >
+> > ../NETransport/negf2k.F(1176): error #6404: This name does not have a
+> > type, and must have an explicit type.   [ISPIN]
+> >               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+> > --------------------------------------^
+> > ../NETransport/negf2k.F(1176): error #6351: The number of subscripts
+> is
+> > incorrect.   [RHO0L]
+> >               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+> > --------------------------^
+> > compilation aborted for ../NETransport/negf2k.F (code 1)
+> > make: *** [negf2k.o] Error 1
+> >
+> > removing ISPIN from the source code seems to resolve the problem but
+> it is
+> > OK to do so?
+> >
+> >
+> > _______________________________________________
+> > Smeagol-discuss mailing list
+> > Smeagol-discuss at lists.tchpc.tcd.ie
+> > http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+> >
+
+
+
+From fallah at iust.ac.ir  Tue Jul 17 12:30:14 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Tue, 17 Jul 2012 15:00:14 +0330
+Subject: [Smeagol-discuss] Fwd: Re:  Error in compiling negf2k.F: ISPIN
+Message-ID: <WC20120717113014.9774BB@iust.ac.ir>
+
+It seems that that was just a syntax error ('dconjg' instead of 'dcojg'). But after resolving this I came upon another error saying 
+that 'fermispin.o' is not found. Should I remove this file's name from Makefile?
+
+-----Original Message-----
+From: "farhang fallah" <fallah at iust.ac.ir>
+To: "Ivan Rungger" <runggeri at tcd.ie>
+Cc: "Smeagol Discussion" <smeagol-discuss at lists.tchpc.tcd.ie>
+Date: Tue, 17 Jul 2012 13:12:02 +0330
+Subject: Re: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+
+Thank you very much for your reply. After resolving this error, I
+encounter another error while compiling emt2k.F:
+
+/opt/intel/bin/ia32/ifort -c -w -O3 -mp    ../Interface/emt2k.F
+../Interface/emt2k.F(392): error #6404: This name does not have a type,
+and must have an explicit type.   [DCOJG]
+     .                    rhoG(nuo+iuo,juo)*dcojg(sckxij))
+--------------------------------------------^
+compilation aborted for ../Interface/emt2k.F (code 1)
+make: *** [emt2k.o] Error 1
+
+Can you please tell me how to resolve this?
+
+-----Original Message-----
+From: Ivan Rungger <runggeri at tcd.ie>
+To: farhang fallah <fallah at iust.ac.ir>
+Cc: smeagol-discuss at lists.tchpc.tcd.ie
+Date: Mon, 16 Jul 2012 15:08:24 +0100
+Subject: Re: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+
+> Hello Farhang,
+> 
+>   in the file negf2k.F you need to remove the ispin index (replace
+> rho0L(ii,jj,ispin) with rho0L(ii,jj)). I think there should be an older
+> email in the mailing list where the bug is corrected.
+> 
+> Cheers,
+> 
+> Ivan
+> 
+> On 14 July 2012 10:29, farhang fallah <fallah at iust.ac.ir> wrote:
+> 
+> > While compiling smeagol I encounter the following error
+> >
+> >
+> > ../NETransport/negf2k.F(1176): error #6404: This name does not have a
+> > type, and must have an explicit type.   [ISPIN]
+> >               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+> > --------------------------------------^
+> > ../NETransport/negf2k.F(1176): error #6351: The number of subscripts
+> is
+> > incorrect.   [RHO0L]
+> >               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+> > --------------------------^
+> > compilation aborted for ../NETransport/negf2k.F (code 1)
+> > make: *** [negf2k.o] Error 1
+> >
+> > removing ISPIN from the source code seems to resolve the problem but
+> it is
+> > OK to do so?
+> >
+> >
+> > _______________________________________________
+> > Smeagol-discuss mailing list
+> > Smeagol-discuss at lists.tchpc.tcd.ie
+> > http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+> >
+
+
+
+From runggeri at tcd.ie  Tue Jul 17 20:20:03 2012
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Tue, 17 Jul 2012 20:20:03 +0100
+Subject: [Smeagol-discuss] Fwd: Re:  Error in compiling negf2k.F: ISPIN
+In-Reply-To: <WC20120717113014.9774BB@iust.ac.ir>
+References: <WC20120717113014.9774BB@iust.ac.ir>
+Message-ID: <5005BAE3.3090800@tcd.ie>
+
+Hello Farhang,
+
+  yes, you have to remove it (see instructions in README).
+
+Cheers,
+Ivan
+
+
+farhang fallah wrote:
+> It seems that that was just a syntax error ('dconjg' instead of 'dcojg'). But after resolving this I came upon another error saying 
+> that 'fermispin.o' is not found. Should I remove this file's name from Makefile?
+>
+> -----Original Message-----
+> From: "farhang fallah" <fallah at iust.ac.ir>
+> To: "Ivan Rungger" <runggeri at tcd.ie>
+> Cc: "Smeagol Discussion" <smeagol-discuss at lists.tchpc.tcd.ie>
+> Date: Tue, 17 Jul 2012 13:12:02 +0330
+> Subject: Re: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+>
+> Thank you very much for your reply. After resolving this error, I
+> encounter another error while compiling emt2k.F:
+>
+> /opt/intel/bin/ia32/ifort -c -w -O3 -mp    ../Interface/emt2k.F
+> ../Interface/emt2k.F(392): error #6404: This name does not have a type,
+> and must have an explicit type.   [DCOJG]
+>      .                    rhoG(nuo+iuo,juo)*dcojg(sckxij))
+> --------------------------------------------^
+> compilation aborted for ../Interface/emt2k.F (code 1)
+> make: *** [emt2k.o] Error 1
+>
+> Can you please tell me how to resolve this?
+>
+> -----Original Message-----
+> From: Ivan Rungger <runggeri at tcd.ie>
+> To: farhang fallah <fallah at iust.ac.ir>
+> Cc: smeagol-discuss at lists.tchpc.tcd.ie
+> Date: Mon, 16 Jul 2012 15:08:24 +0100
+> Subject: Re: [Smeagol-discuss] Error in compiling negf2k.F: ISPIN
+>
+>   
+>> Hello Farhang,
+>>
+>>   in the file negf2k.F you need to remove the ispin index (replace
+>> rho0L(ii,jj,ispin) with rho0L(ii,jj)). I think there should be an older
+>> email in the mailing list where the bug is corrected.
+>>
+>> Cheers,
+>>
+>> Ivan
+>>
+>> On 14 July 2012 10:29, farhang fallah <fallah at iust.ac.ir> wrote:
+>>
+>>     
+>>> While compiling smeagol I encounter the following error
+>>>
+>>>
+>>> ../NETransport/negf2k.F(1176): error #6404: This name does not have a
+>>> type, and must have an explicit type.   [ISPIN]
+>>>               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+>>> --------------------------------------^
+>>> ../NETransport/negf2k.F(1176): error #6351: The number of subscripts
+>>>       
+>> is
+>>     
+>>> incorrect.   [RHO0L]
+>>>               rhoG(II,JJ)=rho0L(II,JJ,ISPIN)
+>>> --------------------------^
+>>> compilation aborted for ../NETransport/negf2k.F (code 1)
+>>> make: *** [negf2k.o] Error 1
+>>>
+>>> removing ISPIN from the source code seems to resolve the problem but
+>>>       
+>> it is
+>>     
+>>> OK to do so?
+>>>
+>>>
+>>> _______________________________________________
+>>> Smeagol-discuss mailing list
+>>> Smeagol-discuss at lists.tchpc.tcd.ie
+>>> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>>>
+>>>       
+>
+>
+>
+>
+>   
+
+

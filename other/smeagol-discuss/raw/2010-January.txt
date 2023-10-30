@@ -1,0 +1,1009 @@
+From 284107217 at qq.com  Tue Jan  5 12:50:13 2010
+From: 284107217 at qq.com (=?gbk?B?1cW548a9?=)
+Date: Tue, 5 Jan 2010 20:50:13 +0800
+Subject: [Smeagol-discuss] problem about smeagol parallel efficiency
+Message-ID: <tencent_7B132B261161D5F46D0A8C3C@qq.com>
+
+HI?every smeagol user
+ I have encountered a problem:when I use one core to work,it costs me 35 minutes while 49 minutes for 8 cores to work for the same task.The more cores the more time? Another example : one core cost me 42 minutes while 6 core cost me 26 minutes,the efficiency is so bad.      Our OS is as follows:
+ -------------------------------------------------------
+ [test at localhost LIB]$ uname -a
+Linux localhost 2.6.18-164.el5 #1 SMP Tue Aug 18 15:51:48 EDT 2009 x86_64 x86_64 x86_64 GNU/Linux
+ ----------------------------------------------------------
+     And there are 8 core for one node.We now just let the parallel in one node.The information for one core is :
+ -----------------------------------------------------------
+ processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 23
+model name      : Intel(R) Xeon(R) CPU           E5430  @ 2.66GHz
+stepping        : 6
+cpu MHz         : 2666.844
+cache size      : 6144 KB
+physical id     : 0
+siblings        : 4
+core id         : 0
+cpu cores       : 4
+apicid          : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 10
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm syscall nx lm constant_tsc pni monitor ds_cpl vmx est tm2 cx16 xtpr lahf_lm
+bogomips        : 5333.68
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 38 bits physical, 48 bits virtual
+power management:
+ ------------------------------------------------------------------
+      All the 8 cores are the same in one node.
+      When I compile the code for parallel mode,I use mkl-10.0.2.018,and all the math library form it.The fortran compile used is pgi7.0,and MPI I use mpich-1.2.7.Are there any problems for the software I used that lead to bad efficiency.
+    My arch.make for paralle is:
+ -----------------------------------------------------------------
+  SIESTA_ARCH=pgf90
+FC=mpif90
+FC_ASIS=$(FC)
+ FFLAGS= -tp p7-64 -OPT:Ofast -O2 
+LDFLAGS=  -tp p7-64 -OPT:Ofast -O2
+COMP_LIBS = 
+FFLAGS_DEBUG=
+TRANSPORTFLAGS = -tp p7-64 -OPT:Ofast -O2 -c
+ 
+SOURCE_DIR=/home/test/software/smeagol-1.3.7
+EXEC = smeagolpara
+ #NETCDF_LIBS=/usr/local/netcdf-3.5/lib/pgi/libnetcdf.a
+#NETCDF_INTERFACE=libnetcdf_f90.a
+#DEFS_CDF=-DCDF
+ MPI_INTERFACE=libmpi_f90.a
+MPI_INCLUDE=/home/test/software/mpich-1.2.7/include
+DEFS_MPI=-DMPI
+ 
+BLAS_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_solver -lmkl_em64t -lguide -lpthread
+ LAPACK_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_lapack -lmkl_core
+ BLACS_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_blacs_lp64
+ SCALAPACK_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_scalapack_lp64
+ LIBS= $(SCALAPACK_LIBS) $(BLACS_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS)
+ 
+RANLIB=echo
+SYS=bsd
+DEFS= $(DEFS_CDF) $(DEFS_MPI)
+#
+ .F.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f.o:
+ $(FC) -c $(FFLAGS)   $<
+.F90.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f90.o:
+ $(FC) -c $(FFLAGS)   $<
+       
+#
+------------------------------------------------------------------
+    The whole mkl lib is :
+ ------------------------------------------------------------------
+ libguide.a                       libmkl_intel_lp64.a
+libguide.so                      libmkl_intel_lp64.so
+libiomp5.a                       libmkl_intel_sp2dp.a
+libiomp5.so                      libmkl_intel_sp2dp.so
+libmkl_blacs_ilp64.a             libmkl_intel_thread.a
+libmkl_blacs_intelmpi20_ilp64.a  libmkl_intel_thread.so
+libmkl_blacs_intelmpi20_lp64.a   libmkl_lapack.a
+libmkl_blacs_intelmpi_ilp64.a    libmkl_lapack.so
+libmkl_blacs_intelmpi_lp64.a     libmkl_mc.so
+libmkl_blacs_lp64.a              libmkl_p4n.so
+libmkl_blacs_openmpi_ilp64.a     libmkl_scalapack.a
+libmkl_blacs_openmpi_lp64.a      libmkl_scalapack_ilp64.a
+libmkl_cdft.a                    libmkl_scalapack_lp64.a
+libmkl_cdft_core.a               libmkl_sequential.a
+libmkl_core.a                    libmkl_sequential.so
+libmkl_core.so                   libmkl.so
+libmkl_def.so                    libmkl_solver.a
+libmkl_em64t.a                   libmkl_solver_ilp64.a
+libmkl_gf_ilp64.a                libmkl_solver_ilp64_sequential.a
+libmkl_gf_ilp64.so               libmkl_solver_lp64.a
+libmkl_gf_lp64.a                 libmkl_solver_lp64_sequential.a
+libmkl_gf_lp64.so                libmkl_vml_def.so
+libmkl_gnu_thread.a              libmkl_vml_mc2.so
+libmkl_gnu_thread.so             libmkl_vml_mc.so
+libmkl_intel_ilp64.a             libmkl_vml_p4n.so
+libmkl_intel_ilp64.so
+---------------------------------------------------------------
+ When I run the task, I first copy the compiled executable file smeagolpara in the directory /Src to my work directory,then I use the command: mpirun -np 8 smeagolpara <Auwire.fdf> mx.log & after the lead calculation.
+       By the way ,can the lead  use parallel calculation? It seems not for me.
+ I put the input files in attachment.
+      Any advise is welcome!
+      BEST REGARDS!
+                                                       YOURS
+                                                      Guangping Zhang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/06995a64/attachment-0001.html 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: arch.make
+Type: application/octet-stream
+Size: 1112 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/06995a64/attachment-0004.obj 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Au.fdf
+Type: application/octet-stream
+Size: 2125 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/06995a64/attachment-0005.obj 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Au.psf
+Type: application/octet-stream
+Size: 147698 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/06995a64/attachment-0006.obj 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Auwire.fdf
+Type: application/octet-stream
+Size: 3364 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/06995a64/attachment-0007.obj 
+
+From sbl3 at mail.gatech.edu  Tue Jan  5 13:52:41 2010
+From: sbl3 at mail.gatech.edu (Barraza-lopez, Salvador)
+Date: Tue, 5 Jan 2010 08:52:41 -0500 (EST)
+Subject: [Smeagol-discuss] problem about smeagol parallel efficiency
+In-Reply-To: <tencent_7B132B261161D5F46D0A8C3C@qq.com>
+Message-ID: <2007424025.1645391262699561756.JavaMail.root@mail4.gatech.edu>
+
+Hi Guangping. 
+
+The bottom line is these input lines: 
+
+NEnergReal 1000 
+NEnergImCircle 200 
+NEnergImLine 50 
+NPoles 20 
+
+Neither 6 nor 8 cores divide them. You have NEnergImCircle+NEnergImLine+2NPoles=290 integration points for the equilibrium part and 1000 integration points for the non-equilibrium part of the energy integration. Hence try to make your number of integration points be DIVISIBLE by the number of processors you are using (240 integration points in the equilibrium part and 960 for the non-equilibrium part will work fine -and will scale properly- on 6 and 8 processors). Otherwise try to use 5 processors with the input file as-is and you'll also see scalable performance. 
+
+Best regards, 
+-Salvador. 
+
+----- Original Message ----- 
+From: "???" <284107217 at qq.com> 
+To: "smeagol-discuss" <smeagol-discuss at lists.tchpc.tcd.ie> 
+Sent: Tuesday, January 5, 2010 7:50:13 AM GMT -05:00 US/Canada Eastern 
+Subject: [Smeagol-discuss] problem about smeagol parallel efficiency 
+
+
+HI?every smeagol user 
+I have encountered a problem:when I use one core to work,it costs me 35 minutes while 49 minutes for 8 cores to work for the same task.The more cores the more time? Another example : one core cost me 42 minutes while 6 core cost me 26 minutes,the efficiency is so bad. 
+Our OS is as follows: 
+------------------------------------------------------- 
+[test at localhost LIB]$ uname -a 
+Linux localhost 2.6.18-164.el5 #1 SMP Tue Aug 18 15:51:48 EDT 2009 x86_64 x86_64 x86_64 GNU/Linux 
+---------------------------------------------------------- 
+And there are 8 core for one node.We now just let the parallel in one node.The information for one core is : 
+----------------------------------------------------------- 
+processor : 0 
+vendor_id : GenuineIntel 
+cpu family : 6 
+model : 23 
+model name : Intel(R) Xeon(R) CPU E5430 @ 2.66GHz 
+stepping : 6 
+cpu MHz : 2666.844 
+cache size : 6144 KB 
+physical id : 0 
+siblings : 4 
+core id : 0 
+cpu cores : 4 
+apicid : 0 
+fpu : yes 
+fpu_exception : yes 
+cpuid level : 10 
+wp : yes 
+flags : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm syscall nx lm constant_tsc pni monitor ds_cpl vmx est tm2 cx16 xtpr lahf_lm 
+bogomips : 5333.68 
+clflush size : 64 
+cache_alignment : 64 
+address sizes : 38 bits physical, 48 bits virtual 
+power management: 
+------------------------------------------------------------------ 
+All the 8 cores are the same in one node. 
+When I compile the code for parallel mode,I use mkl-10.0.2.018,and all the math library form it.The fortran compile used is pgi7.0,and MPI I use mpich-1.2.7.Are there any problems for the software I used that lead to bad efficiency. 
+My arch.make for paralle is: 
+----------------------------------------------------------------- 
+SIESTA_ARCH=pgf90 
+FC=mpif90 
+FC_ASIS=$(FC) 
+FFLAGS= -tp p7-64 -OPT:Ofast -O2 
+LDFLAGS= -tp p7-64 -OPT:Ofast -O2 
+COMP_LIBS = 
+FFLAGS_DEBUG= 
+TRANSPORTFLAGS = -tp p7-64 -OPT:Ofast -O2 -c 
+
+SOURCE_DIR=/home/test/software/smeagol-1.3.7 
+EXEC = smeagolpara 
+#NETCDF_LIBS=/usr/local/netcdf-3.5/lib/pgi/libnetcdf.a 
+#NETCDF_INTERFACE=libnetcdf_f90.a 
+#DEFS_CDF=-DCDF 
+MPI_INTERFACE=libmpi_f90.a 
+MPI_INCLUDE=/home/test/software/mpich-1.2.7/include 
+DEFS_MPI=-DMPI 
+
+BLAS_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_solver -lmkl_em64t -lguide -lpthread 
+LAPACK_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_lapack -lmkl_core 
+BLACS_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_blacs_lp64 
+SCALAPACK_LIBS= -L/home/test/intel/mkl/10.0.2.018/lib/em64t -lmkl_scalapack_lp64 
+LIBS= $(SCALAPACK_LIBS) $(BLACS_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) 
+
+RANLIB=echo 
+SYS=bsd 
+DEFS= $(DEFS_CDF) $(DEFS_MPI) 
+# 
+.F.o: 
+$(FC) -c $(FFLAGS) $(DEFS) $< 
+.f.o: 
+$(FC) -c $(FFLAGS) $< 
+.F90.o: 
+$(FC) -c $(FFLAGS) $(DEFS) $< 
+.f90.o: 
+$(FC) -c $(FFLAGS) $< 
+
+# 
+------------------------------------------------------------------ 
+The whole mkl lib is : 
+------------------------------------------------------------------ 
+libguide.a libmkl_intel_lp64.a 
+libguide.so libmkl_intel_lp64.so 
+libiomp5.a libmkl_intel_sp2dp.a 
+libiomp5.so libmkl_intel_sp2dp.so 
+libmkl_blacs_ilp64.a libmkl_intel_thread.a 
+libmkl_blacs_intelmpi20_ilp64.a libmkl_intel_thread.so 
+libmkl_blacs_intelmpi20_lp64.a libmkl_lapack.a 
+libmkl_blacs_intelmpi_ilp64.a libmkl_lapack.so 
+libmkl_blacs_intelmpi_lp64.a libmkl_mc.so 
+libmkl_blacs_lp64.a libmkl_p4n.so 
+libmkl_blacs_openmpi_ilp64.a libmkl_scalapack.a 
+libmkl_blacs_openmpi_lp64.a libmkl_scalapack_ilp64.a 
+libmkl_cdft.a libmkl_scalapack_lp64.a 
+libmkl_cdft_core.a libmkl_sequential.a 
+libmkl_core.a libmkl_sequential.so 
+libmkl_core.so libmkl.so 
+libmkl_def.so libmkl_solver.a 
+libmkl_em64t.a libmkl_solver_ilp64.a 
+libmkl_gf_ilp64.a libmkl_solver_ilp64_sequential.a 
+libmkl_gf_ilp64.so libmkl_solver_lp64.a 
+libmkl_gf_lp64.a libmkl_solver_lp64_sequential.a 
+libmkl_gf_lp64.so libmkl_vml_def.so 
+libmkl_gnu_thread.a libmkl_vml_mc2.so 
+libmkl_gnu_thread.so libmkl_vml_mc.so 
+libmkl_intel_ilp64.a libmkl_vml_p4n.so 
+libmkl_intel_ilp64.so 
+--------------------------------------------------------------- 
+When I run the task, I first copy the compiled executable file smeagolpara in the directory /Src to my work directory,then I use the command: mpirun -np 8 smeagolpara <Auwire.fdf> mx.log & after the lead calculation. 
+By the way ,can the lead use parallel calculation? It seems not for me. 
+I put the input files in attachment. 
+Any advise is welcome! 
+BEST REGARDS! 
+YOURS 
+Guangping Zhang 
+_______________________________________________ Smeagol-discuss mailing list Smeagol-discuss at lists.tchpc.tcd.ie http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss 
+
+-- 
+Salvador Barraza-Lopez 
+Postdoctoral Fellow 
+School of Physics 
+The Georgia Institute of Technology 
+
+Office N205 
+837 State Street Atlanta, Georgia 30332-0430 U.S.A 
+Tel: (404) 894-0892 Fax: (404) 894-9958 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/d32c351b/attachment.html 
+
+From runggeri at tcd.ie  Tue Jan  5 14:09:34 2010
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Tue, 05 Jan 2010 14:09:34 +0000
+Subject: [Smeagol-discuss] problem about smeagol parallel efficiency
+In-Reply-To: <2007424025.1645391262699561756.JavaMail.root@mail4.gatech.edu>
+References: <2007424025.1645391262699561756.JavaMail.root@mail4.gatech.edu>
+Message-ID: <4B43481E.40108@tcd.ie>
+
+Hello Guangping and Salvador,
+
+  adding to what Salvador just a note on the actual values chosen for 
+the number of energy points. While the points on the real axis 
+NEnergReal depend on the system, the number of points on the complex 
+plane are to a large extent system-independent. They mainly depend on 
+the electronic temperature used. If you use room temperature (300K), 
+then NEnergImCircle 16, NEnergImLine 16, and NPoles 16 is enough. 
+However in case you use only e.g. 30 K, then you would have to use 10 
+times more poles, i.e. 160 poles, because the spacing in energy between 
+the poles is proportional to the used electronic temperature (I think 
+this is explained in the smeagol paper in more detail). If you set the 
+number of poles in this way, you can always use the value of 16 for 
+NEnergImCircle and NEnergImLine. For most systems one can do the 
+calculations at room temperature, because then one needs only to use few 
+poles.
+
+Cheers,
+
+ Ivan
+
+Barraza-lopez, Salvador wrote:
+> Hi Guangping.
+>
+> The bottom line is these input lines:
+>
+> NEnergReal               1000 
+> NEnergImCircle           200 
+> NEnergImLine             50
+> NPoles                   20
+>
+>  Neither 6 nor 8 cores divide them. You have 
+> NEnergImCircle+NEnergImLine+2NPoles=290 integration points for the 
+> equilibrium part and 1000 integration points for the non-equilibrium 
+> part of the energy integration. Hence try to make your number of 
+> integration points be DIVISIBLE by the number of processors you are 
+> using (240 integration points in the equilibrium part and 960 for the 
+> non-equilibrium part will work fine -and will scale properly- on 6 and 
+> 8 processors). Otherwise try to use 5 processors with the input file 
+> as-is and you'll also see scalable performance.
+>
+> Best regards,
+> -Salvador.
+>
+> ----- Original Message -----
+> From: "???" <284107217 at qq.com>
+> To: "smeagol-discuss" <smeagol-discuss at lists.tchpc.tcd.ie>
+> Sent: Tuesday, January 5, 2010 7:50:13 AM GMT -05:00 US/Canada Eastern
+> Subject: [Smeagol-discuss] problem about smeagol parallel efficiency
+>
+> HI?every smeagol user
+> I have encountered a problem:when I use one core to work,it costs me 
+> 35 minutes while 49 minutes for 8 cores to work for the same task.The 
+> more cores the more time? Another example : one core cost me 42 
+> minutes while 6 core cost me 26 minutes,the efficiency is so bad.
+>      Our OS is as follows:
+> -------------------------------------------------------
+> [test at localhost LIB]$ uname -a
+> Linux localhost 2.6.18-164.el5 #1 SMP Tue Aug 18 15:51:48 EDT 2009 
+> x86_64 x86_64 x86_64 GNU/Linux
+> ----------------------------------------------------------
+>     And there are 8 core for one node.We now just let the parallel in 
+> one node.The information for one core is :
+> -
+
+
+From 284107217 at qq.com  Tue Jan  5 14:12:32 2010
+From: 284107217 at qq.com (=?gbk?B?1cW548a9?=)
+Date: Tue, 5 Jan 2010 22:12:32 +0800
+Subject: [Smeagol-discuss] problem about the parallel using openmpi-1.2.6
+	and ifort
+Message-ID: <tencent_3B70614A251EA1DC6D5AB593@qq.com>
+
+Dear smeaol user:     
+     Now I use openmpi-1.2.6,mkl-10.0.2.018,ifort-10.1.012 to make my parallel smeagol,the compile is no problem,but when i use it in parallel mode using the command:
+ mpiexec -n 8 smeagolpara <Auwire.fdf > mx.log &
+problems appear?
+    ---------------------------------------------------------------
+ [1] 32513
+[zgp at localhost mx]$ [localhost:32523] *** Process received signal ***
+[localhost:32523] Signal: Segmentation fault (11)
+[localhost:32523] Signal code: Address not mapped (1)
+[localhost:32523] Failing at address: 0xfc
+[localhost:32523] [ 0] /lib64/libpthread.so.0 [0x393160e7c0]
+[localhost:32523] [ 1] smeagolpara(extrapol_+0x15c) [0x5304d0]
+[localhost:32523] [ 2] smeagolpara(MAIN__+0xe650) [0x5ee570]
+[localhost:32523] [ 3] smeagolpara(main+0x2a) [0x43f2c2]
+[localhost:32523] [ 4] /lib64/libc.so.6(__libc_start_main+0xf4) [0x3930a1d994]
+[localhost:32523] [ 5] smeagolpara [0x43f1e9]
+[localhost:32523] *** End of error message ***
+[localhost:32521] *** Process received signal ***
+[localhost:32521] Signal: Segmentation fault (11)
+[localhost:32521] Signal code: Address not mapped (1)
+[localhost:32521] Failing at address: 0xfc
+[localhost:32521] [ 0] /lib64/libpthread.so.0 [0x393160e7c0]
+[localhost:32521] [ 1] smeagolpara(extrapol_+0x15c) [0x5304d0]
+[localhost:32521] [ 2] smeagolpara(MAIN__+0xe650) [0x5ee570]
+[localhost:32521] [ 3] smeagolpara(main+0x2a) [0x43f2c2]
+[localhost:32521] [ 4] /lib64/libc.so.6(__libc_start_main+0xf4) [0x3930a1d994]
+[localhost:32521] [ 5] smeagolpara [0x43f1e9]
+[localhost:32521] *** End of error message ***
+[localhost:32522] *** Process received signal ***
+[localhost:32522] Signal: Segmentation fault (11)
+[localhost:32522] Signal code: Address not mapped (1)
+[localhost:32522] Failing at address: 0xfc
+[localhost:32522] [ 0] /lib64/libpthread.so.0 [0x393160e7c0]
+[localhost:32522] [ 1] smeagolpara(extrapol_+0x15c) [0x5304d0]
+[localhost:32522] [ 2] smeagolpara(MAIN__+0xe650) [0x5ee570]
+[localhost:32522] [ 3] smeagolpara(main+0x2a) [0x43f2c2]
+[localhost:32522] [ 4] /lib64/libc.so.6(__libc_start_main+0xf4) [0x3930a1d994]
+[localhost:32522] [ 5] smeagolpara [0x43f1e9]
+[localhost:32522] *** End of error message ***
+forrtl: error (78): process killed (SIGTERM)
+Image              PC                Routine            Line        Source             
+mca_btl_sm.so      00002AED7B363A0C  Unknown               Unknown  Unknown
+mca_bml_r2.so      00002AED7AF5804A  Unknown               Unknown  Unknown
+libopen-pal.so.0   00002AED75AC39BA  Unknown               Unknown  Unknown
+libmpi.so.0        00002AED755FDE25  Unknown               Unknown  Unknown
+mca_coll_tuned.so  00002AED7BD8803A  Unknown               Unknown  Unknown
+libmpi.so.0        00002AED75610857  Unknown               Unknown  Unknown
+libmpi_f77.so.0    00002AED753B67A5  Unknown               Unknown  Unknown
+smeagolpara        00000000006E3E0E  Unknown               Unknown  Unknown
+smeagolpara        00000000005EE919  Unknown               Unknown  Unknown
+smeagolpara        000000000043F2C2  Unknown               Unknown  Unknown
+libc.so.6          0000003930A1D994  Unknown               Unknown  Unknown
+smeagolpara        000000000043F1E9  Unknown               Unknown  Unknown
+forrtl: error (78): process killed (SIGTERM)
+Image              PC                Routine            Line        Source             
+libpthread.so.0    000000393160D610  Unknown               Unknown  Unknown
+mca_oob_tcp.so     00002AB23DF65BFF  Unknown               Unknown  Unknown
+mca_oob_tcp.so     00002AB23DF64996  Unknown               Unknown  Unknown
+mca_oob_tcp.so     00002AB23DF64A65  Unknown               Unknown  Unknown
+mca_oob_tcp.so     00002AB23DF66928  Unknown               Unknown  Unknown
+libopen-pal.so.0   00002AB23C36DB97  Unknown               Unknown  Unknown
+libopen-pal.so.0   00002AB23C3689FB  Unknown               Unknown  Unknown
+libmpi.so.0        00002AB23BEA2E25  Unknown               Unknown  Unknown
+mca_coll_tuned.so  00002AB24262D03A  Unknown               Unknown  Unknown
+libmpi.so.0        00002AB23BEB5857  Unknown               Unknown  Unknown
+libmpi_f77.so.0    00002AB23BC5B7A5  Unknown               Unknown  Unknown
+smeagolpara        00000000006E3E0E  Unknown               Unknown  Unknown
+smeagolpara        00000000005EE919  Unknown               Unknown  Unknown
+smeagolpara        000000000043F2C2  Unknown               Unknown  Unknown
+libc.so.6          0000003930A1D994  Unknown               Unknown  Unknown
+smeagolpara        000000000043F1E9  Unknown               Unknown  Unknown
+forrtl: error (78): process killed (SIGTERM)
+Image              PC                Routine            Line        Source             
+mca_btl_sm.so      00002B5424E78A10  Unknown               Unknown  Unknown
+mca_bml_r2.so      00002B5424A6D04A  Unknown               Unknown  Unknown
+libopen-pal.so.0   00002B541F5D89BA  Unknown               Unknown  Unknown
+libmpi.so.0        00002B541F112E25  Unknown               Unknown  Unknown
+mca_coll_tuned.so  00002B542589D03A  Unknown               Unknown  Unknown
+libmpi.so.0        00002B541F125857  Unknown               Unknown  Unknown
+libmpi_f77.so.0    00002B541EECB7A5  Unknown               Unknown  Unknown
+smeagolpara        00000000006E3E0E  Unknown               Unknown  Unknown
+smeagolpara        00000000005EE919  Unknown               Unknown  Unknown
+smeagolpara        000000000043F2C2  Unknown               Unknown  Unknown
+libc.so.6          0000003930A1D994  Unknown               Unknown  Unknown
+smeagolpara        000000000043F1E9  Unknown               Unknown  Unknown
+forrtl: error (78): process killed (SIGTERM)
+Image              PC                Routine            Line        Source             
+mca_btl_sm.so      00002AEBDD3B1A0C  Unknown               Unknown  Unknown
+mca_bml_r2.so      00002AEBDCFA604A  Unknown               Unknown  Unknown
+libopen-pal.so.0   00002AEBD7B119BA  Unknown               Unknown  Unknown
+libmpi.so.0        00002AEBD764BE25  Unknown               Unknown  Unknown
+mca_coll_tuned.so  00002AEBDDDD603A  Unknown               Unknown  Unknown
+libmpi.so.0        00002AEBD765E857  Unknown               Unknown  Unknown
+libmpi_f77.so.0    00002AEBD74047A5  Unknown               Unknown  Unknown
+smeagolpara        00000000006E3E0E  Unknown               Unknown  Unknown
+smeagolpara        00000000005EE919  Unknown               Unknown  Unknown
+smeagolpara        000000000043F2C2  Unknown               Unknown  Unknown
+libc.so.6          0000003930A1D994  Unknown               Unknown  Unknown
+smeagolpara        000000000043F1E9  Unknown               Unknown  Unknown
+forrtl: error (78): process killed (SIGTERM)
+Image              PC                Routine            Line        Source             
+mca_btl_sm.so      00002B956A9F29F4  Unknown               Unknown  Unknown
+mca_bml_r2.so      00002B956A5E704A  Unknown               Unknown  Unknown
+libopen-pal.so.0   00002B95651529BA  Unknown               Unknown  Unknown
+libmpi.so.0        00002B9564C8CE25  Unknown               Unknown  Unknown
+mca_coll_tuned.so  00002B956B41703A  Unknown               Unknown  Unknown
+libmpi.so.0        00002B9564C9F857  Unknown               Unknown  Unknown
+libmpi_f77.so.0    00002B9564A457A5  Unknown               Unknown  Unknown
+smeagolpara        00000000006E3E0E  Unknown               Unknown  Unknown
+smeagolpara        00000000005EE919  Unknown               Unknown  Unknown
+smeagolpara        000000000043F2C2  Unknown               Unknown  Unknown
+libc.so.6          0000003930A1D994  Unknown               Unknown  Unknown
+smeagolpara        000000000043F1E9  Unknown               Unknown  Unknown
+mpiexec noticed that job rank 5 with PID 32521 on node localhost exited on signal 11 (Segmentation fault). 
+ -------------------------------------------------------------------
+ Can't I use openmpi ? when I use the parallel as serial using command:smeagolpara <Auwire.fdf > mx.log &
+it is OK!
+ Can any one help me ?
+ Any advice is welcome!
+ BEST REGARDS!
+                                                                  Guangping Zhang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/e49aa05d/attachment-0001.html 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: arch.make
+Type: application/octet-stream
+Size: 1236 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100105/e49aa05d/attachment-0001.obj 
+
+From 284107217 at qq.com  Wed Jan  6 03:04:57 2010
+From: 284107217 at qq.com (=?gbk?B?1cW548a9?=)
+Date: Wed, 6 Jan 2010 11:04:57 +0800
+Subject: [Smeagol-discuss] some strange files appear after the calculation
+	completed
+Message-ID: <tencent_4AEDE2BA2DCEF4F1024C36FF@qq.com>
+
+Dear smeagol users:
+        When the tasks were completed,I went to see the result,to my surprise,I saw some files just as :fort.*
+ ________________________________________________
+ Au.chain.pol.DM   fort.2021  fort.4022  fort.523  fort.624     out.fdf
+Au.chain.pol.HST  fort.2022  fort.4023  fort.524  fort.625     pgfile
+Au.psf            fort.2023  fort.4024  fort.525  fort.626     RED_VLOCAL.Au
+Auwire.fdf        fort.2024  fort.4025  fort.526  fort.627     smeagolpara
+bulklft.DAT       fort.2025  fort.4026  fort.527  INPUT_TMP    teste.1.out
+bulkrgt.DAT       fort.2026  fort.4027  fort.620  KB.L0.1.Au   teste.2.out
+CHCORE.Au         fort.2027  fort.520   fort.621  KB.L1.1.Au   teste.out
+CHLOCAL.Au        fort.4020  fort.521   fort.622  mx.log       VNA.Au
+fort.2020         fort.4021  fort.522   fort.623  ORB.S1.1.Au  WALLTIME
+_________________________________________________
+ Can anyone tell me what's the reason?
+ Looking forward to any advice !
+                                                                     Guangping Zhang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100106/260606db/attachment.html 
+
+From 284107217 at qq.com  Sun Jan 17 02:25:51 2010
+From: 284107217 at qq.com (=?gbk?B?1cW548a9?=)
+Date: Sun, 17 Jan 2010 10:25:51 +0800
+Subject: [Smeagol-discuss] geometry partial optimization problem
+Message-ID: <tencent_755B70A92B9E06CF70C484C1@qq.com>
+
+Dear smeaol user:   
+      Now I want use siesta to perform a partial geometry optimization.When I use zmatrix as the manual tell.</:includetail>
+     The input is :</:includetail>
+ ----------------------------------</:includetail>
+ SystemName c6H8N2+Au
+SystemLabel c6H8N2</:includetail>
+ NumberOfSpecies 4
+NumberOfAtoms   36</:includetail>
+ %block ChemicalSpeciesLabel
+  1   6   C
+  2   1   H
+  3   7   N
+  4   79  Au
+%endblock ChemicalSpeciesLabel</:includetail>
+ 
+PAO.EnergyShift       200 meV</:includetail>
+ PAO.BasisType    split    
+     
+PAO.BasisSize    SZP</:includetail>
+ LatticeConstant   1.0 Ang</:includetail>
+ %block LatticeVectors
+ 25.00000000    0.00000000    0.00000000
+  0.00000000   25.00000000    0.00000000
+  0.00000000    0.00000000   24.05568134
+%endblock LatticeVectors</:includetail>
+ 
+kgrid_cutoff   20. Ang    
+                             
+%block kgrid_Monkhorst_Pack  
+  1   0   0    0.0           
+  0   1   0    0.0           
+  0   0   1    0.0           
+%endblock kgrid_Monkhorst_Pack</:includetail>
+ %block PAO.Basis                 # Define Basis set
+C           2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta 
+   5.0   
+   1.000   
+ n=2   1   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   8.0  
+   1.000   
+N           2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta 
+   4.0   
+   1.000   
+ n=2   1   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   7.0   
+   1.000   
+H           1                    # Species label, number of l-shells
+ n=1   0   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   3.5   
+   1.000   
+Au          2                    # Species label, number of l-shells
+ n=6   0   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   8.0   
+   1.000   
+ n=5   2   1                         # n, l, Nzeta 
+   5.8   
+   1.000   
+%endblock PAO.Basis</:includetail>
+ 
+%block Ps.lmax
+     Au           2
+%endblock Ps.lmax</:includetail>
+ # SPIN options</:includetail>
+ xc.functional         GGA             # Exchange-correlation functional
+xc.authors            PBE             # Exchange-correlation version
+SpinPolarized         F               # Logical parameters are: yes or no
+FixSpin               F
+TotalSpin             0.0    
+NonCollinearSpin     F                # 'T', 'F'
+MeshCutoff          150. Ry           # Equivalent plane wave cutoff for the grid</:includetail>
+ #%block DM.InitSpin
+# 88 +
+# 89 +
+# 91 +
+# 94 -
+# 95 -
+#%endblock DM.InitSpin</:includetail>
+ # SCF options</:includetail>
+ DM.Tolerance          1.d-3         # Tolerance in maximum difference between input and output DM
+MaxSCFIterations       300          # Maximum number of SCF iter
+DM.UseSaveDM           F            # to use continuation files
+DM.MixingWeight       0.02          # New DM amount for next SCF cycle
+DM.NumberPulay         5
+DM.MixSCF1          F
+DM.PulayOnFile      F           # Store in memory ('F') or in files ('T')
+# NeglNonOverlapInt   T             # 'F'=do not neglect
+SolutionMethod        Diagon         # OrderN or Diagon
+ElectronicTemperature  300 K          # Temp. for Fermi smearing</:includetail>
+ # MD options</:includetail>
+ MD.TypeOfRun           CG            # Type of dynamics:
+MD.VariableCell        F
+MD.NumCGsteps          200           # Number of CG steps for coordinate optimization
+ZM.UnitsLength          Ang           #the units of length used during Z-matrix input  
+ZM.UnitsAngle          deg           #the units of angles used during Z-matrix input
+ZM.ForceTolLength      0.02 eV/Ang   #controls the convergence with respect to forces on Z-matrix lengths
+ZM.ForceTolAngle       0.00356549 Ry/rad     #controls the convergence with respect to forces on Z-matrix angles
+ZM.MaxDisplLength      0.1  Ang      # controls the maximum change in a Zmatrix length during an optimisation step
+ZM.MaxDisplAngle       0.003 rad     # controls the maximum change in a Z-matrix angle during an optimisation step
+ZM.CalcAllForces       T             # Default value</:includetail>
+ 
+AtomicCoordinatesFormat Ang</:includetail>
+ %block Zmatrix
+cartesian
+4     0.832500     1.441900     0.070000  0  0  0 
+4     0.832500     4.325700     0.070000  0  0  0 
+4     0.832500     7.209500     0.070000  0  0  0 
+4     3.329900     0.000000     0.070000  0  0  0 
+4     3.329900     2.883800     0.070000  0  0  0 
+4     3.329900     5.767600     0.070000  0  0  0 
+4     5.827400    -1.441900     0.070000  0  0  0 
+4     5.827400     1.441900     0.070000  0  0  0 
+4     5.827400     4.325700     0.070000  0  0  0 
+1     3.602290     1.731278     6.212320  1  1  1
+1     3.319832     2.314888     7.483680  1  1  1
+1     2.095981     1.995008     8.160953  1  1  1
+1     1.179880     1.055287     7.579063  1  1  1
+1     1.463109     0.470284     6.307043  1  1  1
+1     2.686364     0.792157     5.629784  1  1  1
+2     4.560824     2.006388     5.644557  1  1  1
+2     4.060912     3.044923     7.962504  1  1  1
+2     0.218799     0.778868     8.141618  1  1  1
+2     0.720051    -0.260182     5.831012  1  1  1
+2     2.264637     3.524194     9.544223  1  1  1
+2     0.774280     2.665518     9.602215  1  1  1
+2     4.021096     0.084236     4.221899  1  1  1
+2     2.491712    -0.710195     4.216641  1  1  1
+3     1.840356     2.531978     9.498710  0  0  1
+3     2.958183     0.262423     4.292613  0  0  1
+4     2.438337     1.576108     2.385995  0  0  1
+4     2.578104     1.329674    11.405459  0  0  1
+4     1.665000     0.000000    13.722500  0  0  0
+4     1.665000     2.883800    13.722500  0  0  0
+4     1.665000     5.767600    13.722500  0  0  0
+4     4.162400    -1.441900    13.722500  0  0  0
+4     4.162400     1.441900    13.722500  0  0  0
+4     4.162400     4.325700    13.722500  0  0  0
+4     6.659800    -2.883800    13.722500  0  0  0
+4     6.659800     0.000000    13.722500  0  0  0
+4     6.659800     2.883800    13.722500  0  0  0
+%endblock Zmatrix</:includetail>
+ 
+# Output options</:includetail>
+ WriteCoorInitial          F
+WriteCoorStep             T
+WriteCoorXmol             T
+WriteForces               T
+WriteEigenvalues          T
+WriteWaveFunctions        T            # coefficients of the wavefunctions in the basis set orbitals expansion
+WriteMullikenPop          1            # Write Mulliken Population Analysis
+#WriteKpoints             T
+#WriteKbands              T
+#WriteBands               T
+WriteMDCoorXmol           F
+WriteMDhistory            F</:includetail>
+ 
+# Options for saving or reading information
+                             
+MD.UseSaveXV                F     # Use stored positions and velocities
+MD.UseSaveCG                F     # Use stored positions and velocities
+SaveRho                     T     # Write valence pseudocharge at the mesh
+SaveDeltaRho                T     # Write RHOscf-RHOatm at the mesh
+SaveElectrostaticPotential  T     # Write the total elect. pot. at the mesh
+SaveTotalPotential          T     # Write the total pot. at the mesh
+WriteSiestaDim              F     # Write minimum dim to siesta.h and stop
+WriteDenchar                F     # Write information for DENCHAR
+---------------------------------------------------------</:includetail>
+  In "%block Zmatrix",the last three columns either 1 or 0 indicate whether the corresponding cartesian coordinate fixed or variable.</:includetail>
+ But the results suggest the z component of the last 9 atoms are variable while I fixed them in the input file.</:includetail>
+ Here is the outputs for the first three CG moves</:includetail>
+ siesta:                 ==============================
+                            Begin CG move =      0
+                        ==============================</:includetail>
+ zmatrix: Z-matrix coordinates: (Ang ; deg )
+zmatrix: (Fractional coordinates have been converted to cartesian)
+cartesian block    1 (    36 atoms)
+      0.83250000      1.44190000      0.07000000
+      0.83250000      4.32570000      0.07000000
+      0.83250000      7.20950000      0.07000000
+      3.32990000      0.00000000      0.07000000
+      3.32990000      2.88380000      0.07000000
+      3.32990000      5.76760000      0.07000000
+      5.82740000     -1.44190000      0.07000000
+      5.82740000      1.44190000      0.07000000
+      5.82740000      4.32570000      0.07000000
+      3.60229000      1.73127800      6.21232000
+      3.31983200      2.31488800      7.48368000
+      2.09598100      1.99500800      8.16095300
+      1.17988000      1.05528700      7.57906300
+      1.46310900      0.47028400      6.30704300
+      2.68636400      0.79215700      5.62978400
+      4.56082400      2.00638800      5.64455700
+      4.06091200      3.04492300      7.96250400
+      0.21879900      0.77886800      8.14161800
+      0.72005100     -0.26018200      5.83101200
+      2.26463700      3.52419400      9.54422300
+      0.77428000      2.66551800      9.60221500
+      4.02109600      0.08423600      4.22189900
+      2.49171200     -0.71019500      4.21664100
+      1.84035600      2.53197800      9.49871000
+      2.95818300      0.26242300      4.29261300
+      2.43833700      1.57610800      2.38599500
+      2.57810400      1.32967400     11.40545900
+      1.66500000      0.00000000     13.72250000
+      1.66500000      2.88380000     13.72250000
+      1.66500000      5.76760000     13.72250000
+      4.16240000     -1.44190000     13.72250000
+      4.16240000      1.44190000     13.72250000
+      4.16240000      4.32570000     13.72250000
+      6.65980000     -2.88380000     13.72250000
+      6.65980000      0.00000000     13.72250000
+      6.65980000      2.88380000     13.72250000</:includetail>
+ 
+Z-matrix Symbol Section -------
+Variables
+Constants
+------------ End of Z-matrix Information</:includetail>
+ </:includetail> 
+ siesta:                 ==============================
+                            Begin CG move =      1
+                        ==============================</:includetail>
+ zmatrix: Z-matrix coordinates: (Ang ; deg )
+zmatrix: (Fractional coordinates have been converted to cartesian)
+cartesian block    1 (    36 atoms)
+      0.83250000      1.44190000      0.07000000
+      0.83250000      4.32570000      0.07000000
+      0.83250000      7.20950000      0.07000000
+      3.32990000      0.00000000      0.07000000
+      3.32990000      2.88380000      0.07000000
+      3.32990000      5.76760000      0.07000000
+      5.82740000     -1.44190000      0.07000000
+      5.82740000      1.44190000      0.07000000
+      5.82740000      4.32570000      0.07000000
+      3.61525190      1.73684510      6.20693015
+      3.31888333      2.30920822      7.47096960
+      2.09209112      1.98551766      8.10096567
+      1.16613940      1.05031785      7.58451762
+      1.46180387      0.47787319      6.31687464
+      2.69059786      0.79758939      5.69011343
+      4.57210630      2.01534970      5.65736945
+      4.08089271      3.06268054      7.96758408
+      0.21932577      0.77906872      8.13442086
+      0.70765525     -0.27557949      5.82874609
+      2.26023094      3.53034505      9.54123011
+      0.78312570      2.67095534      9.58764887
+      4.02789546      0.07159983      4.23167394
+      2.50110058     -0.68673582      4.23137434
+      1.84035600      2.53197800      9.58443012
+      2.95818300      0.26242300      4.20526795
+      2.43833700      1.57610800      2.40543244
+      2.57810400      1.32967400     11.38849143
+      1.66500000      0.00000000     13.72814796
+      1.66500000      2.88380000     13.62250000
+      1.66500000      5.76760000     13.73740495
+      4.16240000     -1.44190000     13.74582990
+      4.16240000      1.44190000     13.73576890
+      4.16240000      4.32570000     13.70164975
+      6.65980000     -2.88380000     13.70212701
+      6.65980000      0.00000000     13.71967106
+      6.65980000      2.88380000     13.71737248</:includetail>
+ 
+Z-matrix Symbol Section -------
+Variables
+Constants
+------------ End of Z-matrix Information</:includetail>
+ </:includetail> 
+ siesta:                 ==============================
+                            Begin CG move =      2
+                        ==============================</:includetail>
+ zmatrix: Z-matrix coordinates: (Ang ; deg )
+zmatrix: (Fractional coordinates have been converted to cartesian)
+cartesian block    1 (    36 atoms)
+      0.83250000      1.44190000      0.07000000
+      0.83250000      4.32570000      0.07000000
+      0.83250000      7.20950000      0.07000000
+      3.32990000      0.00000000      0.07000000
+      3.32990000      2.88380000      0.07000000
+      3.32990000      5.76760000      0.07000000
+      5.82740000     -1.44190000      0.07000000
+      5.82740000      1.44190000      0.07000000
+      5.82740000      4.32570000      0.07000000
+      3.60398977      1.73200805      6.21161320
+      3.31970760      2.31414318      7.48201321
+      2.09547090      1.99376347      8.15308649
+      1.17807811      1.05463537      7.57977830
+      1.46293785      0.47127922      6.30833228
+      2.68691921      0.79286938      5.63769537
+      4.56230352      2.00756320      5.64623718
+      4.06353219      3.04725166      7.96317018
+      0.21886808      0.77889432      8.14067419
+      0.71842547     -0.26220117      5.83071486
+      2.26405921      3.52500063      9.54383052
+      0.77543999      2.66623103      9.60030485
+      4.02198766      0.08257894      4.22318085
+      2.49294318     -0.70711865      4.21857307
+      1.84035600      2.53197800      9.50995101
+      2.95818300      0.26242300      4.28115890
+      2.43833700      1.57610800      2.38854395
+      2.57810400      1.32967400     11.40323394
+      1.66500000      0.00000000     13.72324065
+      1.66500000      2.88380000     13.70938638
+      1.66500000      5.76760000     13.72445458
+      4.16240000     -1.44190000     13.72555939
+      4.16240000      1.44190000     13.72424003
+      4.16240000      4.32570000     13.71976578
+      6.65980000     -2.88380000     13.71982836
+      6.65980000      0.00000000     13.72212902
+      6.65980000      2.88380000     13.72182760</:includetail>
+ 
+Z-matrix Symbol Section -------
+Variables
+Constants
+------------ End of Z-matrix Information</:includetail>
+ </:includetail> 
+ </:includetail> 
+ What should I do !</:includetail>Can any one help me ?
+       
+ Any advice is welcome!
+  
+ BEST REGARDS!
+                                                                  Guangping Zhang
+
+
+
+
+</:includetail>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100117/e55fde69/attachment-0001.html 
+
+From zgp121 at 126.com  Thu Jan 21 09:02:42 2010
+From: zgp121 at 126.com (=?gbk?B?1cW548a9?=)
+Date: Thu, 21 Jan 2010 17:02:42 +0800
+Subject: [Smeagol-discuss] HOW CAN I CALCULATE THE GEOMETRY WHEN THERE IS A
+	BIAS?
+Message-ID: <tencent_25F9C6261EDEA44F4230EA8F@qq.com>
+
+Dear smeagol users:
+       In Siesta,I can perform a geometry optimization.In Smeagol can I perform a geometry optimization at per bias while calculate the current, i.e. can I use the following flags:
+ --------------------------------------------------------------
+ xc.functional         GGA           # Exchange-correlation functional
+xc.authors            PBE             # Exchange-correlation version
+ SpinPolarized         false          # Logical parameters are: yes or no
+ MeshCutoff          200. Ry         # Mesh cutoff. real space mesh 
+  
+ # SCF options
+ 
+MaxSCFIterations       300          # Maximum number of SCF iter
+DM.MixingWeight       0.02           # New DM amount for next SCF cycle
+DM.Tolerance          1.d-3         # Tolerance in maximum difference
+                                    # between input and output DM
+DM.UseSaveDM           false          # to use continuation files
+DM.NumberPulay         5
+ SolutionMethod        Diagon       # OrderN or Diagon
+ElectronicTemperature  25 meV       # Temp. for Fermi smearing
+
+ # MD options
+  
+ MD.TypeOfRun           cg           # Type of dynamics:
+MD.VariableCell        false
+MD.NumCGsteps          200         # Number of CG steps for 
+                                    #   coordinate optimization
+MD.MaxCGDispl          0.2 bohr     # Maximum atomic displacement 
+                                    #   in one CG step (Bohr)
+MD.MaxForceTol         0.08 eV/Ang  # Tolerance in the maximum 
+                                    #   atomic force (Ry/Bohr)
+MD.MaxStressTol        0.1 Gpa   
+                                  
+EMTransport              T 
+NEnergReal               100 
+NEnergImCircle           60 
+VInitial                 0.0 eV
+VFinal                   5.0 eV
+NIVPoints                20 
+Delta                    1.d-6
+EnergLowestBound        -100 eV
+SpinConfLeads            0
+NSlices                  1 
+TrCoefficients   T
+NTransmPoints            100
+InitTransmRange          -5.0 eV 
+FinalTransmRange          5.0 eV 
+HartreeLeadsBottom        -4.55129433 eV
+HartreeLeadsLeft          -9.348400  Ang
+HartreeLeadsRight         20.786300 Ang
+SaveMemTranspK   T
+PeriodicTransp   T
+ParallelOverK   T
+TransmissionOverk   T
+SaveElectrostaticPotential   T
+%block SaveBiasSteps
+0 2 4 6 8 10 12 14 16 18 20                                        
+%endblock SaveBiasSteps 
+-----------------------------------------------------------
+ If so ,the geometry is a new one for every bias.
+   
+   BEST REGARDS!
+  
+                       Guangping Zhang
+                    Atom and Melecular Physics
+                    Physics and Electronics College
+                    Shandong Normal University
+                    Shandong,Jinan,China
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100121/154fa5a0/attachment.html 
+
+From zgp121 at 126.com  Thu Jan 21 09:10:22 2010
+From: zgp121 at 126.com (=?gbk?B?1cW548a9?=)
+Date: Thu, 21 Jan 2010 17:10:22 +0800
+Subject: [Smeagol-discuss] can anyone provide me a benchmark test?
+Message-ID: <tencent_192BE6441B7E6AE80C5E438B@qq.com>
+
+Dear smeagol users:
+      I am a new user !Can anyone provide me a benchmark test including the input files,pseudopotential files and the out files.
+      I want to test my installation.
+  ------------------
+   BEST REGARDS!
+  
+                       Guangping Zhang
+                    Atom and Melecular Physics
+                    Physics and Electronics College
+                    Shandong Normal University
+                    Shandong,Jinan,China
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100121/d0bce20a/attachment.html 
+
+From sanvitos at tcd.ie  Thu Jan 21 09:43:06 2010
+From: sanvitos at tcd.ie (Stefano Sanvito)
+Date: Thu, 21 Jan 2010 09:43:06 +0000
+Subject: [Smeagol-discuss] HOW CAN I CALCULATE THE GEOMETRY WHEN THERE
+ IS A	BIAS?
+In-Reply-To: <tencent_25F9C6261EDEA44F4230EA8F@qq.com>
+References: <tencent_25F9C6261EDEA44F4230EA8F@qq.com>
+Message-ID: <4B5821AA.6040804@tcd.ie>
+
+Dear Guangping,
+
+At the moment forces are not implemented into Smeagol. You can optimize 
+the geometry with Siesta, but this cannot be done when doing the 
+transport (not even at zero bias). We are working on that.
+
+Stefano
+-- 
+
+=================================================
+Prof. Stefano Sanvito,
+CRANN Deputy Director
+		
+School of Physics,    	  Ph. : +353-1-8963065
+Trinity College Dublin,   Mob.: +353-87-9595384
+Dublin 2, IRELAND	  Fax.: +353-1-6711759
+
+http://www.spincomp.com
+http://www.crann.tcd.ie
+=================================================
+

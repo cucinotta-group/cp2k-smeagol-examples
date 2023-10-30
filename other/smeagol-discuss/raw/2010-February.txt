@@ -1,0 +1,1707 @@
+From zgp121 at 126.com  Thu Feb  4 01:54:53 2010
+From: zgp121 at 126.com (=?gbk?B?R3VhbmdwaW5nIFpoYW5n?=)
+Date: Thu, 4 Feb 2010 09:54:53 +0800
+Subject: [Smeagol-discuss] =?gbk?q?efficiency=A3=A1?=
+Message-ID: <tencent_014BF44F2338E1C97E0CD211@qq.com>
+
+Dear users:
+     Has anyone studied the different efficiencies of the smeagol compiled with different compilers,mpi and math libraries.
+    If my machine is Intel 64 bit,is the ifort compiler and mkl is the best choice? If so,how can choose the mpi,openmpi or mpich or any else?
+     Looking forward to any advice! 
+  ------------------
+   BEST REGARDS!
+  
+ Guangping Zhang
+ -----------------------------------
+ Atom and Melecular Physics
+ Physics and Electronics College
+ Shandong Normal University
+ Shandong,Jinan,China
+ ------------------------------------
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100204/016e47d2/attachment.html 
+
+From runggeri at tcd.ie  Fri Feb  5 09:39:32 2010
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Fri, 05 Feb 2010 09:39:32 +0000
+Subject: [Smeagol-discuss] =?x-gbk?Q?efficiency=A3=A1?=
+In-Reply-To: <tencent_014BF44F2338E1C97E0CD211@qq.com>
+References: <tencent_014BF44F2338E1C97E0CD211@qq.com>
+Message-ID: <4B6BE754.8060900@tcd.ie>
+
+Hello Guangping,
+
+since you have an intel machine I would say that using ifort and mkl is 
+the best choice. We have compiled smeagol with different compilers 
+(ifort, pathscale,pgi,xfl), and they all give pretty much the same speed 
+(and results). The important thing is to have efficient lapack/blas 
+libraries, because that is where most of the compute time is spent. The 
+mkl libraries are surely good for intel machines.
+
+Regarding the version of mpi it should not really matter as well, we 
+have compiled the code with mpich, openmpi, mvapich and others, and 
+usually all of them work. The best maybe is to start with openmpi 
+copmiled with intel+mkl, and then if that for some reason should not 
+work you might try other versions of mpi.
+
+Cheers,
+
+Ivan
+
+Guangping Zhang wrote:
+> Dear users:
+> Has anyone studied the different efficiencies of the smeagol compiled 
+> with different compilers,mpi and math libraries.
+> If my machine is Intel 64 bit,is the ifort compiler and mkl is the 
+> best choice? If so,how can choose the mpi,openmpi or mpich or any else?
+> Looking forward to any advice!
+> ------------------
+> *BEST REGARDS!*
+> **
+> *Guangping Zhang*
+> *-----------------------------------*
+> *Atom and Melecular Physics*
+> *Physics and Electronics College*
+> *Shandong Normal University*
+> *Shandong,Jinan,China*
+> *------------------------------------*
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+
+From lecontenicolas at gmail.com  Fri Feb  5 10:26:32 2010
+From: lecontenicolas at gmail.com (Nicolas Leconte)
+Date: Fri, 5 Feb 2010 11:26:32 +0100
+Subject: [Smeagol-discuss] Convergence problem
+Message-ID: <5aef43ae1002050226h63e51ae5y5432901a6993c8d0@mail.gmail.com>
+
+Hi all,
+
+This question has been raised several times on the mailing list. I tried
+several of the suggestions given, but none seemed to work for me.
+I attach my input file.
+
+My system gets close to convergence on the *CHR file (should give a value of
+about 1401 |e|) and the buffer.out file, but it oscillates close to it
+without ever converging.
+
+I tried changing my basis (DZ instead of DZP), linear mixing and NumberPulay
+3, 5 and 10, NSlices 0 and 1, MD.Tolerance 0.00001 and 0.000001. Maybe it is
+related to the small smearing with the flag ElectronicTemperature, but I
+kinda need for my spin polarized calculation. The EnergLowestBound is about
+3 Ry lower than my lowest EigenValue of my bulk calculation for the leads,
+so that shouldn't be the cause either. I played with the integration points
+(on the circle 8 --> 60, on the line 8 --> 60) and the number of poles : 5
+--> 20.
+
+The Smeagol version used : smeagol-1.2
+
+Any advice?
+
+Thanks in advance,
+Nicolas
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100205/9d4f3d0a/attachment.html 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: agnr.fdf
+Type: application/octet-stream
+Size: 3562 bytes
+Desc: not available
+Url : http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100205/9d4f3d0a/attachment.obj 
+
+From runggeri at tcd.ie  Fri Feb  5 10:39:06 2010
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Fri, 05 Feb 2010 10:39:06 +0000
+Subject: [Smeagol-discuss] Convergence problem
+In-Reply-To: <5aef43ae1002050226h63e51ae5y5432901a6993c8d0@mail.gmail.com>
+References: <5aef43ae1002050226h63e51ae5y5432901a6993c8d0@mail.gmail.com>
+Message-ID: <4B6BF54A.8050308@tcd.ie>
+
+Hello Nicolas,
+
+  can you please also send the CHR and buffer.out file for the input 
+file you sent?
+
+You use a value of 1e-6 as tolerance for convergence DM.Tolerance, but 
+this is too small for smeagol. Usually we converge the code to 1e-4. I'd 
+say for most cases once you get below 1e-3 the results are already more 
+or less OK, and once you get to 1e-4 they are for sure converged. I 
+think if you use very well converged leads then it should be possible to 
+converge to 1e-5, but I think you will never get to 1e-6.
+
+Cheers,
+
+ Ivan
+
+Nicolas Leconte wrote:
+> Hi all,
+>
+> This question has been raised several times on the mailing list. I 
+> tried several of the suggestions given, but none seemed to work for me.
+> I attach my input file.
+>
+> My system gets close to convergence on the *CHR file (should give a 
+> value of about 1401 |e|) and the buffer.out file, but it oscillates 
+> close to it without ever converging. 
+>
+> I tried changing my basis (DZ instead of DZP), linear mixing and 
+> NumberPulay 3, 5 and 10, NSlices 0 and 1, MD.Tolerance 0.00001 and 
+> 0.000001. Maybe it is related to the small smearing with the flag 
+> ElectronicTemperature, but I kinda need for my spin polarized 
+> calculation. The EnergLowestBound is about 3 Ry lower than my lowest 
+> EigenValue of my bulk calculation for the leads, so that shouldn't be 
+> the cause either. I played with the integration points (on the circle 
+> 8 --> 60, on the line 8 --> 60) and the number of poles : 5 --> 20.
+>
+> The Smeagol version used : smeagol-1.2
+>
+> Any advice?
+>
+> Thanks in advance,
+> Nicolas
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+
+From zeila.zanolli at uclouvain.be  Fri Feb  5 11:40:37 2010
+From: zeila.zanolli at uclouvain.be (Zeila Zanolli)
+Date: Fri, 5 Feb 2010 12:40:37 +0100
+Subject: [Smeagol-discuss] Convergence problem
+In-Reply-To: <4B6BF54A.8050308@tcd.ie>
+References: <5aef43ae1002050226h63e51ae5y5432901a6993c8d0@mail.gmail.com>
+	<4B6BF54A.8050308@tcd.ie>
+Message-ID: <1C5C7A0C-4B08-4999-9598-609C04A88382@uclouvain.be>
+
+Hi Ivan,
+
+I'm always asking smeagol to converge the DM down to 1e-6 and - in  
+most of the cases -  the convergence is achieved.
+Saying that 1e-6 is too small for smeagol do you mean that
+- in smeagol there are weaker tolerances and, hence, it doesn't make  
+sense to ask for 1e-6?
+- or that it is too difficoult, while still makes sense numerically,  
+to achieve it?
+
+When I had convergence problems, I had oscillations of the dDmax  
+among something like 0.00n and 0.000n
+and, honestly, this behaviour does not look nice to me....
+i.e. can we trust such a calculation?
+
+
+All the best,
+Zeila
+
+
+
+On 5 Feb 2010, at 11:39, Ivan Rungger wrote:
+
+> Hello Nicolas,
+>
+>   can you please also send the CHR and buffer.out file for the input
+> file you sent?
+>
+> You use a value of 1e-6 as tolerance for convergence DM.Tolerance, but
+> this is too small for smeagol. Usually we converge the code to  
+> 1e-4. I'd
+> say for most cases once you get below 1e-3 the results are already  
+> more
+> or less OK, and once you get to 1e-4 they are for sure converged. I
+> think if you use very well converged leads then it should be  
+> possible to
+> converge to 1e-5, but I think you will never get to 1e-6.
+>
+> Cheers,
+>
+>  Ivan
+>
+> Nicolas Leconte wrote:
+>> Hi all,
+>>
+>> This question has been raised several times on the mailing list. I
+>> tried several of the suggestions given, but none seemed to work  
+>> for me.
+>> I attach my input file.
+>>
+>> My system gets close to convergence on the *CHR file (should give a
+>> value of about 1401 |e|) and the buffer.out file, but it oscillates
+>> close to it without ever converging.
+>>
+>> I tried changing my basis (DZ instead of DZP), linear mixing and
+>> NumberPulay 3, 5 and 10, NSlices 0 and 1, MD.Tolerance 0.00001 and
+>> 0.000001. Maybe it is related to the small smearing with the flag
+>> ElectronicTemperature, but I kinda need for my spin polarized
+>> calculation. The EnergLowestBound is about 3 Ry lower than my lowest
+>> EigenValue of my bulk calculation for the leads, so that shouldn't be
+>> the cause either. I played with the integration points (on the circle
+>> 8 --> 60, on the line 8 --> 60) and the number of poles : 5 --> 20.
+>>
+>> The Smeagol version used : smeagol-1.2
+>>
+>> Any advice?
+>>
+>> Thanks in advance,
+>> Nicolas
+>> --------------------------------------------------------------------- 
+>> ---
+>>
+>> _______________________________________________
+>> Smeagol-discuss mailing list
+>> Smeagol-discuss at lists.tchpc.tcd.ie
+>> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+------------------------------------------------------------------------ 
+---------------------
+Dr. Zeila Zanolli
+
+Universit? Catholique de Louvain (UCL)
+Unit? Physico-Chimie et de Physique des Mat?riaux (PCPM)
+Place Croix du Sud, 1 (Boltzmann)
+B-1348 Louvain-la-Neuve, Belgium
+Phone: +32 (0)10 47 3501
+Mobile: +32 (0)487 556699
+Fax: +32 (0)10 47 3452
+e-mail: zeila.zanolli at uclouvain.be
+web: http://www.nano2hybrids.net/
+------------------------------------------------------------------------ 
+---------------------
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100205/eddb3afe/attachment-0001.html 
+
+From runggeri at tcd.ie  Fri Feb  5 12:17:44 2010
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Fri, 05 Feb 2010 12:17:44 +0000
+Subject: [Smeagol-discuss] Convergence problem
+In-Reply-To: <1C5C7A0C-4B08-4999-9598-609C04A88382@uclouvain.be>
+References: <5aef43ae1002050226h63e51ae5y5432901a6993c8d0@mail.gmail.com>	<4B6BF54A.8050308@tcd.ie>
+	<1C5C7A0C-4B08-4999-9598-609C04A88382@uclouvain.be>
+Message-ID: <4B6C0C68.90105@tcd.ie>
+
+Hello Zeila,
+> I'm always asking smeagol to converge the DM down to 1e-6 and - in 
+> most of the cases -  the convergence is achieved.
+That's interesting. Well OK so it seems that it is doable.
+> Saying that 1e-6 is too small for smeagol do you mean that 
+> - in smeagol there are weaker tolerances and, hence, it doesn't make 
+> sense to ask for 1e-6?
+> - or that it is too difficoult, while still makes sense numerically, 
+> to achieve it? 
+Numerically it should be OK, but it depends on the system. Generally the 
+achievable tolerance will just be the same as in a siesta DFT 
+calculation. The potential on the real space mesh is stored as single 
+precision in siesta, so I think 1e-6 is probably very close to the 
+numerically achievable accuracy. From the physical point of view once 
+you get to 1e-4 usually the results (i.e. transmission, pdos, current) 
+don't change when you converge further.
+> When I had convergence problems, I had oscillations of the dDmax among 
+> something like 0.00n and 0.000n
+Once it is down to 0.0001 the results should be OK (0.00n is too high I 
+think). What one should do is to calculate the transmission at 0.000n 
+and then converge it further to 0.0000n, and see if it is different. 
+Usually it should not change significantly. Usually if it oscillates at 
+0.000n it helps to stop and restart the calculation with a bigger mixing 
+(because it is already close to convergence).
+
+Cheers,
+
+ Ivan
+
+From zgp121 at 126.com  Sun Feb  7 05:08:04 2010
+From: zgp121 at 126.com (=?ISO-8859-1?B?R3VhbmdwaW5nIFpoYW5n?=)
+Date: Sun, 7 Feb 2010 13:08:04 +0800
+Subject: [Smeagol-discuss] compilation smeagol with IFORT+MKL+MPICH
+Message-ID: <tencent_1E7D55FF3662318D0D3D3913@qq.com>
+
+Dear users:
+     Nowdays I have compiled smeagol with ifort-10.1.012,MKL-10.0.2.018 and MPICH-1.2.7.The compilation is well,but when I test is ,it comes out the errors:
+  
+  
+ InitMesh: MESH =    50 x    50 x   200 =      500000
+InitMesh: Mesh cutoff (required, used) =   120.000   121.738 Ry
+ 
+* Maximum dynamic memory allocated =    86 MB
+gensvd: Leads decimation   
+gensvd: Dim of H1 and S1 :    243
+gensvd: Rank of H1:            45
+gensvd: Rank of (H1,S1):      122
+gensvd: Decimated states:      76
+gensvd: Decimation from the left
+/home/zgp/software/mpich-1.2.7/bin/mpirun.ch_p4: line 243: 15300 Segmentation fault     
+/home/zgp/calcu/tran-c6h8n2/mx/smeagolpara -p4pg /home/zgp/calcu/tran-c6h8n2/mx/PI15088 -p4wd /home/zgp/calcu/tran-c6h8n2/mx
+gensvd: Leads decimation   
+gensvd: Dim of H1 and S1 :    243
+gensvd: Rank of H1:            45
+gensvd: Rank of (H1,S1):      122
+gensvd: Decimated states:      76
+gensvd: Decimation from the left
+  
+ then the task is over!
+  
+ but when i use PGI,it goes well and no errors for tasks!
+  
+ the arch.make for IFORT+MKL+MPICH is as follows:
+  
+ SIESTA_ARCH=Intel-MKL-MPICH
+EXEC=smeagolpara
+SOURCE_DIR=/home/zgp/software/smeagol-1.3.7
+#
+# Intel fortran compiler for linux with mkl optimized blas and lapack
+#
+# Be sure to experiment with different optimization options.
+# You have quite a number of combinations to try...
+#
+FC=mpif90 -tpp5 -O2 -w -mp -Vaxlib
+ #
+FFLAGS= -O
+FFLAGS_DEBUG= -g 
+LDFLAGS=-Vaxlib 
+COMP_LIBS=
+RANLIB=echo
+#
+NETCDF_LIBS=
+NETCDF_INTERFACE=
+DEFS_CDF=
+#
+MPI_INTERFACE= libmpi_f90.a
+MPI_INCLUDE=/home/zgp/software/mpich-1.2.7/include
+DEFS_MPI=-DMPI
+#
+BLAS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_solver_lp64 -lmkl_intel_lp64 -lguide
+BLACS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_blacs_lp64
+LAPACK= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_sequential -lmkl_core
+SCALAPACK= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_scalapack_lp64
+ LIBS=$(SCALAPACK) $(BLACS) $(LAPACK) $(BLAS)
+ SYS=bsd
+DEFS= $(DEFS_CDF) $(DEFS_MPI)
+#
+.F.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f.o:
+ $(FC) -c $(FFLAGS)   $<
+.F90.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f90.o:
+ $(FC) -c $(FFLAGS)   $<
+#
+  
+  
+ I have changed serval compilation parameters but it is the same for the task!
+  
+  
+ any one can help me ?
+ the ifort can makes the smeagol run faster than the PGI.
+ SO I want to have a ifort-smeagol.
+  
+ THANKS IN ADVANCE!
+  ------------------
+   BEST REGARDS!
+  
+ Guangping Zhang
+ -----------------------------------
+ Atom and Melecular Physics
+ Physics and Electronics College
+ Shandong Normal University
+ Shandong,Jinan,China
+ ------------------------------------
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100207/ef7e9704/attachment.html 
+
+From zgp121 at 126.com  Sun Feb  7 16:36:12 2010
+From: zgp121 at 126.com (=?ISO-8859-1?B?R3VhbmdwaW5nIFpoYW5n?=)
+Date: Mon, 8 Feb 2010 00:36:12 +0800
+Subject: [Smeagol-discuss] compilation smeagol with IFORT+MKL+MPICH
+Message-ID: <tencent_10D7B6F561766AB761A99E2B@qq.com>
+
+Dear users:
+     Nowdays I have compiled smeagol with ifort-10.1.012,MKL-10.0.2.018 and MPICH-1.2.7.The compilation is well,but when I test is ,it comes out the errors:
+  
+  
+ InitMesh: MESH =    50 x    50 x   200 =      500000
+InitMesh: Mesh cutoff (required, used) =   120.000   121.738 Ry
+ 
+* Maximum dynamic memory allocated =    86 MB
+gensvd: Leads decimation   
+gensvd: Dim of H1 and S1 :    243
+gensvd: Rank of H1:            45
+gensvd: Rank of (H1,S1):      122
+gensvd: Decimated states:      76
+gensvd: Decimation from the left
+/home/zgp/software/mpich-1.2.7/bin/mpirun.ch_p4: line 243: 15300 Segmentation fault     
+/home/zgp/calcu/tran-c6h8n2/mx/smeagolpara -p4pg /home/zgp/calcu/tran-c6h8n2/mx/PI15088 -p4wd /home/zgp/calcu/tran-c6h8n2/mx
+gensvd: Leads decimation   
+gensvd: Dim of H1 and S1 :    243
+gensvd: Rank of H1:            45
+gensvd: Rank of (H1,S1):      122
+gensvd: Decimated states:      76
+gensvd: Decimation from the left
+  
+ then the task is over!
+  
+ but when i use PGI,it goes well and no errors for tasks!
+  
+ the arch.make for IFORT+MKL+MPICH is as follows:
+  
+ SIESTA_ARCH=Intel-MKL-MPICH
+EXEC=smeagolpara
+SOURCE_DIR=/home/zgp/software/smeagol-1.3.7
+#
+# Intel fortran compiler for linux with mkl optimized blas and lapack
+#
+# Be sure to experiment with different optimization options.
+# You have quite a number of combinations to try...
+#
+FC=mpif90 -tpp5 -O2 -w -mp -Vaxlib
+ #
+FFLAGS= -O
+FFLAGS_DEBUG= -g 
+LDFLAGS=-Vaxlib 
+COMP_LIBS=
+RANLIB=echo
+#
+NETCDF_LIBS=
+NETCDF_INTERFACE=
+DEFS_CDF=
+#
+MPI_INTERFACE= libmpi_f90.a
+MPI_INCLUDE=/home/zgp/software/mpich-1.2.7/include
+DEFS_MPI=-DMPI
+#
+BLAS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_solver_lp64 -lmkl_intel_lp64 -lguide
+BLACS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_blacs_lp64
+LAPACK= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_sequential -lmkl_core
+SCALAPACK= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_scalapack_lp64
+ LIBS=$(SCALAPACK) $(BLACS) $(LAPACK) $(BLAS)
+ SYS=bsd
+DEFS= $(DEFS_CDF) $(DEFS_MPI)
+#
+.F.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f.o:
+ $(FC) -c $(FFLAGS)   $<
+.F90.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f90.o:
+ $(FC) -c $(FFLAGS)   $<
+#
+  
+  
+ I have changed serval compilation parameters but it is the same for the task!
+  
+  
+ any one can help me ?
+ the ifort can makes the smeagol run faster than the PGI does.
+ SO I want to have a ifort-smeagol.
+  
+ THANKS IN ADVANCE!
+  ------------------
+   BEST REGARDS!
+  
+ Guangping Zhang
+ -----------------------------------
+ Atom and Melecular Physics
+ Physics and Electronics College
+ Shandong Normal University
+ Shandong,Jinan,China
+ ------------------------------------
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100208/6d9f0685/attachment.html 
+
+From sagarambavale at yahoo.co.in  Mon Feb  8 09:08:57 2010
+From: sagarambavale at yahoo.co.in (ambavale sagar)
+Date: Mon, 8 Feb 2010 14:38:57 +0530 (IST)
+Subject: [Smeagol-discuss] unrecognised username and password for download
+	page
+Message-ID: <280401.72896.qm@web94605.mail.in2.yahoo.com>
+
+Dear Ivan/developers,
+I had registered for download the Smeagol code in past. That time I was given user id and password. But now as I am trying to login to download page with that username and password, it does not recognise the username or password. It does not recognise my mail id even so I can request new password. Please look in to the matter and suggest the work around. 
+
+
+Sagar Ambavale
+M.S. University of Baroda,
+India
+
+
+
+      The INTERNET now has a personality. YOURS! See your Yahoo! Homepage. http://in.yahoo.com/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100208/c091c668/attachment.html 
+
+From 284107217 at qq.com  Tue Feb  9 02:05:53 2010
+From: 284107217 at qq.com (=?gbk?B?R3VhbmdwaW5nIFpoYW5n?=)
+Date: Tue, 9 Feb 2010 10:05:53 +0800
+Subject: [Smeagol-discuss] problem on smeagol compilation using ifort
+Message-ID: <tencent_2AD9E84340CAE20B7447DA17@qq.com>
+
+Dear SMAEGOL users:
+ 
+Now I a have a problem with the smeagol compiling using Ifort.
+ 
+I compiled the  smeagol and sisesta using nearly the same parameters.
+ 
+For siesta-2.0.2 I use:
+ 
+----------BEGIN-siesta-2.0.2 arch.make IFORT+MKL+MPICH------
+ 
+# 
+# This file is part of the SIESTA package.
+#
+# Copyright (c) Fundacion General Universidad Autonoma de Madrid:
+# E.Artacho, J.Gale, A.Garcia, J.Junquera, P.Ordejon, D.Sanchez-Portal
+# and J.M.Soler, 1996-2006.
+# 
+# Use of this software constitutes agreement with the full conditions
+# given in the SIESTA license, as signed by all legitimate users.
+#
+.SUFFIXES:
+.SUFFIXES: .f .F .o .a .f90 .F90
+ 
+SIESTA_ARCH=intel64_RHEL5.4
+ 
+FPP=
+FPP_OUTPUT= 
+FC=mpif90
+RANLIB=ranlib
+ 
+SYS=nag
+ 
+SP_KIND=4
+DP_KIND=8
+KINDS=$(SP_KIND) $(DP_KIND)
+ 
+FFLAGS= -g -mp1 -O2 -i-static -static -vec-report0 
+FFLAGS_DEBUG= -g 
+FFLAGS_CHECKS= -g -O0 -debug full -traceback -C
+FPPFLAGS= -DFC_HAVE_FLUSH -DFC_HAVE_ABORT -DMPI 
+LDFLAGS=-Vaxlib -i-static
+ 
+ARFLAGS_EXTRA=
+ 
+FCFLAGS_fixed_f=
+FCFLAGS_free_f90=
+FPPFLAGS_fixed_F=
+FPPFLAGS_free_F90=
+ 
+BLAS_LIBS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_solver_lp64 -lmkl_intel_lp64 -lguide 
+ 
+LAPACK_LIBS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_sequential -lmkl_core
+ 
+BLACS_LIBS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_blacs_lp64
+ 
+SCALAPACK_LIBS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_scalapack_lp64
+ 
+
+COMP_LIBS= 
+NETCDF_LIBS=
+ 
+LIBS=$(SCALAPACK_LIBS) $(BLACS_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(NETCDF_LIBS) 
+ 
+#SIESTA needs an F90 interface to MPI
+#This will give you SIESTA's own implementation
+#If your compiler vendor offers an alternative, you may change
+#to it here.
+MPI_INTERFACE= libmpi_f90.a
+MPI_INCLUDE= /home/zgp/software/mpich-1.2.7/include
+ 
+
+#Dependency rules are created by autoconf according to whether
+#discrete preprocessing is necessary or not.
+.F.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FPPFLAGS) $(FPPFLAGS_fixed_F)  $< 
+.F90.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FPPFLAGS) $(FPPFLAGS_free_F90)  $< 
+.f.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FCFLAGS_fixed_f)  $<
+.f90.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FCFLAGS_free_f90)  $<
+ 
+--------END-siesta-2.0.2 arch.make IFORT+MKL+MPICH----------
+ 
+For siesta-3.0-b,I use:(I have problems on compiling 3.0-b using PGI)
+ 
+----------BEGIN-siesta-3.0-b arch.make IFORT+MKL+MPICH------
+ 
+# 
+# This file is part of the SIESTA package.
+#
+# Copyright (c) Fundacion General Universidad Autonoma de Madrid:
+# E.Artacho, J.Gale, A.Garcia, J.Junquera, P.Ordejon, D.Sanchez-Portal
+# and J.M.Soler, 1996- .
+# 
+# Use of this software constitutes agreement with the full conditions
+# given in the SIESTA license, as signed by all legitimate users.
+#
+.SUFFIXES:
+.SUFFIXES: .f .F .o .a .f90 .F90
+ 
+SIESTA_ARCH=x86_64-REHL-5.4
+ 
+FPP=
+FPP_OUTPUT= 
+FC=mpif90
+RANLIB=ranlib
+ 
+SYS=nag
+ 
+SP_KIND=4
+DP_KIND=8
+KINDS=$(SP_KIND) $(DP_KIND)
+ 
+FFLAGS= -O2 -i-static
+FFLAGS_DEBUG= -g
+LDFLAGS=-Vaxlib
+FPPFLAGS= -DFC_HAVE_FLUSH -DFC_HAVE_ABORT -DMPI
+ 
+ARFLAGS_EXTRA=
+ 
+FCFLAGS_fixed_f=
+FCFLAGS_free_f90=
+FPPFLAGS_fixed_F=
+FPPFLAGS_free_F90=
+ 
+BLAS_LIBS=-L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_solver_lp64 -lmkl_intel_lp64 -lguide
+LAPACK_LIBS=-L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_sequential -lmkl_core
+BLACS_LIBS=-L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_blacs_lp64
+SCALAPACK_LIBS=-L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_scalapack_lp64
+ 
+COMP_LIBS=
+ 
+NETCDF_LIBS=
+NETCDF_INTERFACE=
+ 
+LIBS=$(SCALAPACK_LIBS) $(BLACS_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(NETCDF_LIBS)
+ 
+#SIESTA needs an F90 interface to MPI
+#This will give you SIESTA's own implementation
+#If your compiler vendor offers an alternative, you may change
+#to it here.
+MPI_INTERFACE= libmpi_f90.a
+MPI_INCLUDE=/home/zgp/software/mpich-1.2.7/include
+ 
+#Dependency rules are created by autoconf according to whether
+#discrete preprocessing is necessary or not.
+.F.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FPPFLAGS) $(FPPFLAGS_fixed_F)  $< 
+.F90.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FPPFLAGS) $(FPPFLAGS_free_F90) $< 
+.f.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FCFLAGS_fixed_f)  $<
+.f90.o:
+ $(FC) -c $(FFLAGS) $(INCFLAGS) $(FCFLAGS_free_f90)  $<
+ 
+--------END-siesta-3.0-b arch.make IFORT+MKL+MPICH----------
+ 
+Both the two cases can work and I find the ifort-compiled version is one times more efficient than the PGI-compiled version.So far ,I have not found anything wrong,execpt for there main difference for the standard output structures.
+ 
+Some parts of standard output for 3.0-b:
+ 
++++++++++++BEGIN-parts of siesta-3.0-b output+++++++++
+ 
+.....
+ 
+initatom: Reading input for the pseudopotentials and atomic orbitals ----------
+ Species number:            1  Label: C Atomic number:           6
+ Species number:            2  Label: H Atomic number:           1
+ Species number:            3  Label: O Atomic number:           8
+ Species number:            4  Label: Cu Atomic number:          29
+Ground state valence configuration:   2s02  2p02
+Reading pseudopotential information in formatted form from C.psf
+ 
+Valence configuration for pseudopotential generation:
+2s( 2.00) rc: 1.56
+2p( 2.00) rc: 1.56
+3d( 0.00) rc: 1.56
+4f( 0.00) rc: 1.56
+Ground state valence configuration:   1s01
+Reading pseudopotential information in formatted form from H.psf
+ 
+......
+ 
+atom: Called for C                     (Z =   6)
+ 
+read_vps: Pseudopotential generation method:
+read_vps: ATM 3.2.2 Troullier-Martins                       
+Total valence charge:    4.00000
+ 
+xc_check: Exchange-correlation functional:
+xc_check: GGA Perdew, Burke & Ernzerhof 1996
+V l=0 = -2*Zval/r beyond r=  1.5227
+V l=1 = -2*Zval/r beyond r=  1.5227
+V l=2 = -2*Zval/r beyond r=  1.5227
+V l=3 = -2*Zval/r beyond r=  1.5227
+All V_l potentials equal beyond r=  1.4851
+This should be close to max(r_c) in ps generation
+All pots = -2*Zval/r beyond r=  1.5227
+ 
+........
+ 
+prinput: ----------------------------------------------------------------------
+ 
+coor:   Atomic-coordinates input format  =     Cartesian coordinates
+coor:                                          (in Angstroms)
+read_Zmatrix: Length units: Ang       
+read_Zmatrix: Angle  units: deg       
+read_Zmatrix: Force tolerances:
+read_Zmatrix:    for lengths =     0.000778 Ry/Bohr
+read_Zmatrix:    for angles  =     0.003565 Ry/rad
+ 
+read_Zmatrix: Maximum displacements:
+read_Zmatrix:    for lengths =     0.188973 Bohr
+read_Zmatrix:    for angles  =     0.003000 rad
+ 
+.......
+ 
+Z-matrix Symbol Section -------
+Variables
+ z1           4.94300000000000     
+ z2          -3.51000000000000     
+Constants
+------------ End of Z-matrix Information
+ 
+
+siesta: System type = molecule  
+ 
+initatomlists: Number of atoms, orbitals, and projectors:     64   868   968
+ 
+siesta: ******************** Simulation parameters ****************************
+siesta:
+siesta: The following are some of the parameters of the simulation.
+siesta: A complete list of the parameters used, including default values,
+siesta: can be found in file out.fdf
+siesta:
+redata: Non-Collinear-spin run           =     F
+redata: SpinPolarized (Up/Down) run      =     F
+redata: Number of spin components        =     1
+redata: Long output                      =     F
+redata: Number of Atomic Species         =        4
+redata: Charge density info will appear in .RHO file
+redata: Write Mulliken Pop.              =     Atomic and Orbital charges
+redata: Mesh Cutoff                      =   150.0000  Ry
+redata: Net charge of the system         =     0.0000 |e|
+redata: Max. number of SCF Iter          =      300
+redata: Performing Pulay mixing using    =     5 iterations
+redata: Mix DM in first SCF step ?       =     F
+redata: Write Pulay info on disk?        =     F
+redata: New DM Mixing Weight             =     0.0200
+redata: New DM Occupancy tolerance       = 0.000000000001
+redata: No kicks to SCF
+redata: DM Mixing Weight for Kicks       =     0.5000
+redata: DM Tolerance for SCF             =     0.001000
+redata: Require Energy convergence for SCF =     F
+redata: DM Energy tolerance for SCF      =     0.000100 eV
+redata: Require Harris convergence for SCF =     F
+redata: DM Harris energy tolerance for SCF =     0.000100 eV
+redata: Using Saved Data (generic)   =     F
+redata: Use continuation files for DM    =     F
+redata: Neglect nonoverlap interactions  =     F
+redata: Method of Calculation            =     Diagonalization
+redata: Divide and Conquer               =     T
+redata: Electronic Temperature           =     0.0019  Ry
+redata: Fix the spin of the system       =     F
+redata: Dynamics option                  =     CG coord. optimization
+redata: Variable cell                    =     F
+redata: Use continuation files for CG    =     F
+redata: Max atomic displ per move        =     0.2000  Bohr
+redata: Maximum number of CG moves       =      200
+redata: Force tolerance                  =     0.0016  Ry/Bohr
+redata: ***********************************************************************
+ 
+........
+ 
+* Maximum dynamic memory allocated =     4 MB
+ 
+siesta:                 ==============================
+                            Begin CG move =      0
+ 
+zmatrix: Z-matrix coordinates: (Ang ; deg )
+zmatrix: (Fractional coordinates have been converted to cartesian)
+ 
+......
+ 
+Z-matrix Symbol Section -------
+Variables
+ z1           4.94300000000000     
+ z2          -3.51000000000000     
+Constants
+------------ End of Z-matrix Information
+ 
+                        ==============================
+ 
+outcoor: Atomic coordinates (Ang):                          
+ 
+++++++++END-parts of siesta-3.0-b output+++++++++++++
+ 
+++++++++++BEGIN-parts of siesta-2.0.2 output+++++++++
+ 
+......
+ 
+initatom: Reading input for the pseudopotentials and atomic orbitals ----------
+ Species number:            1  Label: C Atomic number:           6
+ Species number:            2  Label: H Atomic number:           1
+ Species number:            3  Label: O Atomic number:           8
+ Species number:            4  Label: Cu Atomic number:          29
+Ground state valence configuration:   2s02  2p02
+Reading pseudopotential information in formatted form from C.psf
+Ground state valence configuration:   1s01
+Reading pseudopotential information in formatted form from H.psf
+ 
+..........
+ 
+atom: Called for C   (Z =   6)
+ 
+read_vps: Pseudopotential generation method:
+read_vps: ATM 3.2.2 Troullier-Martins                       
+ 
+read_vps: Valence configuration (pseudopotential and basis set generation):
+2s( 2.00) rc: 1.56
+2p( 2.00) rc: 1.56
+3d( 0.00) rc: 1.56
+4f( 0.00) rc: 1.56
+Total valence charge:    4.00000
+ 
+xc_check: Exchange-correlation functional:
+xc_check: GGA Perdew, Burke & Ernzerhof 1996
+V l=0 = -2*Zval/r beyond r=  1.5227
+V l=1 = -2*Zval/r beyond r=  1.5227
+V l=2 = -2*Zval/r beyond r=  1.5227
+V l=3 = -2*Zval/r beyond r=  1.5227
+All V_l potentials equal beyond r=  1.4851
+This should be close to max(r_c) in ps generation
+All pots = -2*Zval/r beyond r=  1.5227
+ 
+........
+ 
+prinput: ----------------------------------------------------------------------
+ 
+
+siesta: ******************** Simulation parameters ****************************
+siesta:
+siesta: The following are some of the parameters of the simulation.
+siesta: A complete list of the parameters used, including default values,
+siesta: can be found in file out.fdf
+siesta:
+coor:   Atomic-coordinates input format  =     Cartesian coordinates
+coor:                                          (in Angstroms)
+read_Zmatrix: Length units: Ang       
+read_Zmatrix: Angle  units: deg       
+read_Zmatrix: Force tolerances:
+read_Zmatrix:    for lengths =     0.000778 Ry/Bohr
+read_Zmatrix:    for angles  =     0.003565 Ry/rad
+ 
+read_Zmatrix: Maximum displacements:
+read_Zmatrix:    for lengths =     0.188973 Bohr
+read_Zmatrix:    for angles  =     0.003000 rad
+ 
+........
+ 
+Z-matrix Symbol Section -------
+Variables
+ z1           4.94300000000000     
+ z2          -3.51000000000000     
+Constants
+------------ End of Z-matrix Information
+ 
+redata: SpinPolarized run                =     F
+redata: Non-Collinear-spin run           =     F
+redata: Number of spin components        =     1
+redata: Long output                      =     F
+redata: Number of Atomic Species         =     4
+redata: Charge density info will appear in .RHO file
+redata: Write Mulliken Pop.              =     Atomic and Orbital charges
+redata: Mesh Cutoff                      =   150.0000  Ry
+redata: Net charge of the system         =     0.0000 |e|
+redata: Max. number of SCF Iter          =   300
+redata: Performing Pulay mixing using    =     5 iterations
+redata: Mix DM in first SCF step ?       =     F
+redata: Write Pulay info on disk?        =     F
+redata: New DM Mixing Weight             =     0.0200
+redata: New DM Occupancy tolerance       = 0.000000000001
+redata: No kicks to SCF
+redata: DM Mixing Weight for Kicks       =     0.5000
+redata: DM Tolerance for SCF             =     0.001000
+redata: Require Energy convergence for SCF =     F
+redata: DM Energy tolerance for SCF      =     0.000100 eV
+redata: Using Saved Data (generic)   =     F
+redata: Use continuation files for DM    =     F
+redata: Neglect nonoverlap interactions  =     F
+redata: Method of Calculation            =     Diagonalization
+redata: Divide and Conquer               =     T
+redata: Electronic Temperature           =     0.0019  Ry
+redata: Fix the spin of the system       =     F
+redata: Dynamics option                  =     CG coord. optimization
+redata: Variable cell                    =     F
+redata: Use continuation files for CG    =     F
+redata: Max atomic displ per move        =     0.2000  Bohr
+redata: Maximum number of CG moves       =   200
+redata: Force tolerance                  =     0.0016  Ry/Bohr
+redata: ***********************************************************************
+ 
+......
+ 
+* Maximum dynamic memory allocated =     1 MB
+ 
+siesta:                 ==============================
+                            Begin CG move =      0
+                        ==============================
+ 
+zmatrix: Z-matrix coordinates: (Ang ; deg )
+zmatrix: (Fractional coordinates have been converted to cartesian)
+ 
++++++++++++END-parts of siesta-2.0.2 output+++++++++
+ 
+And for smeagol I choose the parameters for siesta-3.0-b,I use:
+ 
+----------BEGIN-smeagol arch.make IFORT+MKL+MPICH------
+ 
+SIESTA_ARCH=Intel-MKL-MPICH
+EXEC=smeagolpara
+SOURCE_DIR=/home/zgp/software/smeagol-1.3.7
+#
+# Intel fortran compiler for linux with mkl optimized blas and lapack
+#
+# Be sure to experiment with different optimization options.
+# You have quite a number of combinations to try...
+#
+FC=mpif90
+ 
+#
+FFLAGS= -O2 -i-static
+FFLAGS_DEBUG= -g 
+LDFLAGS=-Vaxlib
+COMP_LIBS=
+RANLIB=echo
+#
+NETCDF_LIBS=
+NETCDF_INTERFACE=
+DEFS_CDF=
+#
+MPI_INTERFACE= libmpi_f90.a
+MPI_INCLUDE=/home/zgp/software/mpich-1.2.7/include
+DEFS_MPI=-DMPI
+#
+BLAS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_solver_lp64 -lmkl_intel_lp64 -lguide
+BLACS= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_blacs_lp64
+LAPACK= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_sequential -lmkl_core
+SCALAPACK= -L/home/zgp/intel/mkl/10.0.2.018/lib/em64t -lmkl_scalapack_lp64
+ 
+LIBS=$(SCALAPACK) $(BLACS) $(LAPACK) $(BLAS)
+ 
+SYS=bsd
+DEFS= $(DEFS_CDF) $(DEFS_MPI)
+#
+.F.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f.o:
+ $(FC) -c $(FFLAGS)   $<
+.F90.o:
+ $(FC) -c $(FFLAGS)  $(DEFS) $<
+.f90.o:
+ $(FC) -c $(FFLAGS)   $<
+#
+ 
+----------END-smeagol arch.make IFORT+MKL+MPICH----------
+ 
+And the compilation is all right.Then I have some test,it is ok for thoes test,and I find the ifort-compiled version is just a little more efficient than the PGI-compiled version,completely not like the siesta case--there is no obvious ifort advantage.
+ 
+But for the following test,the ifort version have a Segmentation fault and the program aborted  while the PGI version can go smoothly to the end.And the error like this:
+ 
+++++++++++++BEGIN-THE ERROR +++++++++++++++
+ 
+initatomlists: Number of atoms, orbitals, and projectors:     90   770   866
+ 
+* ProcessorY, Blocksize:    1   8
+ 
+
+siesta: System type = bulk      
+ 
+siesta: k-grid: Number of k-points =     8
+siesta: k-grid: Cutoff             =    15.067 Ang
+siesta: k-grid: Supercell and displacements
+siesta: k-grid:    4   0   0      0.500
+siesta: k-grid:    0   4   0      0.500
+siesta: k-grid:    0   0   1      0.000
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  22.0267 16.3487   1
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  22.0267 16.3487   2
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  22.0267 56.9464   3
+ 
+superc: Internal auxiliary supercell:     3 x     3 x     1  =       9
+superc: Number of atoms, orbitals, and projectors:    810  6930  7794
+ 
+* Maximum dynamic memory allocated =     3 MB
+ 
+siesta:                 ===============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            Begin CG move =      0
+                        ===============================
+ 
+outcoor: Atomic coordinates (Ang):                          
+    0.83250000    1.44190000   -6.99380000   4  Au         1
+    0.83250000    4.32570000   -6.99380000   4  Au         2
+    0.83250000    7.20950000   -6.99380000   4  Au         3
+    3.32990000    0.00000000   -6.99380000   4  Au         4
+    3.32990000    2.88380000   -6.99380000   4  Au         5
+    3.32990000    5.76760000   -6.99380000   4  Au         6
+    5.82740000   -1.44190000   -6.99380000   4  Au         7
+    5.82740000    1.44190000   -6.99380000   4  Au         8
+    5.82740000    4.32570000   -6.99380000   4  Au         9
+    0.00000000    0.00000000   -4.63920000   4  Au        10
+    0.00000000    2.88380000   -4.63920000   4  Au        11
+    0.00000000    5.76760000   -4.63920000   4  Au        12
+    2.49740000   -1.44190000   -4.63920000   4  Au        13
+    2.49740000    1.44190000   -4.63920000   4  Au        14
+    2.49740000    4.32570000   -4.63920000   4  Au        15
+    4.99490000   -2.88380000   -4.63920000   4  Au        16
+    4.99490000    0.00000000   -4.63920000   4  Au        17
+    4.99490000    2.88380000   -4.63920000   4  Au        18
+    1.66500000    0.00000000   -2.28460000   4  Au        19
+    1.66500000    2.88380000   -2.28460000   4  Au        20
+    1.66500000    5.76760000   -2.28460000   4  Au        21
+    4.16240000   -1.44190000   -2.28460000   4  Au        22
+    4.16240000    1.44190000   -2.28460000   4  Au        23
+    4.16240000    4.32570000   -2.28460000   4  Au        24
+    6.65980000   -2.88380000   -2.28460000   4  Au        25
+    6.65980000    0.00000000   -2.28460000   4  Au        26
+    6.65980000    2.88380000   -2.28460000   4  Au        27
+    0.83250000    1.44190000    0.07000000   4  Au        28
+    0.83250000    4.32570000    0.07000000   4  Au        29
+    0.83250000    7.20950000    0.07000000   4  Au        30
+    3.32990000    0.00000000    0.07000000   4  Au        31
+    3.32990000    2.88380000    0.07000000   4  Au        32
+    3.32990000    5.76760000    0.07000000   4  Au        33
+    5.82740000   -1.44190000    0.07000000   4  Au        34
+    5.82740000    1.44190000    0.07000000   4  Au        35
+    5.82740000    4.32570000    0.07000000   4  Au        36
+    3.60229000    1.73127800    6.21232000   1  C         37
+    3.31983200    2.31488800    7.48368000   1  C         38
+    2.09598100    1.99500800    8.16095300   1  C         39
+    1.17988000    1.05528700    7.57906300   1  C         40
+    1.46310900    0.47028400    6.30704300   1  C         41
+    2.68636400    0.79215700    5.62978400   1  C         42
+    4.56082400    2.00638800    5.64455700   2  H         43
+    4.06091200    3.04492300    7.96250400   2  H         44
+    0.21879900    0.77886800    8.14161800   2  H         45
+    0.72005100   -0.26018200    5.83101200   2  H         46
+    2.26463700    3.52419400    9.54422300   2  H         47
+    0.77428000    2.66551800    9.60221500   2  H         48
+    4.02109600    0.08423600    4.22189900   2  H         49
+    2.49171200   -0.71019500    4.21664100   2  H         50
+    1.84035600    2.53197800    9.49871000   3  N         51
+    2.95818300    0.26242300    4.29261300   3  N         52
+    2.43833700    1.57610800    2.38599500   4  Au        53
+    2.57810400    1.32967400   11.40545900   4  Au        54
+    1.66500000    0.00000000   13.72250000   4  Au        55
+    1.66500000    2.88380000   13.72250000   4  Au        56
+    1.66500000    5.76760000   13.72250000   4  Au        57
+    4.16240000   -1.44190000   13.72250000   4  Au        58
+    4.16240000    1.44190000   13.72250000   4  Au        59
+    4.16240000    4.32570000   13.72250000   4  Au        60
+    6.65980000   -2.88380000   13.72250000   4  Au        61
+    6.65980000    0.00000000   13.72250000   4  Au        62
+    6.65980000    2.88380000   13.72250000   4  Au        63
+    0.83250000    1.44190000   16.07710000   4  Au        64
+    0.83250000    4.32570000   16.07710000   4  Au        65
+    0.83250000    7.20950000   16.07710000   4  Au        66
+    3.32990000    0.00000000   16.07710000   4  Au        67
+    3.32990000    2.88380000   16.07710000   4  Au        68
+    3.32990000    5.76760000   16.07710000   4  Au        69
+    5.82740000   -1.44190000   16.07710000   4  Au        70
+    5.82740000    1.44190000   16.07710000   4  Au        71
+    5.82740000    4.32570000   16.07710000   4  Au        72
+    0.00000000    0.00000000   18.43170000   4  Au        73
+    0.00000000    2.88380000   18.43170000   4  Au        74
+    0.00000000    5.76760000   18.43170000   4  Au        75
+    2.49740000   -1.44190000   18.43170000   4  Au        76
+    2.49740000    1.44190000   18.43170000   4  Au        77
+    2.49740000    4.32570000   18.43170000   4  Au        78
+    4.99490000   -2.88380000   18.43170000   4  Au        79
+    4.99490000    0.00000000   18.43170000   4  Au        80
+    4.99490000    2.88380000   18.43170000   4  Au        81
+    1.66500000    0.00000000   20.78630000   4  Au        82
+    1.66500000    2.88380000   20.78630000   4  Au        83
+    1.66500000    5.76760000   20.78630000   4  Au        84
+    4.16240000   -1.44190000   20.78630000   4  Au        85
+    4.16240000    1.44190000   20.78630000   4  Au        86
+    4.16240000    4.32570000   20.78630000   4  Au        87
+    6.65980000   -2.88380000   20.78630000   4  Au        88
+    6.65980000    0.00000000   20.78630000   4  Au        89
+    6.65980000    2.88380000   20.78630000   4  Au        90
+ 
+superc: Internal auxiliary supercell:     3 x     3 x     1  =       9
+superc: Number of atoms, orbitals, and projectors:    810  6930  7794
+ 
+InitMesh: MESH =    50 x    50 x   200 =      500000
+InitMesh: Mesh cutoff (required, used) =   120.000   121.738 Ry
+ 
+* Maximum dynamic memory allocated =   449 MB
+gensvd: Leads decimation   
+gensvd: Dim of H1 and S1 :    243
+gensvd: Rank of H1:            45
+gensvd: Rank of (H1,S1):      122
+gensvd: Decimated states:      76
+gensvd: Decimation from the left
+gensvd: Leads decimation   
+gensvd: Dim of H1 and S1 :    243
+gensvd: Rank of H1:            45
+gensvd: Rank of (H1,S1):      122
+gensvd: Decimated states:      76
+gensvd: Decimation from the left
+Segmentation fault
+[zgp at localhost mx]$ 
+++++++++++++END-THE ERROR ++++++++++++++++++
+ 
+So for this ?the parallel version can also not work for this test!
+ 
+But this test can be done successfully with the PGI-compiled verison smeagol.
+ 
+The input of the test is as follows:
+ 
+++++++++++++BEGIN-test input++++++++++++++++++
+ 
+# -----------------------------------------------------------------------------
+ 
+SystemName           scatter            # Descriptive name of the system
+SystemLabel          scatter             # Short name for naming files
+ 
+# Output options
+ 
+WriteCoorStep
+WriteMullikenPop       1
+SaveHS                 T
+ 
+# Species and atoms
+NumberOfSpecies        4
+NumberOfAtoms          90
+%block ChemicalSpeciesLabel
+  1   6  C
+  2   1  H
+  3   7  N
+  4   79  Au
+%endblock ChemicalSpeciesLabel
+ 
+# Basis
+%block PAO.Basis                 # Define Basis set
+C           2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta 
+   5.0   
+   1.000   
+ n=2   1   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   8.0  
+   1.000   
+N           2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta 
+   4.0   
+   1.000   
+ n=2   1   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   7.0   
+   1.000   
+H           1                    # Species label, number of l-shells
+ n=1   0   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   3.5   
+   1.000   
+Au          2                    # Species label, number of l-shells
+ n=6   0   1 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   8.0   
+   1.000   
+ n=5   2   1                         # n, l, Nzeta 
+   5.8   
+   1.000   
+%endblock PAO.Basis
+ 
+
+%block Ps.lmax
+     Au           2
+%endblock Ps.lmax
+ 
+LatticeConstant       1.0 Ang
+%block LatticeVectors          
+ 7.492316   -4.3256905  0.000000
+ 0.000000    8.651381  0.000000
+ 0.000000    0.000000  30.1347
+%endblock LatticeVectors
+ 
+# the larger KCutOff, the more K-point use
+# KgridCutoff          6.72 Ang
+# KgridCutoff          20.72 Ang       
+           
+%block kgrid_Monkhorst_Pack
+  4   0   0    0.5
+  0   4   0    0.5
+  0   0   1    0.0
+%endblock kgrid_Monkhorst_Pack
+ 
+ 
+ 
+xc.functional         GGA           # Exchange-correlation functional
+xc.authors            PBE             # Exchange-correlation version
+ 
+SpinPolarized         false          # Logical parameters are: yes or no
+ 
+MeshCutoff           120. Ry         # Mesh cutoff. real space mesh 
+ 
+# SCF options
+MaxSCFIterations       300          # Maximum number of SCF iter
+DM.MixingWeight       0.02           # New DM amount for next SCF cycle
+DM.Tolerance          1.d-3         # Tolerance in maximum difference
+                                    # between input and output DM
+DM.UseSaveDM           false          # to use continuation files
+DM.NumberPulay         5
+ 
+SolutionMethod        Diagon       # OrderN or Diagon
+ElectronicTemperature  25 meV       # Temp. for Fermi smearing
+ 
+# MD options
+ 
+MD.TypeOfRun           cg           # Type of dynamics:
+MD.VariableCell        false
+MD.NumCGsteps          0            # Number of CG steps for 
+                                    #   coordinate optimization
+MD.MaxCGDispl          0.2 bohr     # Maximum atomic displacement 
+                                    #   in one CG step (Bohr)
+MD.MaxForceTol         0.08 eV/Ang  # Tolerance in the maximum 
+                                    #   atomic force (Ry/Bohr)
+MD.MaxStressTol        0.1 Gpa                                    
+ 
+# Atomic coordinates
+AtomicCoordinatesFormat     Ang    
+%block AtomicCoordinatesAndAtomicSpecies
+0.832500     1.441900    -6.993800         4
+0.832500     4.325700    -6.993800         4
+0.832500     7.209500    -6.993800         4
+3.329900     0.000000    -6.993800         4
+3.329900     2.883800    -6.993800         4
+3.329900     5.767600    -6.993800         4
+5.827400    -1.441900    -6.993800         4
+5.827400     1.441900    -6.993800         4
+5.827400     4.325700    -6.993800         4
+0.000000     0.000000    -4.639200          4
+0.000000     2.883800    -4.639200          4
+0.000000     5.767600    -4.639200          4
+2.497400    -1.441900    -4.639200          4
+2.497400     1.441900    -4.639200          4
+2.497400     4.325700    -4.639200          4
+4.994900    -2.883800    -4.639200          4
+4.994900     0.000000    -4.639200          4
+4.994900     2.883800    -4.639200          4
+1.665000     0.000000    -2.284600         4
+1.665000     2.883800    -2.284600         4
+1.665000     5.767600    -2.284600         4
+4.162400    -1.441900    -2.284600         4
+4.162400     1.441900    -2.284600         4
+4.162400     4.325700    -2.284600         4
+6.659800    -2.883800    -2.284600         4
+6.659800     0.000000    -2.284600         4
+6.659800     2.883800    -2.284600         4
+0.832500     1.441900     0.070000          4
+0.832500     4.325700     0.070000          4
+0.832500     7.209500     0.070000          4
+3.329900     0.000000     0.070000          4
+3.329900     2.883800     0.070000          4
+3.329900     5.767600     0.070000          4
+5.827400    -1.441900     0.070000          4
+5.827400     1.441900     0.070000          4
+5.827400     4.325700     0.070000          4
+3.602290     1.731278     6.212320         1
+3.319832     2.314888     7.483680         1
+2.095981     1.995008     8.160953         1
+1.179880     1.055287     7.579063         1
+1.463109     0.470284     6.307043         1
+2.686364     0.792157     5.629784         1
+4.560824     2.006388     5.644557          2
+4.060912     3.044923     7.962504          2
+0.218799     0.778868     8.141618          2
+0.720051    -0.260182     5.831012          2
+2.264637     3.524194     9.544223          2
+0.774280     2.665518     9.602215          2
+4.021096     0.084236     4.221899          2
+2.491712    -0.710195     4.216641          2
+1.840356     2.531978     9.498710         3
+2.958183     0.262423     4.292613         3
+2.438337     1.576108     2.385995          4
+2.578104     1.329674    11.405459          4
+1.665000     0.000000    13.722500         4
+1.665000     2.883800    13.722500         4
+1.665000     5.767600    13.722500         4
+4.162400    -1.441900    13.722500         4
+4.162400     1.441900    13.722500         4
+4.162400     4.325700    13.722500         4
+6.659800    -2.883800    13.722500         4
+6.659800     0.000000    13.722500         4
+6.659800     2.883800    13.722500         4
+0.832500     1.441900    16.077100          4
+0.832500     4.325700    16.077100          4
+0.832500     7.209500    16.077100          4
+3.329900     0.000000    16.077100          4
+3.329900     2.883800    16.077100          4
+3.329900     5.767600    16.077100          4
+5.827400    -1.441900    16.077100          4
+5.827400     1.441900    16.077100          4
+5.827400     4.325700    16.077100          4
+0.000000     0.000000    18.431700         4
+0.000000     2.883800    18.431700         4
+0.000000     5.767600    18.431700         4
+2.497400    -1.441900    18.431700         4
+2.497400     1.441900    18.431700         4
+2.497400     4.325700    18.431700         4
+4.994900    -2.883800    18.431700         4
+4.994900     0.000000    18.431700         4
+4.994900     2.883800    18.431700         4
+1.665000     0.000000    20.786300          4
+1.665000     2.883800    20.786300          4
+1.665000     5.767600    20.786300          4
+4.162400    -1.441900    20.786300          4
+4.162400     1.441900    20.786300          4
+4.162400     4.325700    20.786300          4
+6.659800    -2.883800    20.786300          4
+6.659800     0.000000    20.786300          4
+6.659800     2.883800    20.786300          4   
+%endblock AtomicCoordinatesAndAtomicSpecies
+                                        
+SaveHS    F   # Save the Hamiltonian and Overlap matrices
+SaveRHO    T  # Save the valence pseudocharge density
+SaveDeltaRHO   F
+WriteDenchar   F   # Write Denchar output
+WriteDMT   T
+WriteDRHO                  T
+WriteVT                    T
+ 
+WriteEigenvalues                T
+ 
+WriteMullikenPop  1
+                                    
+ 
+EMTransport              T 
+NEnergReal               100          
+NEnergImCircle           60
+NEnergImLine             20
+NPoles                   5 
+VInitial                 0.0 eV
+VFinal                   0.0 eV
+NIVPoints                0 
+Delta                    1.d-6
+EnergLowestBound        -100 eV
+SpinConfLeads            0
+NSlices                  1 
+TrCoefficients   T
+NTransmPoints            1000
+InitTransmRange          -10.0 eV 
+FinalTransmRange          5.0 eV 
+HartreeLeadsBottom        -4.55129433 eV
+HartreeLeadsLeft          -9.348400  Ang
+HartreeLeadsRight         20.786300 Ang
+SaveMemTranspK   T
+PeriodicTransp   T
+ParallelOverK   T
+TransmissionOverk   T
+SaveElectrostaticPotential   T
+#%block SaveBiasSteps
+#0                                        
+#%endblock SaveBiasSteps 
+ 
+++++++++++++END-test input+++++++++++++++++++
+ 
+By the way, IFORT is ifort-10.1.012,MKL is mkl-10.0.2.018 and MPI is mpich-1.2.7.
+ 
+SO what is the reason?
+ 
+Can anyone help me? It is really puzzling me!
+ 
+THANKS IN ADVANCE@
+ 
+------------------
+    BEST REGARDS!
+  
+ Guangping Zhang
+ -----------------------------------
+ Atom and Melecular Physics
+ Physics and Electronics College
+ Shandong Normal University
+ Shandong,Jinan,China
+ ------------------------------------
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100209/3d2e8ba7/attachment-0001.html 
+
+From xuzhuo06 at mails.gucas.ac.cn  Wed Feb 24 06:18:43 2010
+From: xuzhuo06 at mails.gucas.ac.cn (=?gb2312?B?0OzXvw==?=)
+Date: Wed, 24 Feb 2010 14:18:43 +0800
+Subject: [Smeagol-discuss] Why no transmission data generated?
+Message-ID: <MYYLBULXJDPBPZEIUTOOQOWLTAEZ.xuzhuo06@mails.gucas.ac.cn>
+
+Hi, I am a  beginner of Smeagol. I could run the example of Au atom wires with no problem at all.
+After calculating the Au leads, I try to calculate zero bias conductance and I-V characteristics of a one dimensional nanostructure of two periods, which contains about 100-150 atoms, between Au leads.
+The iteration of 0 V (the initial bias) of Smeagol converges to a positive energy value, while the scf calculation of the same nanostructure by Siesta will converge to a negative energy value, is there anything wrong of Smeagol or not?
+Moreover, after the convergence of the initial bias, the calculation stops automatically. There are files of  .alloc, .CHR, .DM, .fdf (input), .KP, and .out (output) only, no transmission data (.CUR, .TRC, .LGF etc.) at all. What's wrong with it?
+The parameters of my input file are as follows:
+%block PAO.BasisSizes
+(...)  SZP
+%endblock PAO.BasisSizes
+%block kgrid_Monkhorst_Pack
+  2   0   0    0.0
+  0   2   0    0.0
+  0   0  15    0.0
+%endblock kgrid_Monkhorst_Pack
+xc.functional   LDA  
+xc.authors     CA  
+SpinPolarized   F    
+FixSpin                         F
+TotalSpin                       0.0    
+NonCollinearSpin  F  
+MeshCutoff     180. Ry  
+MaxSCFIterations  500  
+DM.MixingWeight   0.6
+DM.NumberPulay   10  
+DM.PulayOnFile   F  
+DM.Tolerance    5.0E-4
+NeglNonOverlapInt  T  
+SolutionMethod   diagon
+ElectronicTemperature  300 K  
+DM.UseSaveDM    T 
+SaveElectrostaticPotential T
+WriteCoorXmol   T 
+SaveHS    F
+SaveRho   T  
+SaveDeltaRho   F
+WriteDenchar   F  
+WriteEigenvalues  F
+WriteDMT                   T
+EMTransport              T 
+NEnergReal               0 
+NEnergImCircle           15 
+NEnergImLine             20
+NPoles                   4
+VInitial                 0.d0 eV
+VFinal                   0.d0 eV
+NIVPoints                0 
+Delta                    1.d-4
+EnergLowestBound        -5.0d0 Ry
+SpinConfLeads            0
+NSlices                  1 
+TrCoefficients   T
+AtomLeftVCte             (...)
+AtomRightVCte            (...)
+NTransmPoints            100
+InitTransmRange          -10.0d0 eV 
+FinalTransmRange         0.d0 eV 
+%block SaveBiasSteps
+ 0
+%endblock SaveBiasSteps
+SaveMemTranspK   F
+PeriodicTransp   T
+TransmissionOverk         F
+#ParallelOverK   T 
+#Diag.ParallelOverK         T
+HartreeLeadsBottom      (...) eV
+HartreeLeadsLeft          0. Ang
+HartreeLeadsRight       (...) Ang
+The output file ends as follows:
+siesta:                 ===============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            Begin CG move =      0
+                        ===============================
+iodm: Reading Density Matrix from files
+InitMesh: MESH =   192 x   192 x   144 =     5308416
+InitMesh: Mesh cutoff (required, used) =   180.000   191.452 Ry
+ 
+* Maximum dynamic memory allocated =   416 MB
+WARNING: There are k-points along z
+......
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   (...)
+timer: Routine,Calls,Time,% = IterSCF        1   14868.199  99.99
+......
+siesta:    (XX)   (...) [reaches the convergence criteria]
+[the output file just stops here]
+If I set kgrid_Monkhorst_Pack to 1 1 1, it says Segmentation Fault and stops at once. I have ever read the Dr. Rocha's research of a DNA molecule between Au leads, which even large than my one dimensional nanostructure. What's wrong of my case? Could anybody suggest any hint for me please?
+Thank you very much.
+XU Zhuo
+PhD. student from Graduate School of Chinese Academy of Science
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100224/b60ac99c/attachment.html 
+
+From runggeri at tcd.ie  Fri Feb 26 04:57:27 2010
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Fri, 26 Feb 2010 04:57:27 +0000
+Subject: [Smeagol-discuss] Why no transmission data generated?
+In-Reply-To: <MYYLBULXJDPBPZEIUTOOQOWLTAEZ.xuzhuo06@mails.gucas.ac.cn>
+References: <MYYLBULXJDPBPZEIUTOOQOWLTAEZ.xuzhuo06@mails.gucas.ac.cn>
+Message-ID: <c2cd6c241002252057l2c7ba415racc9ecf5f336f9b6@mail.gmail.com>
+
+Hello ??,
+
+ your calculation is converged to an unphysical solution, since the energy
+is positive. This indicates most likely some problem in the input file. From
+the part of the input file you have added it is not possible to say what
+might be the problem. If you send me the input files for leads and
+scattering region, I might be able to see what is the problem.
+
+Cheers,
+
+ Ivan
+
+2010/2/24 ?? <xuzhuo06 at mails.gucas.ac.cn>
+
+> Hi, I am a  beginner of Smeagol. I could run the example of Au atom wires
+> with no problem at all.
+>
+> After calculating the Au leads, I try to calculate zero bias conductance
+> and I-V characteristics of a one dimensional nanostructure of two periods,
+> which contains about 100-150 atoms, between Au leads.
+>
+> The iteration of 0 V (the initial bias) of Smeagol converges to a
+> positive energy value, while the scf calculation of the same nanostructure
+> by Siesta will converge to a negative energy value, is there anything wrong
+> of Smeagol or not?
+>
+> Moreover, after the convergence of the initial bias, the calculation stops
+> automatically. There are files of  .alloc, .CHR, .DM, .fdf (input), .KP, and
+> .out (output) only, no transmission data (.CUR, .TRC, .LGF etc.) at all.
+> What's wrong with it?
+>
+> The parameters of my input file are as follows:
+>
+> %block PAO.BasisSizes
+> (...)  SZP
+> %endblock PAO.BasisSizes
+>
+> %block kgrid_Monkhorst_Pack
+>   2   0   0    0.0
+>   0   2   0    0.0
+>   0   0  15    0.0
+> %endblock kgrid_Monkhorst_Pack
+>
+> xc.functional   LDA
+> xc.authors     CA
+> SpinPolarized   F
+> FixSpin                         F
+> TotalSpin                       0.0
+> NonCollinearSpin  F
+> MeshCutoff     180. Ry
+> MaxSCFIterations  500
+>
+> DM.MixingWeight   0.6
+> DM.NumberPulay   10
+>
+> DM.PulayOnFile   F
+> DM.Tolerance    5.0E-4
+> NeglNonOverlapInt  T
+>
+> SolutionMethod   diagon
+> ElectronicTemperature  300 K
+>
+> DM.UseSaveDM    T
+>
+> SaveElectrostaticPotential T
+> WriteCoorXmol   T
+> SaveHS    F
+> SaveRho   T
+> SaveDeltaRho   F
+> WriteDenchar   F
+> WriteEigenvalues  F
+> WriteDMT                   T
+>
+> EMTransport              T
+> NEnergReal               0
+> NEnergImCircle           15
+> NEnergImLine             20
+> NPoles                   4
+> VInitial                 0.d0 eV
+> VFinal                   0.d0 eV
+> NIVPoints                0
+> Delta                    1.d-4
+> EnergLowestBound        -5.0d0 Ry
+> SpinConfLeads            0
+> NSlices                  1
+> TrCoefficients   T
+> AtomLeftVCte             (...)
+> AtomRightVCte            (...)
+> NTransmPoints            100
+> InitTransmRange          -10.0d0 eV
+> FinalTransmRange         0.d0 eV
+>
+> %block SaveBiasSteps
+>  0
+> %endblock SaveBiasSteps
+> SaveMemTranspK   F
+> PeriodicTransp   T
+> TransmissionOverk         F
+>
+> #ParallelOverK   T
+> #Diag.ParallelOverK         T
+>
+> HartreeLeadsBottom      (...) eV
+> HartreeLeadsLeft          0. Ang
+> HartreeLeadsRight       (...) Ang
+>
+> The output file ends as follows:
+>
+> siesta:                 ===============================
+> SMEAGOL                 Bias step =    0, V =  0.000 Ry
+>                             Begin CG move =      0
+>                         ===============================
+>
+> iodm: Reading Density Matrix from files
+>
+> InitMesh: MESH =   192 x   192 x   144 =     5308416
+> InitMesh: Mesh cutoff (required, used) =   180.000   191.452 Ry
+>
+> * Maximum dynamic memory allocated =   416 MB
+> WARNING: There are k-points along z
+>
+> ......
+>
+> siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+> siesta:    1   (...)
+> timer: Routine,Calls,Time,% = IterSCF        1   14868.199  99.99
+> ......
+>
+> siesta:    (XX)   (...) [reaches the convergence criteria]
+>
+> [the output file just stops here]
+>
+> If I set kgrid_Monkhorst_Pack to 1 1 1, it says Segmentation Fault and
+> stops at once. I have ever read the Dr. Rocha's research of a DNA molecule
+> between Au leads, which even large than my one dimensional nanostructure.
+> What's wrong of my case? Could anybody suggest any hint for me please?
+>
+> Thank you very much.
+>
+> XU Zhuo
+>
+> PhD. student from Graduate School of Chinese Academy of Science
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20100226/c587a13b/attachment-0001.html 
+

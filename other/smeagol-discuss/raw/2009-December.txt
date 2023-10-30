@@ -1,0 +1,511 @@
+From runggeri at tcd.ie  Tue Dec  1 11:57:33 2009
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Tue, 1 Dec 2009 11:57:33 +0000
+Subject: [Smeagol-discuss] How to calculate charge transfer?
+In-Reply-To: <BAY135-W28A34F1A6B8E6575FC15A998970@phx.gbl>
+References: <BAY135-W28A34F1A6B8E6575FC15A998970@phx.gbl>
+Message-ID: <c2cd6c240912010357s30b41287t33df99ed6af0201c@mail.gmail.com>
+
+Hello Yosida,
+
+the simplest way to calculate charge transfer I think is either by using the
+Mulliken populations (using the writemulliken option) or else by performing
+a Bader analysis (here one needs to save the charge density in real space
+and then use some external tool to do the postproceessing; there are a few
+tools to do this specified in the archives of the siesta mailing list).
+
+Cheers,
+
+Ivan
+
+2009/11/30 Yo Yosida <yosida.p at hotmail.com>
+
+>  Dear Smeagol Team
+>
+>  Could you please suggest me how can I calculate charge transfer in
+> SMEAGOL?
+>
+> Thank you in advance.
+>
+> Best,
+> Yosida
+>
+> ------------------------------
+> Windows Live: Make it easier for your friends to see what you?re up to on
+> Facebook.<http://www.microsoft.com/middleeast/windows/windowslive/see-it-in-action/social-network-basics.aspx?ocid=PID23461::T:WLMTAGL:ON:WL:en-xm:SI_SB_2:092009>
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20091201/997ceebd/attachment.html 
+
+From ozanari at iyte.edu.tr  Fri Dec  4 15:07:01 2009
+From: ozanari at iyte.edu.tr (Ozan ARI)
+Date: Fri, 4 Dec 2009 17:07:01 +0200
+Subject: [Smeagol-discuss] Smeagol-Parallel run error
+Message-ID: <001b01ca74f3$6fad3e20$4f07ba60$@edu.tr>
+
+Greetings everyone,
+
+When i run smeagol paralel after first step of CG i get the error below.
+
+ 
+
+Using intel compiler and mpich2. Any suggestions? Using 2x machines have 8x
+cores on both. When i run smeagol on 8x cores which on 1 machine no error
+whatsoever.
+
+ 
+
+ 
+
+My arch.make file is
+
+ 
+
+# serial make file for csg machines 16/6/09 Written by Tom Archer
+
+ 
+
+FC= mpif90
+
+FC_ASIS=$(FC)
+
+ 
+
+FFLAGS= -O2
+
+ 
+
+LDFLAGS=$(FFLAGS) 
+
+COMP_LIBS=
+
+TRANSPORTFLAGS=$(FFLAGS) -c 
+
+ 
+
+DEFS_MPI= -DMPI
+
+MPI_INTERFACE=libmpi_f90.a
+
+MPI_INCLUDE=/home/pepper/mpich2-install/include
+
+ 
+
+SOURCE_DIR= ../
+
+EXEC = smeagol-1.2_parallel
+
+ 
+
+ 
+
+LIBS=-L/home/pepper/intel/mkl/10.1.0.015/lib/em64t/
+-I/home/pepper/intel/mkl/10.1.0.015/include -lmkl_blacs_intelmpi_lp64
+-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5
+-lpthread
+
+ 
+
+ 
+
+RANLIB=ranlib
+
+SYS=nag
+
+DEFS= $(DEFS_CDF) $(DEFS_MPI)
+
+#
+
+.F.o:
+
+                $(FC) -c $(FFLAGS)  $(DEFS) $<
+
+.f.o:
+
+                $(FC) -c $(FFLAGS)   $<
+
+.F90.o:
+
+                $(FC) -c $(FFLAGS)  $(DEFS) $<
+
+.f90.o:
+
+                $(FC) -c $(FFLAGS)   $<
+
+                                                   
+
+ 
+
+----------------------------------------------------------------------------
+-------------------------------------------------
+
+*** glibc detected *** smeagol-1.2_parallel: malloc(): memory corruption:
+0x0000000000dedf00 ***
+
+======= Backtrace: =========
+
+/lib64/libc.so.6[0x7f35c5591108]
+
+/lib64/libc.so.6[0x7f35c5593a65]
+
+/lib64/libc.so.6(__libc_malloc+0xa1)[0x7f35c5595891]
+
+smeagol-1.2_parallel[0x7100fb]
+
+smeagol-1.2_parallel[0x713aad]
+
+smeagol-1.2_parallel(MPI_Reduce+0x1850)[0x7134e0]
+
+smeagol-1.2_parallel[0x7446a4]
+
+smeagol-1.2_parallel[0x701130]
+
+smeagol-1.2_parallel[0x560643]
+
+smeagol-1.2_parallel[0x5e7040]
+
+smeagol-1.2_parallel[0x4060ac]
+
+/lib64/libc.so.6(__libc_start_main+0xe6)[0x7f35c553b586]
+
+smeagol-1.2_parallel[0x405fa9]
+
+======= Memory map: ========
+
+00400000-0098c000 r-xp 00000000 09:01 942577
+/home/pepper/smeagol-1.2/Src/smeagol-1.2_parallel
+
+00b8b000-00b8c000 r-xp 0058b000 09:01 942577
+/home/pepper/smeagol-1.2/Src/smeagol-1.2_parallel
+
+00b8c000-00bb2000 rwxp 0058c000 09:01 942577
+/home/pepper/smeagol-1.2/Src/smeagol-1.2_parallel
+
+00bb2000-01667000 rwxp 00bb2000 00:00 0
+[heap]
+
+7f35b0000000-7f35b0021000 rwxp 7f35b0000000 00:00 0 
+
+7f35b0021000-7f35b4000000 ---p 7f35b0021000 00:00 0 
+
+7f35b7d15000-7f35b7d56000 rwxs 00000000 00:0e 618092
+/dev/shm/mpich_shar_tmpNQnzhn (deleted)
+
+7f35b887a000-7f35b88bb000 rwxs 00000000 00:0e 618160
+/dev/shm/mpich_shar_tmpyaea5K (deleted)
+
+7f35b88bb000-7f35b9f34000 rwxp 7f35b88bb000 00:00 0 
+
+7f35ba50f000-7f35bb080000 r-xp 00000000 09:01 909358
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_mc.so
+
+7f35bb080000-7f35bb180000 ---p 00b71000 09:01 909358
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_mc.so
+
+7f35bb180000-7f35bb265000 rwxp 00b71000 09:01 909358
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_mc.so
+
+7f35bb265000-7f35bbaa8000 r-xp 00000000 09:01 909357
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_lapack.so
+
+7f35bbaa8000-7f35bbba7000 ---p 00843000 09:01 909357
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_lapack.so
+
+7f35bbba7000-7f35bbbb1000 rwxp 00842000 09:01 909357
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_lapack.so
+
+7f35bbbb1000-7f35c0bf7000 rwxp 7f35bbbb1000 00:00 0 
+
+7f35c0c31000-7f35c0c72000 rwxs 00000000 00:0e 618078
+/dev/shm/mpich_shar_tmplRiP1e (deleted)
+
+7f35c0c72000-7f35c0cb3000 rwxs 00000000 00:0e 618071
+/dev/shm/mpich_shar_tmpFOTnY8 (deleted)
+
+7f35c0cb3000-7f35c0d7f000 rwxp 7f35c0cb3000 00:00 0 
+
+7f35c0d7f000-7f35c5101000 rwxs 00000000 00:0e 617964
+/dev/shm/mpich_shar_tmpwt1vtK (deleted)
+
+7f35c5101000-7f35c5103000 r-xp 00000000 09:00 1671321
+/lib64/libdl-2.9.so
+
+7f35c5103000-7f35c5303000 ---p 00002000 09:00 1671321
+/lib64/libdl-2.9.so
+
+7f35c5303000-7f35c5304000 r-xp 00002000 09:00 1671321
+/lib64/libdl-2.9.so
+
+7f35c5304000-7f35c5305000 rwxp 00003000 09:00 1671321
+/lib64/libdl-2.9.so
+
+7f35c5305000-7f35c531b000 r-xp 00000000 09:00 1671279
+/lib64/libgcc_s.so.1
+
+7f35c531b000-7f35c551b000 ---p 00016000 09:00 1671279
+/lib64/libgcc_s.so.1
+
+7f35c551b000-7f35c551c000 r-xp 00016000 09:00 1671279
+/lib64/libgcc_s.so.1
+
+7f35c551c000-7f35c551d000 rwxp 00017000 09:00 1671279
+/lib64/libgcc_s.so.1
+
+7f35c551d000-7f35c566c000 r-xp 00000000 09:00 1671318
+/lib64/libc-2.9.so
+
+7f35c566c000-7f35c586c000 ---p 0014f000 09:00 1671318
+/lib64/libc-2.9.so
+
+7f35c586c000-7f35c5870000 r-xp 0014f000 09:00 1671318
+/lib64/libc-2.9.so
+
+7f35c5870000-7f35c5871000 rwxp 00153000 09:00 1671318
+/lib64/libc-2.9.so
+
+7f35c5871000-7f35c5876000 rwxp 7f35c5871000 00:00 0 
+
+7f35c5876000-7f35c58cb000 r-xp 00000000 09:00 1671322
+/lib64/libm-2.9.so
+
+7f35c58cb000-7f35c5aca000 ---p 00055000 09:00 1671322
+/lib64/libm-2.9.so
+
+7f35c5aca000-7f35c5acb000 r-xp 00054000 09:00 1671322
+/lib64/libm-2.9.so
+
+7f35c5acb000-7f35c5acc000 rwxp 00055000 09:00 1671322
+/lib64/libm-2.9.so
+
+7f35c5acc000-7f35c5ad4000 r-xp 00000000 09:00 1671332
+/lib64/librt-2.9.so
+
+7f35c5ad4000-7f35c5cd3000 ---p 00008000 09:00 1671332
+/lib64/librt-2.9.so
+
+7f35c5cd3000-7f35c5cd4000 r-xp 00007000 09:00 1671332
+/lib64/librt-2.9.so
+
+7f35c5cd4000-7f35c5cd5000 rwxp 00008000 09:00 1671332
+/lib64/librt-2.9.so
+
+7f35c5cd5000-7f35c5ceb000 r-xp 00000000 09:00 1671193
+/lib64/libpthread-2.9.so
+
+7f35c5ceb000-7f35c5eeb000 ---p 00016000 09:00 1671193
+/lib64/libpthread-2.9.so
+
+7f35c5eeb000-7f35c5eec000 r-xp 00016000 09:00 1671193
+/lib64/libpthread-2.9.so
+
+7f35c5eec000-7f35c5eed000 rwxp 00017000 09:00 1671193
+/lib64/libpthread-2.9.so
+
+7f35c5eed000-7f35c5ef1000 rwxp 7f35c5eed000 00:00 0 
+
+7f35c5ef1000-7f35c5f5d000 r-xp 00000000 09:01 909322
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libiomp5.so
+
+7f35c5f5d000-7f35c605d000 ---p 0006c000 09:01 909322
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libiomp5.so
+
+7f35c605d000-7f35c6062000 rwxp 0006c000 09:01 909322
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libiomp5.so
+
+7f35c6062000-7f35c6069000 rwxp 7f35c6062000 00:00 0 
+
+7f35c6069000-7f35c613e000 r-xp 00000000 09:01 909339
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_core.so
+
+7f35c613e000-7f35c623d000 ---p 000d5000 09:01 909339
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_core.so
+
+7f35c623d000-7f35c6243000 rwxp 000d4000 09:01 909339
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_core.so
+
+7f35c6243000-7f35c625c000 rwxp 7f35c6243000 00:00 0 
+
+7f35c625c000-7f35c6d51000 r-xp 00000000 09:01 909355
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_intel_thread.so
+
+7f35c6d51000-7f35c6e51000 ---p 00af5000 09:01 909355
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_intel_thread.so
+
+7f35c6e51000-7f35c6f7a000 rwxp 00af5000 09:01 909355
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_intel_thread.so
+
+7f35c6f7a000-7f35c6f85000 rwxp 7f35c6f7a000 00:00 0 
+
+7f35c6f85000-7f35c71d4000 r-xp 00000000 09:01 909351
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_intel_lp64.so
+
+7f35c71d4000-7f35c72d3000 ---p 0024f000 09:01 909351
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_intel_lp64.so
+
+7f35c72d3000-7f35c72da000 rwxp 0024e000 09:01 909351
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_intel_lp64.so
+
+7f35c72da000-7f35c72e0000 rwxp 7f35c72da000 00:00 0 
+
+7f35c72e0000-7f35c781c000 r-xp 00000000 09:01 909367
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_scalapack_lp64.so
+
+7f35c781c000-7f35c791b000 ---p 0053c000 09:01 909367
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_scalapack_lp64.so
+
+7f35c791b000-7f35c791f000 rwxp 0053b000 09:01 909367
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_scalapack_lp64.so
+
+7f35c791f000-7f35c79a0000 rwxp 7f35c791f000 00:00 0 
+
+7f35c79a0000-7f35c79be000 r-xp 00000000 09:00 1671406
+/lib64/ld-2.9.so
+
+7f35c79f1000-7f35c7a32000 rwxs 00000000 00:0e 618066
+/dev/shm/mpich_shar_tmphvwbp8 (deleted)
+
+7f35c7a32000-7f35c7a36000 rwxp 7f35c7a32000 00:00 0 
+
+7f35c7a53000-7f35c7a55000 rwxp 7f35c7a53000 00:00 0 
+
+7f35c7a55000-7f35c7aad000 r-xp 00000000 09:01 909330
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_blacs_intelmpi_lp64.so
+
+7f35c7aad000-7f35c7bac000 ---p 00058000 09:01 909330
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_blacs_intelmpi_lp64.so
+
+7f35c7bac000-7f35c7bbb000 rwxp 00057000 09:01 909330
+/home/pepper/intel/mkl/10.1.0.015/lib/em64t/libmkl_blacs_intelmpi_lp64.so
+
+7f35c7bbb000-7f35c7bbd000 rwxp 7f35c7bbb000 00:00 0 
+
+7f35c7bbd000-7f35c7bbe000 r-xp 0001d000 09:00 1671406
+/lib64/ld-2.9.so
+
+7f35c7bbe000-7f35c7bbf000 rwxp 0001e000 09:00 1671406
+/lib64/ld-2.9.so
+
+7fffcfb0b000-7fffcfbbf000 rwxp 7ffffff4b000 00:00 0
+[stack]
+
+7fffcfbfd000-7fffcfbfe000 r-xp 7fffcfbfd000 00:00 0
+[vdso]
+
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0
+[vsyscall]
+
+forrtl: error (76): Abort trap signal
+
+Image              PC                Routine            Line        Source
+
+
+libc.so.6          00007F35C554F645  Unknown               Unknown  Unknown
+
+libc.so.6          00007F35C5550C33  Unknown               Unknown  Unknown
+
+libc.so.6          00007F35C558B8E8  Unknown               Unknown  Unknown
+
+libc.so.6          00007F35C5591108  Unknown               Unknown  Unknown
+
+libc.so.6          00007F35C5593A65  Unknown               Unknown  Unknown
+
+libc.so.6          00007F35C5595891  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  00000000007100FB  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  0000000000713AAD  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  00000000007134E0  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  00000000007446A4  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  0000000000701130  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  0000000000560643  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  00000000005E7040  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  00000000004060AC  Unknown               Unknown  Unknown
+
+libc.so.6          00007F35C553B586  Unknown               Unknown  Unknown
+
+smeagol-1.2_paral  0000000000405FA9  Unknown               Unknown  Unknown
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20091204/e9b20bea/attachment-0001.html 
+
+From runggeri at tcd.ie  Fri Dec 11 09:31:22 2009
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Fri, 11 Dec 2009 09:31:22 +0000
+Subject: [Smeagol-discuss] Smeagol-discuss post from ozanari@iyte.edu.tr
+	requires approval
+In-Reply-To: <c2cd6c240912080312g3158c98dq2a3dccce19c3a692@mail.gmail.com>
+References: <mailman.17.1259939264.8588.smeagol-discuss@lists.tchpc.tcd.ie>
+	<c2cd6c240912080312g3158c98dq2a3dccce19c3a692@mail.gmail.com>
+Message-ID: <c2cd6c240912110131i359c971fn59265fd7e765b9c1@mail.gmail.com>
+
+Hello Ozan,
+
+ another thing: the error might be due to the installed mpi libraries.
+You might try to run 16 processors all on one node, and see if it runs.
+Another thing is that you can try to compile the code using mpich1
+instead of mpich2.
+
+Cheers,
+
+Ivan
+
+2009/12/8 Ivan Rungger <runggeri at tcd.ie>
+
+> Hello Ozan,
+>
+>   how are you? I hope everything is fine in Izmir. I could not forward your
+> email to the mailing list due to problems with the file server here in TCD,
+> I hope they will be fixed soon.
+>
+> Regarding your question, can you please send me the standard output, so
+> that I can see where the code crashed, and also I can have a look at the
+> input flags. One thing you might try is to set "BlockSize 1" in case it is a
+> rather small system.
+>
+> Cheers,
+>
+>  Ivan
+>
+> When i run smeagol paralel after first step of CG i get the error below.
+>>
+>>
+>>
+>> Using intel compiler and mpich2. Any suggestions? Using 2x machines have
+>> 8x cores on both. When i run smeagol on 8x cores which on 1 machine no error
+>> whatsoever.
+>>
+>>
+>>
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20091211/0b15484c/attachment.html 
+
+From paddy at tchpc.tcd.ie  Thu Dec 17 10:25:48 2009
+From: paddy at tchpc.tcd.ie (Paddy Doyle)
+Date: Thu, 17 Dec 2009 10:25:48 +0000
+Subject: [Smeagol-discuss] test ignore
+Message-ID: <20091217102548.GD6834@vual.tchpc.tcd.ie>
+
+foo
+
+-- 
+Paddy Doyle
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/
+

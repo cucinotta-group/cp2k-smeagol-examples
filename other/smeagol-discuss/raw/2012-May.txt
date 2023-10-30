@@ -1,0 +1,1497 @@
+From isivkov at mpi-halle.mpg.de  Thu May 24 17:15:16 2012
+From: isivkov at mpi-halle.mpg.de (Sin)
+Date: Thu, 24 May 2012 18:15:16 +0200
+Subject: [Smeagol-discuss] Restarting calculation of Bulk. Problems with
+ spin dimension in Density Matrix.
+Message-ID: <4FBE5E94.6010403@mpi-halle.mpg.de>
+
+Dear All,
+
+I have a system for bulk calculation using non-collinear regime 
+including the spin-orbit.
+
+When the calculation is done, I want to restart it with other direction 
+of initial spin.
+And I get an error:
+=========================================================================
+siesta:                 ==============================
+                             Begin CG move =      0
+                         ==============================
+
+outcoor: Atomic coordinates (scaled):
+     0.00000000    0.00000000    0.00000000   1  Pt         1
+     0.00000000    1.80000000    1.00000000   1  Pt         2
+
+superc: Internal auxiliary supercell:     1 x     1 x     7  =       7
+superc: Number of atoms, orbitals, and projectors:     14   210   224
+
+read_ldau The LDA+U method used is from Czyzky PRB 49 14211
+
+iodm: Reading Density Matrix from files
+chkdim: ERROR: In iodm, dimension nspin =       6. It must be 
+exactly        4
+Stopping Program
+
+=========================================================================
+
+
+I don't understand, why smeagol can not to read *.DM file. Because it is 
+exactly the same as was written in previous calculation.
+
+If i don't change the direction of spin, then there is no changes: 
+"ERROR: In iodm" again.
+
+I would be very thankful to have any help about this problem.
+
+this is my *.fdf file:
+=========================================================================
+
+# Output options
+
+WriteCoorStep          true
+
+WriteMullikenPop       1
+
+# Species and atoms
+
+NumberOfSpecies        1
+NumberOfAtoms          2
+
+%block ChemicalSpeciesLabel
+   1  78  Pt
+%endblock ChemicalSpeciesLabel
+
+
+%block PAO.Basis
+Pt   3      0.06506
+  n=6   0   2   E    35.28484     6.29031
+      6.85818     5.34263
+      1.00000     1.00000
+  n=6   1   1   E    10.02220     2.26448
+      7.56445
+      1.00000
+  n=5   2   2   E    30.91888     6.56288
+      7.13150     5.56464
+      1.00000     1.00000
+%endblock PAO.Basis
+
+
+LatticeConstant     1.22  Ang
+
+%block LatticeVectors
+   14.000  0.000  0.000
+   0.000  14.000  0.000
+   0.000  0.000  2.000
+%endblock LatticeVectors
+
+%block kgrid_Monkhorst_Pack
+   3  0  0  0
+   0  3  0  0
+   0  0  100  0
+%endblock kgrid_Monkhorst_Pack
+
+
+XC.functional         LDA           # Exchange-correlation functional
+XC.authors            CA            # Exchange-correlation version
+
+MeshCutoff           300 Ry        # Mesh cutoff. real space mesh
+
+# SCF options
+MaxSCFIterations      2000           # Maximum number of SCF iter
+DM.MixingWeight       0.002           # New DM amount for next SCF cycle
+DM.Tolerance          1.d-4         # Tolerance in maximum difference
+                                     # between input and output DM
+DM.UseSaveDM          true          # to use continuation files
+DM.NumberPulay         5
+
+Diag.DivideAndConquer  .false.
+SolutionMethod         diagon       # OrderN or Diagon
+ElectronicTemperature   50 K       # Temp. for Fermi smearing
+
+# MD options
+MD.TypeOfRun           cg           # Type of dynamics:
+MD.UseSaveCG        .true.        # for restarting
+MD.UseSaveXV        .true.        # atomic coords
+MD.NumCGsteps          0            # Number of CG steps for
+
+######SPIN############
+SpinPolarized              T
+SpinOrbit        T
+NonCollinearSpin    T
+
+%block DM.InitSpin
+1 +  0. 0.
+2 +  0. 0.
+%endblock DM.InitSpin
+######################
+
+
+NeglNonOverlapInt               F
+SaveElectrostaticPotential      T
+SaveRho                         T           # Save the valence 
+pseudocharge density
+
+# Atomic coordinates
+AtomicCoordinatesFormat ScaledCartesian
+
+
+
+%block AtomicCoordinatesAndAtomicSpecies
+0.0000 0.0000  0.000 1
+0.0000 1.8000 1.000 1
+%endblock AtomicCoordinatesAndAtomicSpecies
+
+
+InitTransport T
+BulkTransport T
+BulkLeads LR
+
+=========================================================
+
+
+
+
+From isivkov at mpi-halle.mpg.de  Thu May 24 18:54:33 2012
+From: isivkov at mpi-halle.mpg.de (Sin)
+Date: Thu, 24 May 2012 19:54:33 +0200
+Subject: [Smeagol-discuss] Restarting calculation of Bulk. Problems with
+ spin dimension in Density Matrix.
+In-Reply-To: <4FBE5E94.6010403@mpi-halle.mpg.de>
+References: <4FBE5E94.6010403@mpi-halle.mpg.de>
+Message-ID: <4FBE75D9.4060301@mpi-halle.mpg.de>
+
+Ok, I solved the problem.
+
+The problem was in the code of SMEAGOL.
+In the file siesta.F there was an error in the calling of subroutine 
+"initdm".
+parameter "nspin+2*SpinOrbit" must be replaced to "nspin", because nspin 
+is equal 4, when noncolinear regime is ON. But after
+"nspin+2*SpinOrbit" input parameter of "initdm" was become equal 6. So 
+this is the source of the error.
+
+
+
+
+On 05/24/2012 06:15 PM, Sin wrote:
+> Dear All,
+>
+> I have a system for bulk calculation using non-collinear regime 
+> including the spin-orbit.
+>
+> When the calculation is done, I want to restart it with other 
+> direction of initial spin.
+> And I get an error:
+> =========================================================================
+> siesta:                 ==============================
+>                             Begin CG move =      0
+>                         ==============================
+>
+> outcoor: Atomic coordinates (scaled):
+>     0.00000000    0.00000000    0.00000000   1  Pt         1
+>     0.00000000    1.80000000    1.00000000   1  Pt         2
+>
+> superc: Internal auxiliary supercell:     1 x     1 x     7  =       7
+> superc: Number of atoms, orbitals, and projectors:     14   210   224
+>
+> read_ldau The LDA+U method used is from Czyzky PRB 49 14211
+>
+> iodm: Reading Density Matrix from files
+> chkdim: ERROR: In iodm, dimension nspin =       6. It must be 
+> exactly        4
+> Stopping Program
+>
+> =========================================================================
+>
+>
+> I don't understand, why smeagol can not to read *.DM file. Because it 
+> is exactly the same as was written in previous calculation.
+>
+> If i don't change the direction of spin, then there is no changes: 
+> "ERROR: In iodm" again.
+>
+> I would be very thankful to have any help about this problem.
+>
+> this is my *.fdf file:
+> =========================================================================
+>
+> # Output options
+>
+> WriteCoorStep          true
+>
+> WriteMullikenPop       1
+>
+> # Species and atoms
+>
+> NumberOfSpecies        1
+> NumberOfAtoms          2
+>
+> %block ChemicalSpeciesLabel
+>   1  78  Pt
+> %endblock ChemicalSpeciesLabel
+>
+>
+> %block PAO.Basis
+> Pt   3      0.06506
+>  n=6   0   2   E    35.28484     6.29031
+>      6.85818     5.34263
+>      1.00000     1.00000
+>  n=6   1   1   E    10.02220     2.26448
+>      7.56445
+>      1.00000
+>  n=5   2   2   E    30.91888     6.56288
+>      7.13150     5.56464
+>      1.00000     1.00000
+> %endblock PAO.Basis
+>
+>
+> LatticeConstant     1.22  Ang
+>
+> %block LatticeVectors
+>   14.000  0.000  0.000
+>   0.000  14.000  0.000
+>   0.000  0.000  2.000
+> %endblock LatticeVectors
+>
+> %block kgrid_Monkhorst_Pack
+>   3  0  0  0
+>   0  3  0  0
+>   0  0  100  0
+> %endblock kgrid_Monkhorst_Pack
+>
+>
+> XC.functional         LDA           # Exchange-correlation functional
+> XC.authors            CA            # Exchange-correlation version
+>
+> MeshCutoff           300 Ry        # Mesh cutoff. real space mesh
+>
+> # SCF options
+> MaxSCFIterations      2000           # Maximum number of SCF iter
+> DM.MixingWeight       0.002           # New DM amount for next SCF cycle
+> DM.Tolerance          1.d-4         # Tolerance in maximum difference
+>                                     # between input and output DM
+> DM.UseSaveDM          true          # to use continuation files
+> DM.NumberPulay         5
+>
+> Diag.DivideAndConquer  .false.
+> SolutionMethod         diagon       # OrderN or Diagon
+> ElectronicTemperature   50 K       # Temp. for Fermi smearing
+>
+> # MD options
+> MD.TypeOfRun           cg           # Type of dynamics:
+> MD.UseSaveCG        .true.        # for restarting
+> MD.UseSaveXV        .true.        # atomic coords
+> MD.NumCGsteps          0            # Number of CG steps for
+>
+> ######SPIN############
+> SpinPolarized              T
+> SpinOrbit        T
+> NonCollinearSpin    T
+>
+> %block DM.InitSpin
+> 1 +  0. 0.
+> 2 +  0. 0.
+> %endblock DM.InitSpin
+> ######################
+>
+>
+> NeglNonOverlapInt               F
+> SaveElectrostaticPotential      T
+> SaveRho                         T           # Save the valence 
+> pseudocharge density
+>
+> # Atomic coordinates
+> AtomicCoordinatesFormat ScaledCartesian
+>
+>
+>
+> %block AtomicCoordinatesAndAtomicSpecies
+> 0.0000 0.0000  0.000 1
+> 0.0000 1.8000 1.000 1
+> %endblock AtomicCoordinatesAndAtomicSpecies
+>
+>
+> InitTransport T
+> BulkTransport T
+> BulkLeads LR
+>
+> =========================================================
+>
+>
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+
+From runggeri at tcd.ie  Fri May 25 09:52:49 2012
+From: runggeri at tcd.ie (Ivan Rungger)
+Date: Fri, 25 May 2012 09:52:49 +0100
+Subject: [Smeagol-discuss] Restarting calculation of Bulk. Problems with
+ spin dimension in Density Matrix.
+In-Reply-To: <4FBE75D9.4060301@mpi-halle.mpg.de>
+References: <4FBE5E94.6010403@mpi-halle.mpg.de>
+	<4FBE75D9.4060301@mpi-halle.mpg.de>
+Message-ID: <4FBF4861.2060604@tcd.ie>
+
+Hello Sin,
+
+  it seems you are using an older version of the code including 
+spin-orbit. In initdm the call should actually be with 
+nspin+2*spinorbit, because we have 6 spin components when spin-orbit is 
+on, but in older versions there were in fact other places where this was 
+not correctly taken into account.
+
+Cheers,
+
+Ivan
+
+Sin wrote:
+> Ok, I solved the problem.
+>
+> The problem was in the code of SMEAGOL.
+> In the file siesta.F there was an error in the calling of subroutine 
+> "initdm".
+> parameter "nspin+2*SpinOrbit" must be replaced to "nspin", because 
+> nspin is equal 4, when noncolinear regime is ON. But after
+> "nspin+2*SpinOrbit" input parameter of "initdm" was become equal 6. So 
+> this is the source of the error.
+>
+>
+>
+>
+> On 05/24/2012 06:15 PM, Sin wrote:
+>> Dear All,
+>>
+>> I have a system for bulk calculation using non-collinear regime 
+>> including the spin-orbit.
+>>
+>> When the calculation is done, I want to restart it with other 
+>> direction of initial spin.
+>> And I get an error:
+>> ========================================================================= 
+>>
+>> siesta:                 ==============================
+>>                             Begin CG move =      0
+>>                         ==============================
+>>
+>> outcoor: Atomic coordinates (scaled):
+>>     0.00000000    0.00000000    0.00000000   1  Pt         1
+>>     0.00000000    1.80000000    1.00000000   1  Pt         2
+>>
+>> superc: Internal auxiliary supercell:     1 x     1 x     7  =       7
+>> superc: Number of atoms, orbitals, and projectors:     14   210   224
+>>
+>> read_ldau The LDA+U method used is from Czyzky PRB 49 14211
+>>
+>> iodm: Reading Density Matrix from files
+>> chkdim: ERROR: In iodm, dimension nspin =       6. It must be 
+>> exactly        4
+>> Stopping Program
+>>
+>> ========================================================================= 
+>>
+>>
+>>
+>> I don't understand, why smeagol can not to read *.DM file. Because it 
+>> is exactly the same as was written in previous calculation.
+>>
+>> If i don't change the direction of spin, then there is no changes: 
+>> "ERROR: In iodm" again.
+>>
+>> I would be very thankful to have any help about this problem.
+>>
+>> this is my *.fdf file:
+>> ========================================================================= 
+>>
+>>
+>> # Output options
+>>
+>> WriteCoorStep          true
+>>
+>> WriteMullikenPop       1
+>>
+>> # Species and atoms
+>>
+>> NumberOfSpecies        1
+>> NumberOfAtoms          2
+>>
+>> %block ChemicalSpeciesLabel
+>>   1  78  Pt
+>> %endblock ChemicalSpeciesLabel
+>>
+>>
+>> %block PAO.Basis
+>> Pt   3      0.06506
+>>  n=6   0   2   E    35.28484     6.29031
+>>      6.85818     5.34263
+>>      1.00000     1.00000
+>>  n=6   1   1   E    10.02220     2.26448
+>>      7.56445
+>>      1.00000
+>>  n=5   2   2   E    30.91888     6.56288
+>>      7.13150     5.56464
+>>      1.00000     1.00000
+>> %endblock PAO.Basis
+>>
+>>
+>> LatticeConstant     1.22  Ang
+>>
+>> %block LatticeVectors
+>>   14.000  0.000  0.000
+>>   0.000  14.000  0.000
+>>   0.000  0.000  2.000
+>> %endblock LatticeVectors
+>>
+>> %block kgrid_Monkhorst_Pack
+>>   3  0  0  0
+>>   0  3  0  0
+>>   0  0  100  0
+>> %endblock kgrid_Monkhorst_Pack
+>>
+>>
+>> XC.functional         LDA           # Exchange-correlation functional
+>> XC.authors            CA            # Exchange-correlation version
+>>
+>> MeshCutoff           300 Ry        # Mesh cutoff. real space mesh
+>>
+>> # SCF options
+>> MaxSCFIterations      2000           # Maximum number of SCF iter
+>> DM.MixingWeight       0.002           # New DM amount for next SCF cycle
+>> DM.Tolerance          1.d-4         # Tolerance in maximum difference
+>>                                     # between input and output DM
+>> DM.UseSaveDM          true          # to use continuation files
+>> DM.NumberPulay         5
+>>
+>> Diag.DivideAndConquer  .false.
+>> SolutionMethod         diagon       # OrderN or Diagon
+>> ElectronicTemperature   50 K       # Temp. for Fermi smearing
+>>
+>> # MD options
+>> MD.TypeOfRun           cg           # Type of dynamics:
+>> MD.UseSaveCG        .true.        # for restarting
+>> MD.UseSaveXV        .true.        # atomic coords
+>> MD.NumCGsteps          0            # Number of CG steps for
+>>
+>> ######SPIN############
+>> SpinPolarized              T
+>> SpinOrbit        T
+>> NonCollinearSpin    T
+>>
+>> %block DM.InitSpin
+>> 1 +  0. 0.
+>> 2 +  0. 0.
+>> %endblock DM.InitSpin
+>> ######################
+>>
+>>
+>> NeglNonOverlapInt               F
+>> SaveElectrostaticPotential      T
+>> SaveRho                         T           # Save the valence 
+>> pseudocharge density
+>>
+>> # Atomic coordinates
+>> AtomicCoordinatesFormat ScaledCartesian
+>>
+>>
+>>
+>> %block AtomicCoordinatesAndAtomicSpecies
+>> 0.0000 0.0000  0.000 1
+>> 0.0000 1.8000 1.000 1
+>> %endblock AtomicCoordinatesAndAtomicSpecies
+>>
+>>
+>> InitTransport T
+>> BulkTransport T
+>> BulkLeads LR
+>>
+>> =========================================================
+>>
+>>
+>>
+>> _______________________________________________
+>> Smeagol-discuss mailing list
+>> Smeagol-discuss at lists.tchpc.tcd.ie
+>> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+
+
+From fallah at iust.ac.ir  Mon May 28 10:09:18 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Mon, 28 May 2012 12:39:18 +0330
+Subject: [Smeagol-discuss] Error in compiling Smeagol
+Message-ID: <WC20120528090918.130425@iust.ac.ir>
+
+I have solved some examples with siesta 3.0 and now I am rather familiar
+with it. However, I encountered a problem in compiling siesta 
+1.3 with the smeagol package. I followed the procedure in the README file
+and after executing the "make" command, it gives me the 
+following error:
+
+farhang at farhang-EP41T-UD3L:~/DFTGF/Smeagol/smeagol.1.0b/Src$ make
+
+Compilation architecture to be used: pg-mpif90
+If this is not what you want, create the right
+arch.make file using the models in Sys
+
+Hit ^C to abort...
+
+==> Information about compiler and flags
+sed  "s/SIESTA_ARCH/pg-mpif90/g" version.F90 > temp0.F
+sed  "s/FFLAGS/ /g" temp0.F > temp.F
+/usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90 -c -m64
+-mtune=opteron -mieee-fp -zerouv -OPT:Ofast -O2   -DMPI temp.F
+make: /usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90: Command not
+found
+make: *** [version] Error 127
+
+I think that it should probably be resolved by following this part of the
+README file:
+
+"5. Edit the arch.make file to include the appropriate compilation flags,
+location
+  of ScaLapack, BLACS, lapack and BLAS libraries, etc."
+
+But I do not know exactly how to do these as I am new to siesta. 
+
+I would truly appreciate it if you can guide me about this problem.
+
+Sincerely,
+
+Farhang Fallah,
+
+Iran University of Science and Technology
+
+
+
+From cfloare at gmail.com  Mon May 28 10:43:02 2012
+From: cfloare at gmail.com (Calin Floare)
+Date: Mon, 28 May 2012 12:43:02 +0300
+Subject: [Smeagol-discuss] Error in compiling Smeagol
+In-Reply-To: <CAMOYtR_gLEQcTk3K51qNTnLSYE4C=q2Optp+1DNXaF0Ark7kcQ@mail.gmail.com>
+References: <WC20120528090918.130425@iust.ac.ir>
+	<CAMOYtR_gLEQcTk3K51qNTnLSYE4C=q2Optp+1DNXaF0Ark7kcQ@mail.gmail.com>
+Message-ID: <CAMOYtR-LrzY_OOnJsPpyAxK9EU9XJDXCYeriMCaRgMQpX5F0Pg@mail.gmail.com>
+
+Hi Farhang Fallah,
+
+It seems you don't have mpif90 compiler in your path.
+
+Firstly  need to have available  a Message Passing Interface library
+(as OpenMPI, MPICH or MVAPICH etc.) compiled and
+available on your machine. This is needed of course if you intend to
+build the parallel version of Smeagol.
+
+Then possibly also the numerical linear algebra libraries you mentioned.
+
+Firstly please tell us who compiled your SIESTA version you already use.
+
+I think, to do this, he/she needed also to edit the arch.make SIESTA
+file and can help you.
+Or you can take a look on it if you still have the SIESTA compiled
+sourcefiles and a working arch.make file for it.
+
+So, it is true that you have to edit the arch.make file and make it
+appropriate to the environment in your workstation.
+
+So, to help, you need to tell us more about your machine and the
+software installed on it and if you
+want to build the serial or parallel Smeagol.
+
+Smeagol is not easy to compile. I also encounter some problems with
+it's compilation too.
+
+In my case even if the executable is produced it gives errors in
+different calculations and I tried different compilers and different libraries.
+
+My colleague Radu Isai asked me to help him, and I'll try to write
+about it soon.
+
+Calin G. Floare
+
+
+>
+> On Mon, May 28, 2012 at 12:09 PM, farhang fallah <fallah at iust.ac.ir> wrote:
+>> I have solved some examples with siesta 3.0 and now I am rather familiar
+>> with it. However, I encountered a problem in compiling siesta
+>> 1.3 with the smeagol package. I followed the procedure in the README file
+>> and after executing the "make" command, it gives me the
+>> following error:
+>>
+>> farhang at farhang-EP41T-UD3L:~/DFTGF/Smeagol/smeagol.1.0b/Src$ make
+>>
+>> Compilation architecture to be used: pg-mpif90
+>> If this is not what you want, create the right
+>> arch.make file using the models in Sys
+>>
+>> Hit ^C to abort...
+>>
+>> ==> Information about compiler and flags
+>> sed ?"s/SIESTA_ARCH/pg-mpif90/g" version.F90 > temp0.F
+>> sed ?"s/FFLAGS/ /g" temp0.F > temp.F
+>> /usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90 -c -m64
+>> -mtune=opteron -mieee-fp -zerouv -OPT:Ofast -O2 ? -DMPI temp.F
+>> make: /usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90: Command not
+>> found
+>> make: *** [version] Error 127
+>>
+>> I think that it should probably be resolved by following this part of the
+>> README file:
+>>
+>> "5. Edit the arch.make file to include the appropriate compilation flags,
+>> location
+>> ?of ScaLapack, BLACS, lapack and BLAS libraries, etc."
+>>
+>> But I do not know exactly how to do these as I am new to siesta.
+>>
+>> I would truly appreciate it if you can guide me about this problem.
+>>
+>> Sincerely,
+>>
+>> Farhang Fallah,
+>>
+>> Iran University of Science and Technology
+>>
+>>
+>> _______________________________________________
+>> Smeagol-discuss mailing list
+>> Smeagol-discuss at lists.tchpc.tcd.ie
+>> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+>
+>
+> --
+> _______________________________________________________
+>
+> Calin Gabriel Floare
+> National Institute for R & D of Isotopic and Molecular Technologies
+> Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+> E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+> Web: http://www.itim-cj.ro/~cfloare/
+> Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+> Fax: +40 264 420042
+> _______________________________________________________
+
+
+
+-- 
+_______________________________________________________
+
+Calin Gabriel Floare
+National Institute for R & D of Isotopic and Molecular Technologies
+Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+Web: http://www.itim-cj.ro/~cfloare/
+Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+Fax: +40 264 420042
+_______________________________________________________
+
+From fallah at iust.ac.ir  Mon May 28 11:45:31 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Mon, 28 May 2012 14:15:31 +0330
+Subject: [Smeagol-discuss] Fwd: Re:  Error in compiling Smeagol
+Message-ID: <WC20120528104531.7704B5@iust.ac.ir>
+
+Thank you Calin Floare for your reply.
+
+Here is my system info:
+
+CPU: Intel Core 2 Duo CPU E7500 @ 2.93GHz * 2
+
+Memory: 2GB
+
+OS: Ubuntu 11.10 (32-bit)
+
+I intend to use the program for serial compiling and my compiler is GNU Fortran 95.
+
+-----Original Message-----
+From: Calin Floare <cfloare at gmail.com>
+To: farhang fallah <fallah at iust.ac.ir>
+Date: Mon, 28 May 2012 12:31:47 +0300
+Subject: Re: [Smeagol-discuss] Error in compiling Smeagol
+
+Hi Farhang Fallah,
+
+It seems you don't have mpif90 compiler in your path.
+
+Firstly  need to have available OpenMPI, MPICH or MVAPICH compiled and
+available on your machine.
+This is needed if you intend to build the parallel version of Seagol.
+Then possibly also the libraries you mentioned.
+
+Firstly please tell us who compiled your SIESTA version you already use.
+I think, to do this, he/she needed also to edit the arch.make SIESTA
+file and could help you.
+Or you can take a look on it if you still have the SIESTA compiled
+sourcefiles and a working arch.make file for it.
+
+So, it is true that you have to edit the arch.make file and make it
+appropriate to the environment in your workstation.
+So, to help, you need to tell us more about your machine and if you
+want to build the serial or parallel Smeagol.
+
+Smeagol is not easy to compile. I also encounter some problems with
+it's compilation too.
+
+Even if the executable is produced in my case it gives errors in
+different calculations and I tried different compilers.
+
+My colleague Radu Isai asked me to help him, and I'll try to write
+about it soon.
+
+Calin G. Floare
+
+
+
+On Mon, May 28, 2012 at 12:09 PM, farhang fallah <fallah at iust.ac.ir>
+wrote:
+> I have solved some examples with siesta 3.0 and now I am rather
+familiar
+> with it. However, I encountered a problem in compiling siesta
+> 1.3 with the smeagol package. I followed the procedure in the README
+file
+> and after executing the "make" command, it gives me the
+> following error:
+>
+> farhang at farhang-EP41T-UD3L:~/DFTGF/Smeagol/smeagol.1.0b/Src$ make
+>
+> Compilation architecture to be used: pg-mpif90
+> If this is not what you want, create the right
+> arch.make file using the models in Sys
+>
+> Hit ^C to abort...
+>
+> ==> Information about compiler and flags
+> sed ?"s/SIESTA_ARCH/pg-mpif90/g" version.F90 > temp0.F
+> sed ?"s/FFLAGS/ /g" temp0.F > temp.F
+> /usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90 -c -m64
+> -mtune=opteron -mieee-fp -zerouv -OPT:Ofast -O2 ? -DMPI temp.F
+> make: /usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90: Command
+not
+> found
+> make: *** [version] Error 127
+>
+> I think that it should probably be resolved by following this part of
+the
+> README file:
+>
+> "5. Edit the arch.make file to include the appropriate compilation
+flags,
+> location
+> ?of ScaLapack, BLACS, lapack and BLAS libraries, etc."
+>
+> But I do not know exactly how to do these as I am new to siesta.
+>
+> I would truly appreciate it if you can guide me about this problem.
+>
+> Sincerely,
+>
+> Farhang Fallah,
+>
+> Iran University of Science and Technology
+>
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+
+-- 
+_______________________________________________________
+
+Calin Gabriel Floare
+National Institute for R & D of Isotopic and Molecular Technologies
+Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+Web: http://www.itim-cj.ro/~cfloare/
+Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+Fax: +40 264 420042
+_______________________________________________________
+
+
+
+From fallah at iust.ac.ir  Mon May 28 11:47:21 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Mon, 28 May 2012 14:17:21 +0330
+Subject: [Smeagol-discuss] Fwd: Re:  Error in compiling Smeagol
+Message-ID: <WC20120528104721.2104B7@iust.ac.ir>
+
+ps: I do not use siesta practically yey. I have just solved some examples with siesta 3.0
+
+-----Original Message-----
+From: Calin Floare <cfloare at gmail.com>
+To: farhang fallah <fallah at iust.ac.ir>
+Date: Mon, 28 May 2012 12:31:47 +0300
+Subject: Re: [Smeagol-discuss] Error in compiling Smeagol
+
+Hi Farhang Fallah,
+
+It seems you don't have mpif90 compiler in your path.
+
+Firstly  need to have available OpenMPI, MPICH or MVAPICH compiled and
+available on your machine.
+This is needed if you intend to build the parallel version of Seagol.
+Then possibly also the libraries you mentioned.
+
+Firstly please tell us who compiled your SIESTA version you already use.
+I think, to do this, he/she needed also to edit the arch.make SIESTA
+file and could help you.
+Or you can take a look on it if you still have the SIESTA compiled
+sourcefiles and a working arch.make file for it.
+
+So, it is true that you have to edit the arch.make file and make it
+appropriate to the environment in your workstation.
+So, to help, you need to tell us more about your machine and if you
+want to build the serial or parallel Smeagol.
+
+Smeagol is not easy to compile. I also encounter some problems with
+it's compilation too.
+
+Even if the executable is produced in my case it gives errors in
+different calculations and I tried different compilers.
+
+My colleague Radu Isai asked me to help him, and I'll try to write
+about it soon.
+
+Calin G. Floare
+
+
+
+On Mon, May 28, 2012 at 12:09 PM, farhang fallah <fallah at iust.ac.ir>
+wrote:
+> I have solved some examples with siesta 3.0 and now I am rather
+familiar
+> with it. However, I encountered a problem in compiling siesta
+> 1.3 with the smeagol package. I followed the procedure in the README
+file
+> and after executing the "make" command, it gives me the
+> following error:
+>
+> farhang at farhang-EP41T-UD3L:~/DFTGF/Smeagol/smeagol.1.0b/Src$ make
+>
+> Compilation architecture to be used: pg-mpif90
+> If this is not what you want, create the right
+> arch.make file using the models in Sys
+>
+> Hit ^C to abort...
+>
+> ==> Information about compiler and flags
+> sed ?"s/SIESTA_ARCH/pg-mpif90/g" version.F90 > temp0.F
+> sed ?"s/FFLAGS/ /g" temp0.F > temp.F
+> /usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90 -c -m64
+> -mtune=opteron -mieee-fp -zerouv -OPT:Ofast -O2 ? -DMPI temp.F
+> make: /usr/support/mvapich-0.9.5--pathscale-2.2.1/bin/mpif90: Command
+not
+> found
+> make: *** [version] Error 127
+>
+> I think that it should probably be resolved by following this part of
+the
+> README file:
+>
+> "5. Edit the arch.make file to include the appropriate compilation
+flags,
+> location
+> ?of ScaLapack, BLACS, lapack and BLAS libraries, etc."
+>
+> But I do not know exactly how to do these as I am new to siesta.
+>
+> I would truly appreciate it if you can guide me about this problem.
+>
+> Sincerely,
+>
+> Farhang Fallah,
+>
+> Iran University of Science and Technology
+>
+>
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+
+-- 
+_______________________________________________________
+
+Calin Gabriel Floare
+National Institute for R & D of Isotopic and Molecular Technologies
+Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+Web: http://www.itim-cj.ro/~cfloare/
+Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+Fax: +40 264 420042
+_______________________________________________________
+
+
+
+
+From cfloare at gmail.com  Mon May 28 12:21:22 2012
+From: cfloare at gmail.com (Calin Floare)
+Date: Mon, 28 May 2012 14:21:22 +0300
+Subject: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+In-Reply-To: <WC20120528104721.2104B7@iust.ac.ir>
+References: <WC20120528104721.2104B7@iust.ac.ir>
+Message-ID: <CAMOYtR9Gqr1ndgF5Y6Fr72zMorDMYKcPWU1D6oQgrLwhy7baXg@mail.gmail.com>
+
+Hi again,
+
+I suppose then you already have the g95 installed in your system.
+
+You need also probably to compile the LAPACK and BLAS libraries too
+also with g95, before trying to compile smeagol.
+You can find them here:
+http://www.netlib.org/lapack/
+
+I didn't tried to compile it with g95 I'm more concerned about Intel
+compilers which produce faster executable but,
+to compile it with g95 you have to have in arch.make file the following:
+
+SIESTA_ARCH=g95
+SOURCE_DIR= ..
+EXEC = smeagol
+
+FC=g95
+
+FFLAGS= -g -funroll-all-loops -O3
+LDFLAGS= -g -funroll-all-loops -O3
+TRANSPORTFLAGS= -g -funroll-all-loops -O3
+
+and also to specify the BLAS and LAPACK libraries after you already
+compiled them as I mentioned.
+
+LAPACK=<path to your LAPACK lib>/lapack_LINUX.a
+BLAS=<path to your BLAS lib>/blas_LINUX.a
+
+Also you have to comment the MPI variables, like here:
+# MPI_INTERFACE=libmpi_f90.a
+# MPI_INCLUDE=/usr/support/mvapich-0.9.5--pathscale-2.2.1/include
+# DEFS_MPI=-DMPI
+
+or clear them:
+MPI_INTERFACE=
+MPI_INCLUDE=
+DEFS_MPI=
+
+An example of arch.make file for g95, which can help you more, you can
+find on this very old post:
+http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/2006-October/000090.html
+
+Good Luck.
+
+Calin
+
+PS: I didn't understood how you solved some examples with siesta 3.0.
+You had the compiled version of SIESTA I suppose.
+
+
+
+On Mon, May 28, 2012 at 1:47 PM, farhang fallah <fallah at iust.ac.ir> wrote:
+> ps: I do not use siesta practically yey. I have just solved some examples with siesta 3.0
+
+
+-- 
+_______________________________________________________
+
+Calin Gabriel Floare
+National Institute for R & D of Isotopic and Molecular Technologies
+Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+Web: http://www.itim-cj.ro/~cfloare/
+Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+Fax: +40 264 420042
+_______________________________________________________
+
+From fallah at iust.ac.ir  Wed May 30 10:19:54 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Wed, 30 May 2012 12:49:54 +0330
+Subject: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+In-Reply-To: <CAMOYtR9Gqr1ndgF5Y6Fr72zMorDMYKcPWU1D6oQgrLwhy7baXg@mail.gmail.com>
+References: <WC20120528104721.2104B7@iust.ac.ir>
+	<CAMOYtR9Gqr1ndgF5Y6Fr72zMorDMYKcPWU1D6oQgrLwhy7baXg@mail.gmail.com>
+Message-ID: <WC20120530091954.610D5A@iust.ac.ir>
+
+Hi,
+
+Thanks again fr your reply. I compiled LAPACK as you said and then changed the arch.make file based on your instruction. However it 
+said that "g95" is an unknown command, so I changed it to "gfortran" (it seems that this is the command for my compiler). Then it said 
+that "-03" is an unknown option so I removed it from the arch.make file. Now it gives the in the attachment "error2.txt". My arch.make  
+and Mekefile files are also attached. Can you please tell me where these error come from?
+
+ps: I changed version.f in my makefile to version.f90 as well.
+
+-----Original Message-----
+From: Calin Floare <cfloare at gmail.com>
+To: Smeagol Discussion <smeagol-discuss at lists.tchpc.tcd.ie>
+Date: Mon, 28 May 2012 14:21:22 +0300
+Subject: Re: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+
+> Hi again,
+> 
+> I suppose then you already have the g95 installed in your system.
+> 
+> You need also probably to compile the LAPACK and BLAS libraries too
+> also with g95, before trying to compile smeagol.
+> You can find them here:
+> http://www.netlib.org/lapack/
+> 
+> I didn't tried to compile it with g95 I'm more concerned about Intel
+> compilers which produce faster executable but,
+> to compile it with g95 you have to have in arch.make file the
+> following:
+> 
+> SIESTA_ARCH=g95
+> SOURCE_DIR= ..
+> EXEC = smeagol
+> 
+> FC=g95
+> 
+> FFLAGS= -g -funroll-all-loops -O3
+> LDFLAGS= -g -funroll-all-loops -O3
+> TRANSPORTFLAGS= -g -funroll-all-loops -O3
+> 
+> and also to specify the BLAS and LAPACK libraries after you already
+> compiled them as I mentioned.
+> 
+> LAPACK=<path to your LAPACK lib>/lapack_LINUX.a
+> BLAS=<path to your BLAS lib>/blas_LINUX.a
+> 
+> Also you have to comment the MPI variables, like here:
+> # MPI_INTERFACE=libmpi_f90.a
+> # MPI_INCLUDE=/usr/support/mvapich-0.9.5--pathscale-2.2.1/include
+> # DEFS_MPI=-DMPI
+> 
+> or clear them:
+> MPI_INTERFACE=
+> MPI_INCLUDE=
+> DEFS_MPI=
+> 
+> An example of arch.make file for g95, which can help you more, you can
+> find on this very old post:
+> http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/2006-October/000090
+> .html
+> 
+> Good Luck.
+> 
+> Calin
+> 
+> PS: I didn't understood how you solved some examples with siesta 3.0.
+> You had the compiled version of SIESTA I suppose.
+> 
+> 
+> 
+> On Mon, May 28, 2012 at 1:47 PM, farhang fallah <fallah at iust.ac.ir>
+> wrote:
+> > ps: I do not use siesta practically yey. I have just solved some
+> examples with siesta 3.0
+> 
+> 
+> -- 
+> _______________________________________________________
+> 
+> Calin Gabriel Floare
+> National Institute for R & D of Isotopic and Molecular Technologies
+> Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+> E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+> Web: http://www.itim-cj.ro/~cfloare/
+> Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+> Fax: +40 264 420042
+> _______________________________________________________
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+> 
+
+
+
+From fallah at iust.ac.ir  Wed May 30 10:32:11 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Wed, 30 May 2012 13:02:11 +0330
+Subject: [Smeagol-discuss] Fwd: Re:  Fwd: Re: Error in compiling Smeagol
+Message-ID: <WC20120530093211.410D64@iust.ac.ir>
+
+Sorry, it seems that I forgot to attach the files! Here they are.
+
+-----Original Message-----
+From: "farhang fallah" <fallah at iust.ac.ir>
+To: "Calin Floare" <cfloare at gmail.com>,"Smeagol Discussion" <smeagol-discuss at lists.tchpc.tcd.ie>
+Date: Wed, 30 May 2012 12:49:54 +0330
+Subject: Re: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+
+Hi,
+
+Thanks again fr your reply. I compiled LAPACK as you said and then
+changed the arch.make file based on your instruction. However it 
+said that "g95" is an unknown command, so I changed it to "gfortran" (it
+seems that this is the command for my compiler). Then it said 
+that "-03" is an unknown option so I removed it from the arch.make file.
+Now it gives the in the attachment "error2.txt". My arch.make  
+and Mekefile files are also attached. Can you please tell me where these
+error come from?
+
+ps: I changed version.f in my makefile to version.f90 as well.
+
+-----Original Message-----
+From: Calin Floare <cfloare at gmail.com>
+To: Smeagol Discussion <smeagol-discuss at lists.tchpc.tcd.ie>
+Date: Mon, 28 May 2012 14:21:22 +0300
+Subject: Re: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+
+> Hi again,
+> 
+> I suppose then you already have the g95 installed in your system.
+> 
+> You need also probably to compile the LAPACK and BLAS libraries too
+> also with g95, before trying to compile smeagol.
+> You can find them here:
+> http://www.netlib.org/lapack/
+> 
+> I didn't tried to compile it with g95 I'm more concerned about Intel
+> compilers which produce faster executable but,
+> to compile it with g95 you have to have in arch.make file the
+> following:
+> 
+> SIESTA_ARCH=g95
+> SOURCE_DIR= ..
+> EXEC = smeagol
+> 
+> FC=g95
+> 
+> FFLAGS= -g -funroll-all-loops -O3
+> LDFLAGS= -g -funroll-all-loops -O3
+> TRANSPORTFLAGS= -g -funroll-all-loops -O3
+> 
+> and also to specify the BLAS and LAPACK libraries after you already
+> compiled them as I mentioned.
+> 
+> LAPACK=<path to your LAPACK lib>/lapack_LINUX.a
+> BLAS=<path to your BLAS lib>/blas_LINUX.a
+> 
+> Also you have to comment the MPI variables, like here:
+> # MPI_INTERFACE=libmpi_f90.a
+> # MPI_INCLUDE=/usr/support/mvapich-0.9.5--pathscale-2.2.1/include
+> # DEFS_MPI=-DMPI
+> 
+> or clear them:
+> MPI_INTERFACE=
+> MPI_INCLUDE=
+> DEFS_MPI=
+> 
+> An example of arch.make file for g95, which can help you more, you can
+> find on this very old post:
+> http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/2006-October/000090
+> .html
+> 
+> Good Luck.
+> 
+> Calin
+> 
+> PS: I didn't understood how you solved some examples with siesta 3.0.
+> You had the compiled version of SIESTA I suppose.
+> 
+> 
+> 
+> On Mon, May 28, 2012 at 1:47 PM, farhang fallah <fallah at iust.ac.ir>
+> wrote:
+> > ps: I do not use siesta practically yey. I have just solved some
+> examples with siesta 3.0
+> 
+> 
+> -- 
+> _______________________________________________________
+> 
+> Calin Gabriel Floare
+> National Institute for R & D of Isotopic and Molecular Technologies
+> Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+> E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+> Web: http://www.itim-cj.ro/~cfloare/
+> Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+> Fax: +40 264 420042
+> _______________________________________________________
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+> 
+
+
+_______________________________________________
+Smeagol-discuss mailing list
+Smeagol-discuss at lists.tchpc.tcd.ie
+http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: error 2.txt
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120530/9f726f88/attachment.txt>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: arch.txt
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120530/9f726f88/attachment-0001.txt>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: Makefile.txt
+URL: <http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/attachments/20120530/9f726f88/attachment-0002.txt>
+
+From fallah at iust.ac.ir  Wed May 30 15:52:12 2012
+From: fallah at iust.ac.ir (farhang fallah)
+Date: Wed, 30 May 2012 18:22:12 +0330
+Subject: [Smeagol-discuss] Fwd: Re:  Fwd: Re: Error in compiling Smeagol
+Message-ID: <WC20120530145212.300F0F@iust.ac.ir>
+
+I managed to resolve the previous error by renaming temp.F and temp0.F as temp.F90 and temp0.F90.
+
+Now it starts to compile files but it suddenly stops at siesta.F with the following error:
+
+g95 -c -g -funroll-all-loops    siesta.F
+In file siesta.F:736
+
+           write(6,'(a47)') 'smeagol: The size of the cell is being expanded'
+                            1
+Error: Unterminated character constant beginning at (1)
+In file siesta.F:737
+
+           write(6,'(a46)') 'smeagol:  along the perpendicular direction to'
+                            1
+Error: Unterminated character constant beginning at (1)
+make: *** [siesta.o] Error 1
+
+Does this error have anything to do with my compiler or its options?
+
+-----Original Message-----
+From: "farhang fallah" <fallah at iust.ac.ir>
+To: "Calin Floare" <cfloare at gmail.com>,"Smeagol Discussion" <smeagol-discuss at lists.tchpc.tcd.ie>
+Date: Wed, 30 May 2012 12:49:54 +0330
+Subject: Re: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+
+Hi,
+
+Thanks again fr your reply. I compiled LAPACK as you said and then
+changed the arch.make file based on your instruction. However it 
+said that "g95" is an unknown command, so I changed it to "gfortran" (it
+seems that this is the command for my compiler). Then it said 
+that "-03" is an unknown option so I removed it from the arch.make file.
+Now it gives the in the attachment "error2.txt". My arch.make  
+and Mekefile files are also attached. Can you please tell me where these
+error come from?
+
+ps: I changed version.f in my makefile to version.f90 as well.
+
+-----Original Message-----
+From: Calin Floare <cfloare at gmail.com>
+To: Smeagol Discussion <smeagol-discuss at lists.tchpc.tcd.ie>
+Date: Mon, 28 May 2012 14:21:22 +0300
+Subject: Re: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+
+> Hi again,
+> 
+> I suppose then you already have the g95 installed in your system.
+> 
+> You need also probably to compile the LAPACK and BLAS libraries too
+> also with g95, before trying to compile smeagol.
+> You can find them here:
+> http://www.netlib.org/lapack/
+> 
+> I didn't tried to compile it with g95 I'm more concerned about Intel
+> compilers which produce faster executable but,
+> to compile it with g95 you have to have in arch.make file the
+> following:
+> 
+> SIESTA_ARCH=g95
+> SOURCE_DIR= ..
+> EXEC = smeagol
+> 
+> FC=g95
+> 
+> FFLAGS= -g -funroll-all-loops -O3
+> LDFLAGS= -g -funroll-all-loops -O3
+> TRANSPORTFLAGS= -g -funroll-all-loops -O3
+> 
+> and also to specify the BLAS and LAPACK libraries after you already
+> compiled them as I mentioned.
+> 
+> LAPACK=<path to your LAPACK lib>/lapack_LINUX.a
+> BLAS=<path to your BLAS lib>/blas_LINUX.a
+> 
+> Also you have to comment the MPI variables, like here:
+> # MPI_INTERFACE=libmpi_f90.a
+> # MPI_INCLUDE=/usr/support/mvapich-0.9.5--pathscale-2.2.1/include
+> # DEFS_MPI=-DMPI
+> 
+> or clear them:
+> MPI_INTERFACE=
+> MPI_INCLUDE=
+> DEFS_MPI=
+> 
+> An example of arch.make file for g95, which can help you more, you can
+> find on this very old post:
+> http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/2006-October/000090
+> .html
+> 
+> Good Luck.
+> 
+> Calin
+> 
+> PS: I didn't understood how you solved some examples with siesta 3.0.
+> You had the compiled version of SIESTA I suppose.
+> 
+> 
+> 
+> On Mon, May 28, 2012 at 1:47 PM, farhang fallah <fallah at iust.ac.ir>
+> wrote:
+> > ps: I do not use siesta practically yey. I have just solved some
+> examples with siesta 3.0
+> 
+> 
+> -- 
+> _______________________________________________________
+> 
+> Calin Gabriel Floare
+> National Institute for R & D of Isotopic and Molecular Technologies
+> Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+> E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+> Web: http://www.itim-cj.ro/~cfloare/
+> Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+> Fax: +40 264 420042
+> _______________________________________________________
+> _______________________________________________
+> Smeagol-discuss mailing list
+> Smeagol-discuss at lists.tchpc.tcd.ie
+> http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+> 
+
+
+_______________________________________________
+Smeagol-discuss mailing list
+Smeagol-discuss at lists.tchpc.tcd.ie
+http://lists.tchpc.tcd.ie/listinfo/smeagol-discuss
+
+
+
+
+From cfloare at gmail.com  Thu May 31 20:39:56 2012
+From: cfloare at gmail.com (Calin Floare)
+Date: Thu, 31 May 2012 22:39:56 +0300
+Subject: [Smeagol-discuss] Fwd: Re: Fwd: Re: Error in compiling Smeagol
+In-Reply-To: <WC20120530145212.300F0F@iust.ac.ir>
+References: <WC20120530145212.300F0F@iust.ac.ir>
+Message-ID: <CAMOYtR_-Mf60ik77aFYpt_xkKv0kBTURk9b4g24S7U62cDv1Wg@mail.gmail.com>
+
+Hi again,
+
+Initially g95 was not in your path but now I see that you compile also
+with g95 not only with gfortran.
+
+At some errors you can find answers if you search on the web.
+
+As an example, for this specific error take a look here, as an example:
+
+http://gcc.gnu.org/ml/fortran/2007-12/msg00212.html
+
+"Fixed-form Fortran has only 72 characters per line. What happens with
+longer lines is implementation dependent. However, many
+programmers/programs assume that everything after column 72 is ignored
+(which gfortran does).
+
+Solution: Fix the program by splitting the line or by using the
+-ffixed-line-length-n (n is a non-negative integer)."
+
+But, as I said, I personally didn't tested and I never tried to
+compile it using g95 or gfortran, even if your error seems to have
+this cause.
+
+I am a bit busy now and I cannot go deeper very soon.
+
+But, an Aug 2009 thread on the Smeagol Forum Archive mention that
+gfortran and g95 are not very well tested with Smeagol, the advice
+being, to use Intel compilers.
+
+Intel compilers are supposedly better and many are using them.
+
+http://lists.tchpc.tcd.ie/pipermail/smeagol-discuss/2009-August/thread.html
+
+You can download them from Intel website with an non-commercial
+license and you can install them easily, but there can appear also
+problems
+as Smeagol will probably work only with some compilers.
+
+It will be better also if Smeagol can be tested with gfortran or g95 too.
+
+I want also to ask the Smeagol developers if there is a bug tracking
+system maintained for Smeagol ?
+
+As an example I would like to know if on the file "smeagol/Interface/emt2k.F"
+
+at the line 392: "dcojg"
+
+"rhoG(nuo+iuo,juo)*dcojg(sckxij))"
+
+has not to be written "dconjg". There is an "n" missing.
+
+I personally found this typing error, I think, but could be more, and
+a tool like Bugzilla could surely help and finally improve the code.
+
+Calin G. Floare
+
+
+
+On Wed, May 30, 2012 at 5:52 PM, farhang fallah <fallah at iust.ac.ir> wrote:
+> I managed to resolve the previous error by renaming temp.F and temp0.F as temp.F90 and temp0.F90.
+>
+> Now it starts to compile files but it suddenly stops at siesta.F with the following error:
+>
+> g95 -c -g -funroll-all-loops ? ?siesta.F
+> In file siesta.F:736
+>
+> ? ? ? ? ? write(6,'(a47)') 'smeagol: The size of the cell is being expanded'
+> ? ? ? ? ? ? ? ? ? ? ? ? ? ?1
+> Error: Unterminated character constant beginning at (1)
+> In file siesta.F:737
+>
+> ? ? ? ? ? write(6,'(a46)') 'smeagol: ?along the perpendicular direction to'
+> ? ? ? ? ? ? ? ? ? ? ? ? ? ?1
+> Error: Unterminated character constant beginning at (1)
+> make: *** [siesta.o] Error 1
+>
+> Does this error have anything to do with my compiler or its options?
+>
+> -----Original Message-----
+> From: "farhang fallah" <fallah at iust.ac.ir>
+> To: "Calin Floare" <cfloare at gmail.com>,"Smeagol Discussion" <smeagol-discuss at lists.tchpc.tcd.ie>
+> Date: Wed, 30 May 2012 12:49:54 +0330
+> Subject: Re: [Smeagol-discuss] Fwd: Re: Error in compiling Smeagol
+>
+> Hi,
+>
+> Thanks again fr your reply. I compiled LAPACK as you said and then
+> changed the arch.make file based on your instruction. However it
+> said that "g95" is an unknown command, so I changed it to "gfortran" (it
+> seems that this is the command for my compiler). Then it said
+> that "-03" is an unknown option so I removed it from the arch.make file.
+> Now it gives the in the attachment "error2.txt". My arch.make
+> and Mekefile files are also attached. Can you please tell me where these
+> error come from?
+>
+> ps: I changed version.f in my makefile to version.f90 as well.
+>
+
+
+-- 
+_______________________________________________________
+
+Calin Gabriel Floare
+National Institute for R & D of Isotopic and Molecular Technologies
+Donath Str. 65-103, P.O. Box 700, 400293, Cluj-Napoca 5, Romania
+E-mail: cfloare at itim-cj.ro (cfloare at gmail.com)
+Web: http://www.itim-cj.ro/~cfloare/
+Tel: +40 264 584037 - ext. 181 (work) or +40 729 934133 (mobile)
+Fax: +40 264 420042
+_______________________________________________________
+
