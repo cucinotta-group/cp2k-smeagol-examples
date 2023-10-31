@@ -1,0 +1,115 @@
+SystemName  Au wire
+SystemLabel Au
+#********************************************************
+# Specification of atomic species and positions
+#********************************************************
+# Chemical species
+NumberOfSpecies 1
+%block ChemicalSpeciesLabel
+ 1 79 Au
+%endblock ChemicalSpeciesLabel
+# UNIT CELL
+LatticeConstant       1.0 Ang
+%block LatticeVectors
+  9.000   0.000   0.000	  1
+  0.000   9.000   0.000   1
+  0.000   0.000  22.400   1
+%endblock LatticeVectors
+# ATOMIC POSITIONS
+NumberOfAtoms    9
+AtomicCoordinatesFormat Ang
+%block AtomicCoordinatesAndAtomicSpecies
+   0.000   0.000  0.000   1  Au
+   0.000   0.000  2.800   1  Au
+   0.000   0.000  5.600   1  Au
+   0.000   0.000  8.400   1  Au
+   0.000   0.000 11.200   1  Au
+   2.800   0.000 11.200   1  Au
+   0.000   0.000 14.000   1  Au
+   0.000   0.000 16.800   1  Au
+   0.000   0.000 19.600   1  Au
+%endblock AtomicCoordinatesAndAtomicSpecies 	
+#********************************************************
+# DFT options
+#********************************************************
+# Basis set variables
+PAO.BasisType split
+PAO.SplitNorm			0.15		# Amount of norm carried by the second zeta
+%block PAO.Basis
+  Au  1
+n=6  0  1  P 0 E 20 4
+  5.5
+%endblock PAO.Basis
+%block PS.lmax
+ Au   1
+%endblock PS.lmax
+# k-mesh for Brillouin zone integration
+%block kgrid_Monkhorst_Pack
+  1   0   0     0.0
+  0   1   0     0.0
+  0   0   1     0.0
+%endblock kgrid_Monkhorst_Pack
+# General variables
+ElectronicTemperature  300 K
+MeshCutoff             200 Ry
+xc.functional          LDA           # Exchange-correlation functional
+xc.authors             CA
+SpinPolarized          F
+# SCF variables
+DM.MixSCF1            T
+MaxSCFIterations      1000           # Maximum number of SCF iter
+DM.MixingWeight       0.1            # New DM amount for next SCF cycle
+DM.Tolerance          2.0d-4         # Tolerance in maximum difference
+DM.UseSaveDM          true           # to use continuation files
+DM.NumberPulay        4
+# Output variables
+WriteMullikenPop                0
+WriteBands                      F
+SaveRho                         T
+SaveElectrostaticPotential      T
+SaveTotalPotential              F
+WriteCoorXmol                   T
+WriteMDXmol                     T
+#********************************************************
+# SMEAGOL options
+#********************************************************
+# perform a transport calculation
+EMTransport               T
+# set number of energy points for integrals
+NEnergReal              320
+NEnergImCircle           16
+NEnergImLine             16
+NPoles                   16
+#set bias range
+VInitial                 0.00d0 eV
+VFinal                   0.00d0 eV
+NIVPoints                0
+# General variables
+Delta                    1.d-4
+EnergLowestBound        -4.4d0 Ry
+NSlices                  1
+PeriodicTransp           T
+SaveMemTranspK           F
+WriteDMT                 F
+# Matching of Hartree potential with the leads
+HartreeLeadsBottom      -1.79978740  eV
+HartreeLeadsLeft         0.000      Ang
+HartreeLeadsRight        0.000      Ang
+# print transmission coefficient
+TrCoefficients           T
+NTransmPoints            200
+TransmissionOverK        F
+TRCScaleEF               T
+InitTransmRange         -10.0  eV
+FinalTransmRange         10.0  eV
+TransmissionEmbed        F
+TRC.EMDOS                T
+TRC.EMPDOS               T
+TRC.LeadsDOS             T
+TRC.LeadsPDOS            F
+Sigma.PDOS               F
+Sigma.DOSVV              F
+# save output for specified bias steps
+%block SaveBiasSteps
+ 0
+%endblock SaveBiasSteps

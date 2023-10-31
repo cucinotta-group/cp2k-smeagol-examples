@@ -1,9 +1,14 @@
 #!/bin/bash
 
+# CP2K
 find . -name "*.bak-*" -type f -delete
 find . -name "*.wfn*" -type f -delete
 find . -name "*.kp*" -type f -delete
 find . -name "*.cube*" -type f -delete
+
+# SMEAGOL
+find . -name "*RHO*txt*" -type f -delete
+find . -name "*VH*txt*" -type f -delete
 find . -name "*.DAT*" -type f -delete
 find . -name "*.DM*" -type f -delete
 find . -name "*.HST*" -type f -delete
