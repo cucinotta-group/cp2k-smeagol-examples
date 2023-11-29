@@ -1,0 +1,82 @@
+&GLOBAL
+   PROJECT              dft_wfn
+   RUN_TYPE             energy
+   PRINT_LEVEL          medium
+   EXTENDED_FFT_LENGTHS .true.
+&END GLOBAL
+
+&FORCE_EVAL
+   METHOD Quickstep
+
+   &DFT
+      BASIS_SET_FILE_NAME BASIS_MOLOPT
+      POTENTIAL_FILE_NAME GTH_POTENTIALS
+
+      &MGRID
+         CUTOFF 400
+      &END MGRID
+
+      &SCF
+         MAX_SCF   100
+         EPS_SCF   1e-7
+         SCF_GUESS atomic
+         ADDED_MOS 100
+
+         &SMEAR
+            ELECTRONIC_TEMPERATURE [K] 293
+            METHOD fermi_dirac
+         &END SMEAR
+
+         &MIXING
+            ALPHA   0.3
+            METHOD  broyden_mixing
+            NBUFFER 8
+         &END MIXING
+
+         &PRINT
+            &RESTART
+               FILENAME RESTART_0
+            &END RESTART
+         &END PRINT
+      &END SCF
+
+      &POISSON
+         PERIODIC xyz
+      &END POISSON
+
+      &XC
+         &XC_FUNCTIONAL pade
+         &END XC_FUNCTIONAL
+      &END XC
+
+      &PRINT
+  	 &PDOS
+              NLUMO -1
+              COMPONENTS
+           &END PDOS
+        &E_DENSITY_CUBE  ON
+        &END E_DENSITY_CUBE
+        &HIRSHFELD
+      SHAPE_FUNCTION  DENSITY
+      &END HIRSHFELD
+      &END PRINT
+   &END DFT
+
+   &SUBSYS
+      &CELL
+        ABC   16.68515 16.68515 10.428225
+        PERIODIC xyz
+      &END CELL
+	&TOPOLOGY
+        COORD_FILE_NAME input.xyz
+        COORD_FILE_FORMAT  XYZ
+      &END TOPOLOGY
+
+      &KIND Au
+         BASIS_SET SZV-MOLOPT-SR-GTH
+         POTENTIAL GTH-PADE-q11
+      &END KIND
+	  
+   &END SUBSYS
+&END FORCE_EVAL
+

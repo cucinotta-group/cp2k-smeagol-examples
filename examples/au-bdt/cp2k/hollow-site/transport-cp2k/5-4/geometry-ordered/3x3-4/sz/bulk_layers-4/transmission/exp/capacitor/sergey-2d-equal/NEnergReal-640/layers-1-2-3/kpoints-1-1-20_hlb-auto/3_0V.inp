@@ -1,0 +1,161 @@
+&GLOBAL
+   PROJECT              0V
+   RUN_TYPE             energy
+   PRINT_LEVEL          medium
+   EXTENDED_FFT_LENGTHS .true.
+&END GLOBAL
+
+&FORCE_EVAL
+   METHOD Quickstep
+
+   &DFT
+      BASIS_SET_FILE_NAME BASIS_MOLOPT
+      POTENTIAL_FILE_NAME GTH_POTENTIALS
+	  WFN_RESTART_FILE_NAME dft_wfn-RESTART_0.kp
+	  
+ &SMEAGOL
+        # Perform a transport calculation
+         PROJECT_NAME 0V
+         EMTransport              .true.
+         #PRINT_EVERY_STEP FALSE
+         #DEBUG FALSE
+
+        # Set number of energy points for integrals
+         NEnergReal               640
+         NEnergImCircle           16
+         NEnergImLine             16
+         NPoles                   16
+
+        # Set bias range
+         VInitial [eV]            0.000d0
+         VFinal   [eV]            0.000d0
+         NIVPoints                0
+
+        # General variables
+         Delta                    1.d-4
+         EnergLowestBound [Hartree]   -3.0
+         NSlices                  1
+         TrCoefficients           .true.
+
+        # Print transmission coefficient
+         InitTransmRange [Ry]     -2.0d0
+         FinalTransmRange [Ry]     2.0d0
+         NTransmPoints            800
+        TRC.EMDOS                T
+        TRC.EMPDOS               F
+        TRC.LeadsDOS             T
+        TRC.LeadsPDOS            F
+        Sigma.PDOS               F
+        Sigma.DOSVV              F
+
+         # Matching of Hartree potential with the leads
+         HartreeLeadsBottom [eV]  -8.1890414397E+000
+         HartreeLeadsLeft  [Angstrom]  0.0
+         HartreeLeadsRight [Angstrom]  0.0
+
+        # Other variables
+       EM.WeightRho 1.0
+       EM.TimeReversal F
+       Sigma.EImag 0.0
+       EM.OrderN .true.  # .false. crashes MatrixUtil.F90:2021
+      &END
+
+
+      &MGRID
+         CUTOFF 400
+      &END MGRID
+
+      &SCF
+         MAX_SCF   500
+         EPS_SCF   1e-7
+         SCF_GUESS RESTART
+         ADDED_MOS 100
+
+         &SMEAR
+            ELECTRONIC_TEMPERATURE [K] 293
+            METHOD fermi_dirac
+         &END SMEAR
+
+         &MIXING
+            ALPHA   0.3
+            METHOD  broyden_mixing
+            NBUFFER 8
+         &END MIXING
+
+         &PRINT
+            &RESTART
+               FILENAME RESTART_0
+            &END RESTART
+         &END PRINT
+      &END SCF
+
+      &POISSON
+         PERIODIC xyz
+      &END POISSON
+
+      &XC
+         &XC_FUNCTIONAL pade
+         &END XC_FUNCTIONAL
+      &END XC
+	  
+      &KPOINTS
+         SCHEME  MONKHORST-PACK  1 1 1
+         SYMMETRY OFF
+         EPS_GEO 1.e-8
+         FULL_GRID ON
+         VERBOSE T
+         # -1 -- smallest possible number of processes per group; 0 -- all processes, > 0 -- this number of processes
+         PARALLEL_GROUP_SIZE  0
+      &END KPOINTS
+
+    &PRINT
+        &V_HARTREE_CUBE
+        STRIDE  1 1 1
+        &END  V_HARTREE_CUBE
+      &E_DENSITY_CUBE  ON
+        STRIDE 1 1 1
+      &END E_DENSITY_CUBE
+      &HIRSHFELD
+    SHAPE_FUNCTION  DENSITY
+    &END HIRSHFELD
+    &END PRINT
+&END DFT
+
+
+   &SUBSYS
+      &CELL
+        ABC     8.336 8.336 33.926
+        PERIODIC xyz
+      &END CELL
+
+      &TOPOLOGY
+        COORD_FILE_NAME em.xyz
+        COORD_FILE_FORMAT  XYZ
+      &END TOPOLOGY
+
+      &KIND Au
+         BASIS_SET SZV-MOLOPT-SR-GTH
+         POTENTIAL GTH-PADE-q11
+      &END KIND
+
+
+      &KIND C
+        BASIS_SET SZV-MOLOPT-SR-GTH
+        ELEMENT C
+        POTENTIAL GTH-PADE-q4
+      &END KIND
+
+      &KIND S
+        BASIS_SET SZV-MOLOPT-SR-GTH
+        ELEMENT S
+        POTENTIAL GTH-PADE-q6
+      &END KIND
+
+      &KIND H
+        BASIS_SET SZV-MOLOPT-SR-GTH
+        ELEMENT H
+        POTENTIAL GTH-PADE-q1
+      &END KIND
+
+   &END SUBSYS
+&END FORCE_EVAL

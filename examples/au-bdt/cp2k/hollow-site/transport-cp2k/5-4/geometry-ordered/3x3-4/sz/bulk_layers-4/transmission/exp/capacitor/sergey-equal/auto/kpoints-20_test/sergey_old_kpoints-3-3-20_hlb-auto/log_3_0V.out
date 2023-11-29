@@ -1,0 +1,878 @@
+ DBCSR| CPU Multiplication driver                                           XSMM
+ DBCSR| Multrec recursion limit                                              512
+ DBCSR| Multiplication stack size                                           1000
+ DBCSR| Maximum elements for images                                    UNLIMITED
+ DBCSR| Multiplicative factor virtual images                                   1
+ DBCSR| Use multiplication densification                                       T
+ DBCSR| Multiplication size stacks                                             3
+ DBCSR| Use memory pool for CPU allocation                                     F
+ DBCSR| Number of 3D layers                                               SINGLE
+ DBCSR| Use MPI memory allocation                                              F
+ DBCSR| Use RMA algorithm                                                      F
+ DBCSR| Use Communication thread                                               T
+ DBCSR| Communication thread load                                             87
+ DBCSR| MPI: My node id                                                        0
+ DBCSR| MPI: Number of nodes                                                 240
+ DBCSR| OMP: Current number of threads                                         1
+ DBCSR| OMP: Max number of threads                                             1
+ DBCSR| Split modifier for TAS multiplication algorithm                  1.0E+00
+
+
+  **** **** ******  **  PROGRAM STARTED AT               2023-03-22 12:05:35.921
+ ***** ** ***  *** **   PROGRAM STARTED ON                 cn1152.scarf.rl.ac.uk
+ **    ****   ******    PROGRAM STARTED BY                             scarf1157
+ ***** **    ** ** **   PROGRAM PROCESS ID                                 40820
+  **** **  *******  **  PROGRAM STARTED IN /work4/scd/scarf1157/work/testing/cp2
+                                           k-smeagol/bdt/cp2k/hollow-site/transp
+                                           ort-cp2k/5-4/geometry-ordered/3x3-4/s
+                                           z/bulk_layers-4/transmission/exp/capa
+                                           citor/sergey-equal/auto/kpoints-20_te
+                                           st/sergey_old_kpoints-3-3-20_hlb-auto
+
+ CP2K| version string:                 CP2K version 2022.1 (Development Version)
+ CP2K| source code revision number:                                  git:58fcd6f
+ CP2K| cp2kflags: omp fftw3 libxc parallel mpi3 scalapack xsmm spglib           
+ CP2K| is freely available from                            https://www.cp2k.org/
+ CP2K| Program compiled at                          Mon 23 Jan 15:25:49 GMT 2023
+ CP2K| Program compiled on                                 cn1108.scarf.rl.ac.uk
+ CP2K| Program compiled for                                                local
+ CP2K| Data directory path    /home/vol07/scarf1157/code/smeagol/cp2k-smeagol/sc
+ CP2K| Input file name                                                  3_0V.inp
+
+ GLOBAL| Force Environment number                                              1
+ GLOBAL| Basis set file name                                        BASIS_MOLOPT
+ GLOBAL| Potential file name                                      GTH_POTENTIALS
+ GLOBAL| MM Potential file name                                     MM_POTENTIAL
+ GLOBAL| Coordinate file name                                             em.xyz
+ GLOBAL| Method name                                                        CP2K
+ GLOBAL| Project name                                                         0V
+ GLOBAL| Run type                                                         ENERGY
+ GLOBAL| FFT library                                                       FFTW3
+ GLOBAL| Diagonalization library                                       ScaLAPACK
+ GLOBAL| Orthonormality check for eigenvectors                          DISABLED
+ GLOBAL| Matrix multiplication library                                 ScaLAPACK
+ GLOBAL| All-to-all communication in single precision                          F
+ GLOBAL| FFTs using library dependent lengths                                  T
+ GLOBAL| Grid backend                                                       AUTO
+ GLOBAL| Global print level                                               MEDIUM
+ GLOBAL| MPI I/O enabled                                                       T
+ GLOBAL| Total number of message passing processes                           240
+ GLOBAL| Number of threads for this process                                    1
+ GLOBAL| This output is from process                                           0
+ GLOBAL| Stack size for threads created by OpenMP (OMP_STACKSIZE)        default
+ GLOBAL| CPU model name                         AMD EPYC 7502P 32-Core Processor
+ GLOBAL| CPUID                                                              1002
+
+ MEMORY| system memory details [Kb]
+ MEMORY|                        rank 0           min           max       average
+ MEMORY| MemTotal            263896980     263896980     263896984     263896981
+ MEMORY| MemFree             199223908      76509844     237596400     201243137
+ MEMORY| Buffers                  2568          2484          2568          2557
+ MEMORY| Cached               45526624      11230740     170951164      46573514
+ MEMORY| Slab                  1250520        924548       2017648       1234447
+ MEMORY| SReclaimable           708096        458496       1487108        721776
+ MEMORY| MemLikelyFree       245461196     245461196     249288204     248540985
+
+
+ *** Fundamental physical constants (SI units) ***
+
+ *** Literature: B. J. Mohr and B. N. Taylor,
+ ***             CODATA recommended values of the fundamental physical
+ ***             constants: 2006, Web Version 5.1
+ ***             http://physics.nist.gov/constants
+
+ Speed of light in vacuum [m/s]                             2.99792458000000E+08
+ Magnetic constant or permeability of vacuum [N/A**2]       1.25663706143592E-06
+ Electric constant or permittivity of vacuum [F/m]          8.85418781762039E-12
+ Planck constant (h) [J*s]                                  6.62606896000000E-34
+ Planck constant (h-bar) [J*s]                              1.05457162825177E-34
+ Elementary charge [C]                                      1.60217648700000E-19
+ Electron mass [kg]                                         9.10938215000000E-31
+ Electron g factor [ ]                                     -2.00231930436220E+00
+ Proton mass [kg]                                           1.67262163700000E-27
+ Fine-structure constant                                    7.29735253760000E-03
+ Rydberg constant [1/m]                                     1.09737315685270E+07
+ Avogadro constant [1/mol]                                  6.02214179000000E+23
+ Boltzmann constant [J/K]                                   1.38065040000000E-23
+ Atomic mass unit [kg]                                      1.66053878200000E-27
+ Bohr radius [m]                                            5.29177208590000E-11
+
+ *** Conversion factors ***
+
+ [u] -> [a.u.]                                              1.82288848426455E+03
+ [Angstrom] -> [Bohr] = [a.u.]                              1.88972613288564E+00
+ [a.u.] = [Bohr] -> [Angstrom]                              5.29177208590000E-01
+ [a.u.] -> [s]                                              2.41888432650478E-17
+ [a.u.] -> [fs]                                             2.41888432650478E-02
+ [a.u.] -> [J]                                              4.35974393937059E-18
+ [a.u.] -> [N]                                              8.23872205491840E-08
+ [a.u.] -> [K]                                              3.15774647902944E+05
+ [a.u.] -> [kJ/mol]                                         2.62549961709828E+03
+ [a.u.] -> [kcal/mol]                                       6.27509468713739E+02
+ [a.u.] -> [Pa]                                             2.94210107994716E+13
+ [a.u.] -> [bar]                                            2.94210107994716E+08
+ [a.u.] -> [atm]                                            2.90362800883016E+08
+ [a.u.] -> [eV]                                             2.72113838565563E+01
+ [a.u.] -> [Hz]                                             6.57968392072181E+15
+ [a.u.] -> [1/cm] (wave numbers)                            2.19474631370540E+05
+ [a.u./Bohr**2] -> [1/cm]                                   5.14048714338585E+03
+ 
+
+ CELL_TOP| Volume [angstrom^3]:                                      2357.480286
+ CELL_TOP| Vector a [angstrom     8.336     0.000     0.000   |a| =     8.336000
+ CELL_TOP| Vector b [angstrom     0.000     8.336     0.000   |b| =     8.336000
+ CELL_TOP| Vector c [angstrom     0.000     0.000    33.926   |c| =    33.926000
+ CELL_TOP| Angle (b,c), alpha [degree]:                                90.000000
+ CELL_TOP| Angle (a,c), beta  [degree]:                                90.000000
+ CELL_TOP| Angle (a,b), gamma [degree]:                                90.000000
+ CELL_TOP| Numerically orthorhombic:                                         YES
+ CELL_TOP| Periodicity                                                       XYZ
+
+ GENERATE|  Preliminary Number of Bonds generated:                             0
+ GENERATE|  Achieved consistency in connectivity generation.
+
+ CELL| Volume [angstrom^3]:                                          2357.480286
+ CELL| Vector a [angstrom]:       8.336     0.000     0.000   |a| =     8.336000
+ CELL| Vector b [angstrom]:       0.000     8.336     0.000   |b| =     8.336000
+ CELL| Vector c [angstrom]:       0.000     0.000    33.926   |c| =    33.926000
+ CELL| Angle (b,c), alpha [degree]:                                    90.000000
+ CELL| Angle (a,c), beta  [degree]:                                    90.000000
+ CELL| Angle (a,b), gamma [degree]:                                    90.000000
+ CELL| Numerically orthorhombic:                                             YES
+ CELL| Periodicity                                                           XYZ
+
+ CELL_REF| Volume [angstrom^3]:                                      2357.480286
+ CELL_REF| Vector a [angstrom     8.336     0.000     0.000   |a| =     8.336000
+ CELL_REF| Vector b [angstrom     0.000     8.336     0.000   |b| =     8.336000
+ CELL_REF| Vector c [angstrom     0.000     0.000    33.926   |c| =    33.926000
+ CELL_REF| Angle (b,c), alpha [degree]:                                90.000000
+ CELL_REF| Angle (a,c), beta  [degree]:                                90.000000
+ CELL_REF| Angle (a,b), gamma [degree]:                                90.000000
+ CELL_REF| Numerically orthorhombic:                                         YES
+ CELL_REF| Periodicity                                                       XYZ
+
+ *******************************************************************************
+                                    Kpoints
+ *******************************************************************************
+ BRILLOUIN| K-point scheme                                        Monkhorst-Pack
+ BRILLOUIN| K-Point grid                                             3    3    1
+ BRILLOUIN| Accuracy in Symmetry determination                      0.100000E-07
+ BRILLOUIN| K-Point point group symmetrization                               OFF
+ BRILLOUIN| Wavefunction type                                            COMPLEX
+ BRILLOUIN| Use full k-point grid     
+ BRILLOUIN| List of Kpoints [2 Pi/Bohr]                                        9
+ BRILLOUIN| Number           Weight            X              Y              Z
+ BRILLOUIN|     1           0.11111       -0.33333       -0.33333        0.00000
+ BRILLOUIN|     2           0.11111       -0.33333        0.00000        0.00000
+ BRILLOUIN|     3           0.11111       -0.33333        0.33333        0.00000
+ BRILLOUIN|     4           0.11111        0.00000       -0.33333        0.00000
+ BRILLOUIN|     5           0.11111        0.00000        0.00000        0.00000
+ BRILLOUIN|     6           0.11111        0.00000        0.33333        0.00000
+ BRILLOUIN|     7           0.11111        0.33333       -0.33333        0.00000
+ BRILLOUIN|     8           0.11111        0.33333        0.00000        0.00000
+ BRILLOUIN|     9           0.11111        0.33333        0.33333        0.00000
+ *******************************************************************************
+
+ *******************************************************************************
+ *******************************************************************************
+ **                                                                           **
+ **     #####                         ##              ##                      **
+ **    ##   ##            ##          ##              ##                      **
+ **   ##     ##                       ##            ######                    **
+ **   ##     ##  ##   ##  ##   #####  ##  ##   ####   ##    #####    #####    **
+ **   ##     ##  ##   ##  ##  ##      ## ##   ##      ##   ##   ##  ##   ##   **
+ **   ##  ## ##  ##   ##  ##  ##      ####     ###    ##   ######   ######    **
+ **    ##  ###   ##   ##  ##  ##      ## ##      ##   ##   ##       ##        **
+ **     #######   #####   ##   #####  ##  ##  ####    ##    #####   ##        **
+ **           ##                                                    ##        **
+ **                                                                           **
+ **                                                ... make the atoms dance   **
+ **                                                                           **
+ **            Copyright (C) by CP2K developers group (2000-2022)             **
+ **                      J. Chem. Phys. 152, 194103 (2020)                    **
+ **                                                                           **
+ *******************************************************************************
+
+ DFT| Spin restricted Kohn-Sham (RKS) calculation                            RKS
+ DFT| Multiplicity                                                             1
+ DFT| Number of spin states                                                    1
+ DFT| Charge                                                                   0
+ DFT| Self-interaction correction (SIC)                                       NO
+ DFT| Cutoffs: density                                              1.000000E-10
+ DFT|          gradient                                             1.000000E-10
+ DFT|          tau                                                  1.000000E-10
+ DFT|          cutoff_smoothing_range                               0.000000E+00
+ DFT| XC density smoothing                                                  NONE
+ DFT| XC derivatives                                                          PW
+
+ FUNCTIONAL| PADE:
+ FUNCTIONAL| S. Goedecker, M. Teter and J. Hutter, Phys. Rev. B 54, 1703 (1996) 
+
+
+ QS| Method:                                                                 GPW
+ QS| Density plane wave grid type                        NON-SPHERICAL FULLSPACE
+ QS| Number of grid levels:                                                    4
+ QS| Density cutoff [a.u.]:                                                200.0
+ QS| Multi grid cutoff [a.u.]: 1) grid level                               200.0
+ QS|                           2) grid level                                66.7
+ QS|                           3) grid level                                22.2
+ QS|                           4) grid level                                 7.4
+ QS| Grid level progression factor:                                          3.0
+ QS| Relative density cutoff [a.u.]:                                        20.0
+ QS| Interaction thresholds: eps_pgf_orb:                                1.0E-05
+ QS|                         eps_filter_matrix:                          0.0E+00
+ QS|                         eps_core_charge:                            1.0E-12
+ QS|                         eps_rho_gspace:                             1.0E-10
+ QS|                         eps_rho_rspace:                             1.0E-10
+ QS|                         eps_gvg_rspace:                             1.0E-05
+ QS|                         eps_ppl:                                    1.0E-02
+ QS|                         eps_ppnl:                                   1.0E-07
+
+
+ ATOMIC KIND INFORMATION
+
+  1. Atomic kind: Au                                    Number of atoms:      96
+
+     Orbital Basis Set                                         SZV-MOLOPT-SR-GTH
+
+       Number of orbital shell sets:                                           1
+       Number of orbital shells:                                               3
+       Number of primitive Cartesian functions:                                5
+       Number of Cartesian basis functions:                                   10
+       Number of spherical basis functions:                                    9
+       Norm type:                                                              2
+
+       Normalised Cartesian orbitals:
+
+                        Set   Shell   Orbital            Exponent    Coefficient
+
+                          1       1    2s                2.950008       0.074626
+                                                         1.563057      -0.007898
+                                                         0.666664      -0.297688
+                                                         0.251083       0.136809
+                                                         0.081714       0.088198
+
+                          1       2    3px               2.950008       0.148824
+                                                         1.563057       0.025430
+                                                         0.666664      -0.123003
+                                                         0.251083       0.033648
+                                                         0.081714       0.059008
+                          1       2    3py               2.950008       0.148824
+                                                         1.563057       0.025430
+                                                         0.666664      -0.123003
+                                                         0.251083       0.033648
+                                                         0.081714       0.059008
+                          1       2    3pz               2.950008       0.148824
+                                                         1.563057       0.025430
+                                                         0.666664      -0.123003
+                                                         0.251083       0.033648
+                                                         0.081714       0.059008
+
+                          1       3    4dx2              2.950008      -0.139595
+                                                         1.563057       1.319655
+                                                         0.666664       0.377081
+                                                         0.251083       0.046872
+                                                         0.081714       0.001393
+                          1       3    4dxy              2.950008      -0.241786
+                                                         1.563057       2.285709
+                                                         0.666664       0.653124
+                                                         0.251083       0.081185
+                                                         0.081714       0.002412
+                          1       3    4dxz              2.950008      -0.241786
+                                                         1.563057       2.285709
+                                                         0.666664       0.653124
+                                                         0.251083       0.081185
+                                                         0.081714       0.002412
+                          1       3    4dy2              2.950008      -0.139595
+                                                         1.563057       1.319655
+                                                         0.666664       0.377081
+                                                         0.251083       0.046872
+                                                         0.081714       0.001393
+                          1       3    4dyz              2.950008      -0.241786
+                                                         1.563057       2.285709
+                                                         0.666664       0.653124
+                                                         0.251083       0.081185
+                                                         0.081714       0.002412
+                          1       3    4dz2              2.950008      -0.139595
+                                                         1.563057       1.319655
+                                                         0.666664       0.377081
+                                                         0.251083       0.046872
+                                                         0.081714       0.001393
+
+       Atomic covalent radius [Angstrom]:                                  1.340
+
+       Atomic van der Waals radius [Angstrom]:                             1.660
+
+     GTH Potential information for                                  GTH-PADE-q11
+
+       Description:                       Goedecker-Teter-Hutter pseudopotential
+                                           Goedecker et al., PRB 54, 1703 (1996)
+                                          Hartwigsen et al., PRB 58, 3641 (1998)
+                                                      Krack, TCA 114, 145 (2005)
+
+       Gaussian exponent of the core charge distribution:               1.436369
+       Electronic configuration (s p d ...):                           1   0  10
+
+       Parameters of the local part of the GTH pseudopotential:
+
+                          rloc        C1          C2          C3          C4
+                        0.590000   11.604428
+
+       Parameters of the non-local part of the GTH pseudopotential:
+
+                   l      r(l)      h(i,j,l)
+
+                   0    0.521180    2.538614   -1.046137
+                                   -1.046137    2.701113
+                   1    0.630613    0.394853   -0.869592
+                                   -0.869592    2.057831
+                   2    0.440706   -4.719070    0.727771
+                                    0.727771   -1.650429
+
+
+ MOLECULE KIND INFORMATION
+
+
+ All atoms are their own molecule, skipping detailed information
+
+
+ TOTAL NUMBERS AND MAXIMUM NUMBERS
+
+  Total number of            - Atomic kinds:                                   1
+                             - Atoms:                                         96
+                             - Shell sets:                                    96
+                             - Shells:                                       288
+                             - Primitive Cartesian functions:                480
+                             - Cartesian basis functions:                    960
+                             - Spherical basis functions:                    864
+
+  Maximum angular momentum of- Orbital basis functions:                        2
+                             - Local part of the GTH pseudopotential:          0
+                             - Non-local part of the GTH pseudopotential:      4
+
+
+ MODULE QUICKSTEP: ATOMIC COORDINATES IN ANGSTROM
+
+   Atom Kind Element         X             Y             Z       Z(eff)     Mass
+      1    1 Au   79      0.000000      0.000000      0.000000  11.0000 196.9666
+      2    1 Au   79      0.000000      4.168000      0.000000  11.0000 196.9666
+      3    1 Au   79      2.084000      2.084000      0.000000  11.0000 196.9666
+      4    1 Au   79      2.084000      6.252000      0.000000  11.0000 196.9666
+      5    1 Au   79      4.168000      0.000000      0.000000  11.0000 196.9666
+      6    1 Au   79      4.168000      4.168000      0.000000  11.0000 196.9666
+      7    1 Au   79      6.252000      2.084000      0.000000  11.0000 196.9666
+      8    1 Au   79      6.252000      6.252000      0.000000  11.0000 196.9666
+      9    1 Au   79      0.000000      2.084000      2.084000  11.0000 196.9666
+     10    1 Au   79      0.000000      6.252000      2.084000  11.0000 196.9666
+     11    1 Au   79      2.084000      0.000000      2.084000  11.0000 196.9666
+     12    1 Au   79      2.084000      4.168000      2.084000  11.0000 196.9666
+     13    1 Au   79      4.168000      2.084000      2.084000  11.0000 196.9666
+     14    1 Au   79      4.168000      6.252000      2.084000  11.0000 196.9666
+     15    1 Au   79      6.252000      0.000000      2.084000  11.0000 196.9666
+     16    1 Au   79      6.252000      4.168000      2.084000  11.0000 196.9666
+     17    1 Au   79      0.000000      0.000000      4.168000  11.0000 196.9666
+     18    1 Au   79      0.000000      4.168000      4.168000  11.0000 196.9666
+     19    1 Au   79      2.084000      2.084000      4.168000  11.0000 196.9666
+     20    1 Au   79      2.084000      6.252000      4.168000  11.0000 196.9666
+     21    1 Au   79      4.168000      0.000000      4.168000  11.0000 196.9666
+     22    1 Au   79      4.168000      4.168000      4.168000  11.0000 196.9666
+     23    1 Au   79      6.252000      2.084000      4.168000  11.0000 196.9666
+     24    1 Au   79      6.252000      6.252000      4.168000  11.0000 196.9666
+     25    1 Au   79      0.000000      2.084000      6.252000  11.0000 196.9666
+     26    1 Au   79      0.000000      6.252000      6.252000  11.0000 196.9666
+     27    1 Au   79      2.084000      0.000000      6.252000  11.0000 196.9666
+     28    1 Au   79      2.084000      4.168000      6.252000  11.0000 196.9666
+     29    1 Au   79      4.168000      2.084000      6.252000  11.0000 196.9666
+     30    1 Au   79      4.168000      6.252000      6.252000  11.0000 196.9666
+     31    1 Au   79      6.252000      0.000000      6.252000  11.0000 196.9666
+     32    1 Au   79      6.252000      4.168000      6.252000  11.0000 196.9666
+     33    1 Au   79      0.000000      0.000000      8.336000  11.0000 196.9666
+     34    1 Au   79      0.000000      4.168000      8.336000  11.0000 196.9666
+     35    1 Au   79      2.084000      2.084000      8.336000  11.0000 196.9666
+     36    1 Au   79      2.084000      6.252000      8.336000  11.0000 196.9666
+     37    1 Au   79      4.168000      0.000000      8.336000  11.0000 196.9666
+     38    1 Au   79      4.168000      4.168000      8.336000  11.0000 196.9666
+     39    1 Au   79      6.252000      2.084000      8.336000  11.0000 196.9666
+     40    1 Au   79      6.252000      6.252000      8.336000  11.0000 196.9666
+     41    1 Au   79      0.000000      2.084000     10.420000  11.0000 196.9666
+     42    1 Au   79      0.000000      6.252000     10.420000  11.0000 196.9666
+     43    1 Au   79      2.084000      0.000000     10.420000  11.0000 196.9666
+     44    1 Au   79      2.084000      4.168000     10.420000  11.0000 196.9666
+     45    1 Au   79      4.168000      2.084000     10.420000  11.0000 196.9666
+     46    1 Au   79      4.168000      6.252000     10.420000  11.0000 196.9666
+     47    1 Au   79      6.252000      0.000000     10.420000  11.0000 196.9666
+     48    1 Au   79      6.252000      4.168000     10.420000  11.0000 196.9666
+     49    1 Au   79      0.000000      0.000000     21.422000  11.0000 196.9666
+     50    1 Au   79      0.000000      4.168000     21.422000  11.0000 196.9666
+     51    1 Au   79      2.084000      2.084000     21.422000  11.0000 196.9666
+     52    1 Au   79      2.084000      6.252000     21.422000  11.0000 196.9666
+     53    1 Au   79      4.168000      0.000000     21.422000  11.0000 196.9666
+     54    1 Au   79      4.168000      4.168000     21.422000  11.0000 196.9666
+     55    1 Au   79      6.252000      2.084000     21.422000  11.0000 196.9666
+     56    1 Au   79      6.252000      6.252000     21.422000  11.0000 196.9666
+     57    1 Au   79      0.000000      2.084000     23.506000  11.0000 196.9666
+     58    1 Au   79      0.000000      6.252000     23.506000  11.0000 196.9666
+     59    1 Au   79      2.084000      0.000000     23.506000  11.0000 196.9666
+     60    1 Au   79      2.084000      4.168000     23.506000  11.0000 196.9666
+     61    1 Au   79      4.168000      2.084000     23.506000  11.0000 196.9666
+     62    1 Au   79      4.168000      6.252000     23.506000  11.0000 196.9666
+     63    1 Au   79      6.252000      0.000000     23.506000  11.0000 196.9666
+     64    1 Au   79      6.252000      4.168000     23.506000  11.0000 196.9666
+     65    1 Au   79      0.000000      0.000000     25.590000  11.0000 196.9666
+     66    1 Au   79      0.000000      4.168000     25.590000  11.0000 196.9666
+     67    1 Au   79      2.084000      2.084000     25.590000  11.0000 196.9666
+     68    1 Au   79      2.084000      6.252000     25.590000  11.0000 196.9666
+     69    1 Au   79      4.168000      0.000000     25.590000  11.0000 196.9666
+     70    1 Au   79      4.168000      4.168000     25.590000  11.0000 196.9666
+     71    1 Au   79      6.252000      2.084000     25.590000  11.0000 196.9666
+     72    1 Au   79      6.252000      6.252000     25.590000  11.0000 196.9666
+     73    1 Au   79      0.000000      2.084000     27.674000  11.0000 196.9666
+     74    1 Au   79      0.000000      6.252000     27.674000  11.0000 196.9666
+     75    1 Au   79      2.084000      0.000000     27.674000  11.0000 196.9666
+     76    1 Au   79      2.084000      4.168000     27.674000  11.0000 196.9666
+     77    1 Au   79      4.168000      2.084000     27.674000  11.0000 196.9666
+     78    1 Au   79      4.168000      6.252000     27.674000  11.0000 196.9666
+     79    1 Au   79      6.252000      0.000000     27.674000  11.0000 196.9666
+     80    1 Au   79      6.252000      4.168000     27.674000  11.0000 196.9666
+     81    1 Au   79      0.000000      0.000000     29.758000  11.0000 196.9666
+     82    1 Au   79      0.000000      4.168000     29.758000  11.0000 196.9666
+     83    1 Au   79      2.084000      2.084000     29.758000  11.0000 196.9666
+     84    1 Au   79      2.084000      6.252000     29.758000  11.0000 196.9666
+     85    1 Au   79      4.168000      0.000000     29.758000  11.0000 196.9666
+     86    1 Au   79      4.168000      4.168000     29.758000  11.0000 196.9666
+     87    1 Au   79      6.252000      2.084000     29.758000  11.0000 196.9666
+     88    1 Au   79      6.252000      6.252000     29.758000  11.0000 196.9666
+     89    1 Au   79      0.000000      2.084000     31.842000  11.0000 196.9666
+     90    1 Au   79      0.000000      6.252000     31.842000  11.0000 196.9666
+     91    1 Au   79      2.084000      0.000000     31.842000  11.0000 196.9666
+     92    1 Au   79      2.084000      4.168000     31.842000  11.0000 196.9666
+     93    1 Au   79      4.168000      2.084000     31.842000  11.0000 196.9666
+     94    1 Au   79      4.168000      6.252000     31.842000  11.0000 196.9666
+     95    1 Au   79      6.252000      0.000000     31.842000  11.0000 196.9666
+     96    1 Au   79      6.252000      4.168000     31.842000  11.0000 196.9666
+
+
+
+ SCF PARAMETERS         Density guess:                                   RESTART
+                        --------------------------------------------------------
+                        max_scf:                                             500
+                        max_scf_history:                                       0
+                        max_diis:                                              4
+                        --------------------------------------------------------
+                        eps_scf:                                        1.00E-07
+                        eps_scf_history:                                0.00E+00
+                        eps_diis:                                       1.00E-01
+                        eps_eigval:                                     1.00E-05
+                        --------------------------------------------------------
+                        level_shift [a.u.]:                             0.000000
+                        added MOs                                       100    0
+                        --------------------------------------------------------
+                        Mixing method:                            BROYDEN_MIXING
+                                                charge density mixing in g-space
+                        --------------------------------------------------------
+                        Smear method:                                FERMI_DIRAC
+                        Electronic temperature [K]:                        293.0
+                        Electronic temperature [a.u.]:                  9.28E-04
+                        Accuracy threshold:                             1.00E-10
+                        --------------------------------------------------------
+                        No outer SCF
+
+ PW_GRID| Information for grid number                                          1
+ PW_GRID| Grid distributed over                                   240 processors
+ PW_GRID| Real space group dimensions                                    12   20
+ PW_GRID| the grid is blocked:                                               YES
+ PW_GRID| Cutoff [a.u.]                                                    200.0
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1            -52      52                Points:         105
+ PW_GRID|   Bounds   2            -52      52                Points:         105
+ PW_GRID|   Bounds   3           -210     209                Points:         420
+ PW_GRID| Volume element (a.u.^3)  0.3436E-02     Volume (a.u.^3)     15909.0657
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                            19293.8       19845       17640
+ PW_GRID|   G-Rays                                 183.8         189         168
+ PW_GRID|   Real Space Points                    19293.8       19845       17640
+
+ PW_GRID| Information for grid number                                          2
+ PW_GRID| Number of the reference grid                                         1
+ PW_GRID| Grid distributed over                                   240 processors
+ PW_GRID| Real space group dimensions                                    12   20
+ PW_GRID| the grid is blocked:                                                NO
+ PW_GRID| Cutoff [a.u.]                                                     66.7
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1            -30      29                Points:          60
+ PW_GRID|   Bounds   2            -30      29                Points:          60
+ PW_GRID|   Bounds   3           -120     119                Points:         240
+ PW_GRID| Volume element (a.u.^3)  0.1841E-01     Volume (a.u.^3)     15909.0657
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                             3600.0       11340           0
+ PW_GRID|   G-Rays                                  60.0         189           0
+ PW_GRID|   Real Space Points                     3600.0        3600        3600
+
+ PW_GRID| Information for grid number                                          3
+ PW_GRID| Number of the reference grid                                         1
+ PW_GRID| Grid distributed over                                   240 processors
+ PW_GRID| Real space group dimensions                                    12   20
+ PW_GRID| the grid is blocked:                                                NO
+ PW_GRID| Cutoff [a.u.]                                                     22.2
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1            -16      16                Points:          33
+ PW_GRID|   Bounds   2            -16      16                Points:          33
+ PW_GRID|   Bounds   3            -70      69                Points:         140
+ PW_GRID| Volume element (a.u.^3)  0.1043         Volume (a.u.^3)     15909.0657
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                              635.2        6237           0
+ PW_GRID|   G-Rays                                  19.2         189           0
+ PW_GRID|   Real Space Points                      635.2         840         280
+
+ PW_GRID| Information for grid number                                          4
+ PW_GRID| Number of the reference grid                                         1
+ PW_GRID| Grid distributed over                                   240 processors
+ PW_GRID| Real space group dimensions                                    12   20
+ PW_GRID| the grid is blocked:                                                NO
+ PW_GRID| Cutoff [a.u.]                                                      7.4
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1            -10       9                Points:          20
+ PW_GRID|   Bounds   2            -10       9                Points:          20
+ PW_GRID|   Bounds   3            -40      39                Points:          80
+ PW_GRID| Volume element (a.u.^3)  0.4972         Volume (a.u.^3)     15909.0657
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                              133.3        3780           0
+ PW_GRID|   G-Rays                                   6.7         189           0
+ PW_GRID|   Real Space Points                      133.3         160          80
+
+ POISSON| Solver                                                        PERIODIC
+ POISSON| Periodicity                                                        XYZ
+
+ RS_GRID| Information for grid number                                          1
+ RS_GRID|   Bounds   1            -52      52                Points:         105
+ RS_GRID|   Bounds   2            -52      52                Points:         105
+ RS_GRID|   Bounds   3           -210     209                Points:         420
+ RS_GRID| Real space distribution over                                  8 groups
+ RS_GRID| Real space distribution along direction                              2
+ RS_GRID| Border size                                                         30
+ RS_GRID| Real space distribution over                                 30 groups
+ RS_GRID| Real space distribution along direction                              3
+ RS_GRID| Border size                                                         30
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                  73.1          74          73
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                  74.0          74          74
+
+ RS_GRID| Information for grid number                                          2
+ RS_GRID|   Bounds   1            -30      29                Points:          60
+ RS_GRID|   Bounds   2            -30      29                Points:          60
+ RS_GRID|   Bounds   3           -120     119                Points:         240
+ RS_GRID| Real space distribution over                                  8 groups
+ RS_GRID| Real space distribution along direction                              2
+ RS_GRID| Border size                                                         20
+ RS_GRID| Real space distribution over                                 30 groups
+ RS_GRID| Real space distribution along direction                              3
+ RS_GRID| Border size                                                         20
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                  47.5          48          47
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                  48.0          48          48
+
+ RS_GRID| Information for grid number                                          3
+ RS_GRID|   Bounds   1            -16      16                Points:          33
+ RS_GRID|   Bounds   2            -16      16                Points:          33
+ RS_GRID|   Bounds   3            -70      69                Points:         140
+ RS_GRID| Real space fully replicated
+ RS_GRID| Group size                                                           1
+
+ RS_GRID| Information for grid number                                          4
+ RS_GRID|   Bounds   1            -10       9                Points:          20
+ RS_GRID|   Bounds   2            -10       9                Points:          20
+ RS_GRID|   Bounds   3            -40      39                Points:          80
+ RS_GRID| Real space fully replicated
+ RS_GRID| Group size                                                           1
+
+ KPOINTS| Number of kpoint groups                                              1
+ KPOINTS| Size of each kpoint group                                          240
+ KPOINTS| Number of kpoints per group                                          9
+
+ Number of electrons:                                                       1056
+ Number of occupied orbitals:                                                528
+ Number of molecular orbitals:                                               628
+
+ Number of orbital functions:                                                864
+ Number of independent orbital functions:                                    864
+
+ Extrapolation method: initial_guess
+
+
+ SCF WAVEFUNCTION OPTIMIZATION
+
+  Step     Update method      Time    Convergence         Total energy    Change
+  ------------------------------------------------------------------------------
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9999999947
+     1 NoMix/SMGL  0.30E+00   48.0     1.33013496     -3195.0895247754 -3.20E+03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.6374165840
+     2 Broy./SMGL  0.30E+00   24.3     0.02589396     -3192.2697646592  2.82E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.4934835883
+     3 Broy./SMGL  0.30E+00   24.1     0.00386200     -3195.7304423452 -3.46E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.3540390979
+     4 Broy./SMGL  0.30E+00   28.4     0.01262492     -3195.2230627886  5.07E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.3530201582
+     5 Broy./SMGL  0.30E+00   23.8     0.00044716     -3195.7434828556 -5.20E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.1354747412
+     6 Broy./SMGL  0.30E+00   23.5     0.01165277     -3195.7721330738 -2.87E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9875725688
+     7 Broy./SMGL  0.30E+00   23.6     0.01182426     -3195.3971187703  3.75E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9517417483
+     8 Broy./SMGL  0.30E+00   23.8     0.00442260     -3195.3042605933  9.29E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9634000161
+     9 Broy./SMGL  0.30E+00   23.6     0.01107724     -3194.9356144301  3.69E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9795492664
+    10 Broy./SMGL  0.30E+00   24.0     0.01477803     -3194.9293875337  6.23E-03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9565008503
+    11 Broy./SMGL  0.30E+00   24.0     0.00656903     -3195.2987574728 -3.69E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8242807651
+    12 Broy./SMGL  0.30E+00   24.2     0.03022250     -3195.6806835834 -3.82E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9068495236
+    13 Broy./SMGL  0.30E+00   23.7     0.01975026     -3194.5188522292  1.16E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9803005014
+    14 Broy./SMGL  0.30E+00   23.9     0.01937211     -3194.7791749197 -2.60E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0386444906
+    15 Broy./SMGL  0.30E+00   23.8     0.02768388     -3194.9775835128 -1.98E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0668210903
+    16 Broy./SMGL  0.30E+00   23.7     0.01081029     -3194.7298645037  2.48E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0497186688
+    17 Broy./SMGL  0.30E+00   23.7     0.00158683     -3194.5534565368  1.76E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0795715107
+    18 Broy./SMGL  0.30E+00   23.6     0.04029645     -3194.3728145227  1.81E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0617481991
+    19 Broy./SMGL  0.30E+00   24.0     0.01119137     -3193.6164379222  7.56E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0506704399
+    20 Broy./SMGL  0.30E+00   24.0     0.00288902     -3193.8188144943 -2.02E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0063187581
+    21 Broy./SMGL  0.30E+00   24.0     0.04854156     -3194.0251293930 -2.06E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.7441925970
+    22 Broy./SMGL  0.30E+00   24.6     0.05351994     -3195.7728153953 -1.75E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.6770798343
+    23 Broy./SMGL  0.30E+00   24.3     0.00751732     -3194.6848440426  1.09E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.5494997820
+    24 Broy./SMGL  0.30E+00   24.8     0.02888279     -3194.5824284142  1.02E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.6598333011
+    25 Broy./SMGL  0.30E+00   24.2     0.02956176     -3192.8920501090  1.69E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.5847571150
+    26 Broy./SMGL  0.30E+00   25.2     0.02478053     -3194.4914262776 -1.60E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.4732117853
+    27 Broy./SMGL  0.30E+00   24.4     0.03843213     -3193.9339094690  5.58E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.5160193558
+    28 Broy./SMGL  0.30E+00   24.5     0.01286837     -3192.1241300751  1.81E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.5640919742
+    29 Broy./SMGL  0.30E+00   24.8     0.00443993     -3192.8662844538 -7.42E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.4248582940
+    30 Broy./SMGL  0.30E+00   24.8     0.05342722     -3193.6634423328 -7.97E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9111051187
+    31 Broy./SMGL  0.30E+00   24.4     0.13306994     -3190.1526904423  3.51E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9751923814
+    32 Broy./SMGL  0.30E+00   24.6     0.01917932     -3194.9192347492 -4.77E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9755298785
+    33 Broy./SMGL  0.30E+00   25.1     0.00039778     -3194.9756942556 -5.65E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9739685638
+    34 Broy./SMGL  0.30E+00   24.8     0.00482455     -3195.0108449340 -3.52E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9421121216
+    35 Broy./SMGL  0.30E+00   25.0     0.01485358     -3195.1821673120 -1.71E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9095512928
+    36 Broy./SMGL  0.30E+00   25.3     0.00915663     -3195.1806432923  1.52E-03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9921925987
+    37 Broy./SMGL  0.30E+00   25.7     0.02119740     -3194.6569374170  5.24E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9536568667
+    38 Broy./SMGL  0.30E+00   24.6     0.00973674     -3195.1718852000 -5.15E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9728820377
+    39 Broy./SMGL  0.30E+00   24.6     0.00700652     -3194.9664958180  2.05E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9617638337
+    40 Broy./SMGL  0.30E+00   25.1     0.00438551     -3195.1184693652 -1.52E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9671294047
+    41 Broy./SMGL  0.30E+00   24.6     0.00142624     -3195.0595130391  5.90E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8665022047
+    42 Broy./SMGL  0.30E+00   24.5     0.02139315     -3195.4342635760 -3.75E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8004800041
+    43 Broy./SMGL  0.30E+00   24.5     0.01395947     -3195.1846876934  2.50E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.7914933322
+    44 Broy./SMGL  0.30E+00   25.4     0.00292361     -3194.8195466861  3.65E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8550300386
+    45 Broy./SMGL  0.30E+00   23.7     0.01486398     -3194.5470335805  2.73E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8517118813
+    46 Broy./SMGL  0.30E+00   25.6     0.00291723     -3194.9624890798 -4.15E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8698114684
+    47 Broy./SMGL  0.30E+00   25.0     0.00144721     -3194.9407216901  2.18E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8818299606
+    48 Broy./SMGL  0.30E+00   24.8     0.00400832     -3194.9180923550  2.26E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8802223651
+    49 Broy./SMGL  0.30E+00   24.8     0.00291102     -3195.0010978134 -8.30E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8010633113
+    50 Broy./SMGL  0.30E+00   25.7     0.02158253     -3195.3674503035 -3.66E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9506604562
+    51 Broy./SMGL  0.30E+00   25.4     0.03695915     -3194.2285067827  1.14E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9235426660
+    52 Broy./SMGL  0.30E+00   23.8     0.00611132     -3195.2314115222 -1.00E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8941279488
+    53 Broy./SMGL  0.30E+00   25.3     0.00875055     -3195.2294521392  1.96E-03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8895207058
+    54 Broy./SMGL  0.30E+00   25.4     0.00518547     -3195.0676249553  1.62E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8266270608
+    55 Broy./SMGL  0.30E+00   25.7     0.01363980     -3195.3642385581 -2.97E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9652201068
+    56 Broy./SMGL  0.30E+00   23.8     0.02956066     -3194.4906907660  8.74E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9956541075
+    57 Broy./SMGL  0.30E+00   26.0     0.01555167     -3195.0638591140 -5.73E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0068487439
+    58 Broy./SMGL  0.30E+00   24.8     0.00998124     -3195.0002127198  6.36E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9789357079
+    59 Broy./SMGL  0.30E+00   23.8     0.01797860     -3195.0219278202 -2.17E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8077623130
+    60 Broy./SMGL  0.30E+00   25.4     0.03969996     -3195.7228689751 -7.01E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9134223798
+    61 Broy./SMGL  0.30E+00   24.9     0.02434853     -3194.5483861812  1.17E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.9711466983
+    62 Broy./SMGL  0.30E+00   25.5     0.01715079     -3194.8664379234 -3.18E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.8039888101
+    63 Broy./SMGL  0.30E+00   24.3     0.03868922     -3195.7445414594 -8.78E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.6510055338
+    64 Broy./SMGL  0.30E+00   24.9     0.04637508     -3195.3822456229  3.62E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.7091384529
+    65 Broy./SMGL  0.30E+00   25.6     0.01799947     -3193.6173928890  1.76E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.6322914699
+    66 Broy./SMGL  0.30E+00   24.0     0.02813477     -3194.5814870171 -9.64E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.6561882785
+    67 Broy./SMGL  0.30E+00   25.7     0.01122253     -3193.3774228453  1.20E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.6958813341
+    68 Broy./SMGL  0.30E+00   25.8     0.01531306     -3193.6508443968 -2.73E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.0277405346
+    69 Broy./SMGL  0.30E+00   25.3     0.07112560     -3192.9403275612  7.11E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.1577879669
+    70 Broy./SMGL  0.30E+00   24.0     0.34572101     -3194.6293475569 -1.69E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.2509320790
+    71 Broy./SMGL  0.30E+00   25.3     5.35227174     -3189.1360069938  5.49E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1050.9340297111
+    72 Broy./SMGL  0.30E+00   25.7     4.20717544     -3148.7431141445  4.04E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1054.8006996050
+    73 Broy./SMGL  0.30E+00   24.0     1.15873729     -3161.6750544259 -1.29E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1057.4331544013
+    74 Broy./SMGL  0.30E+00   25.7    14.01148029     -3175.0382774963 -1.34E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1083.9359826946
+    75 Broy./SMGL  0.30E+00   26.7    10.78968276     -2796.6002809560  3.78E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1079.8027793588
+    76 Broy./SMGL  0.30E+00   25.8     0.75376567     -3596.2594928477 -8.00E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1078.6939163722
+    77 Broy./SMGL  0.30E+00   24.0     0.87842438     -3601.3234492703 -5.06E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1054.1411185223
+    78 Broy./SMGL  0.30E+00   25.9     5.66224265     -3705.3455062605 -1.04E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.4802710199
+    79 Broy./SMGL  0.30E+00   25.8     0.43379143     -3165.9525015329  5.39E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.5384870416
+    80 Broy./SMGL  0.30E+00   25.0     0.11630731     -3173.9705562652 -8.02E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.4265780988
+    81 Broy./SMGL  0.30E+00   25.0     0.06884655     -3175.0185271988 -1.05E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.3899021430
+    82 Broy./SMGL  0.30E+00   26.6     0.01801219     -3172.9791004569  2.04E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.3966576157
+    83 Broy./SMGL  0.30E+00   25.3     0.00423878     -3172.3564129175  6.23E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.6528153904
+    84 Broy./SMGL  0.30E+00   24.9     0.11607499     -3170.4881604789  1.87E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.5249604751
+    85 Broy./SMGL  0.30E+00   25.2    10.87645680     -3169.1264956265  1.36E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.1441419172
+    86 Broy./SMGL  0.30E+00   26.9    10.70288534     -3001.7810262320  1.67E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.4181637710
+    87 Broy./SMGL  0.30E+00   24.9     0.20311271     -3178.6646348411 -1.77E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.2405516219
+    88 Broy./SMGL  0.30E+00   24.9     0.08913454     -3191.1140509326 -1.24E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.0619772601
+    89 Broy./SMGL  0.30E+00   30.6     0.01984546     -3189.0576505678  2.06E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1054.9347069825
+    90 Broy./SMGL  0.30E+00   24.9     0.02645052     -3189.0223066472  3.53E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1054.9245197468
+    91 Broy./SMGL  0.30E+00   25.4     0.00826863     -3189.0735281848 -5.12E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1054.8957473487
+    92 Broy./SMGL  0.30E+00   25.8     0.02095906     -3189.4749820400 -4.01E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1054.9116520267
+    93 Broy./SMGL  0.30E+00   25.7     0.01434954     -3189.5532983019 -7.83E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1054.9209143167
+    94 Broy./SMGL  0.30E+00   24.7     0.00237088     -3189.6864371749 -1.33E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1055.5887817189
+    95 Broy./SMGL  0.30E+00   25.0     0.17174609     -3189.2931902229  3.93E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.2768129968
+    96 Broy./SMGL  0.30E+00   26.0     0.16437592     -3192.6748019887 -3.38E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.2173765401
+    97 Broy./SMGL  0.30E+00   25.1     0.00831780     -3195.9131156420 -3.24E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.2022228812
+    98 Broy./SMGL  0.30E+00   25.3     0.03165523     -3195.0307007388  8.82E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.2916178303
+    99 Broy./SMGL  0.30E+00   26.5     0.15136140     -3194.5350817781  4.96E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.2369178687
+   100 Broy./SMGL  0.30E+00   25.9     0.12660206     -3192.9132734048  1.62E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1056.4820601960
+   101 Broy./SMGL  0.30E+00   25.1     2.13344311     -3193.8454493476 -9.32E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1058.1081187434
+   102 Broy./SMGL  0.30E+00   24.9    16.62194815     -3163.8237853556  3.00E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1065.0715017949
+   103 Broy./SMGL  0.30E+00   26.6    10.56289750     -2958.9204013081  2.05E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1060.5376924220
+   104 Broy./SMGL  0.30E+00   25.3    10.08396193     -3378.5057950500 -4.20E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1059.9208043308
+   105 Broy./SMGL  0.30E+00   26.2     4.28441528     -3002.2491476307  3.76E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1059.4508370971
+   106 Broy./SMGL  0.30E+00   25.3     2.69394025     -2971.0615418785  3.12E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1059.0565364717
+   107 Broy./SMGL  0.30E+00   26.4     8.70319020     -2994.1975577367 -2.31E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1058.9722660253
+   108 Broy./SMGL  0.30E+00   25.6     9.23112080     -3008.8333126727 -1.46E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1058.6313916201
+   109 Broy./SMGL  0.30E+00   25.7     9.58352345     -2979.2738826151  2.96E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1060.1198979957
+   110 Broy./SMGL  0.30E+00   27.7    11.39711859     -2995.0162724667 -1.57E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1061.1946246618
+   111 Broy./SMGL  0.30E+00   26.2     7.46350538     -3008.4667635125 -1.35E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1062.6755083010
+   112 Broy./SMGL  0.30E+00   27.8     2.18690601     -3070.4602683574 -6.20E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1061.9472191458
+   113 Broy./SMGL  0.30E+00   26.3     1.06607211     -3295.5736898759 -2.25E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1062.3475945908
+   114 Broy./SMGL  0.30E+00   26.4     1.81476354     -3196.7375974093  9.88E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1062.6816139189
+   115 Broy./SMGL  0.30E+00   25.6     1.15528058     -3256.4952827913 -5.98E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1062.2571519675
+   116 Broy./SMGL  0.30E+00   25.9     1.63963584     -3302.4810924442 -4.60E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1062.2080946816
+   117 Broy./SMGL  0.30E+00   26.7     1.76468840     -3216.1665500320  8.63E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1062.8761592552
+   118 Broy./SMGL  0.30E+00   25.6     1.99078558     -3178.9581783038  3.72E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1063.1296521637
+   119 Broy./SMGL  0.30E+00   26.2     2.04751800     -3117.0558067135  6.19E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1063.3371133858
+   120 Broy./SMGL  0.30E+00   25.6     1.96291963     -3101.2777109021  1.58E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1063.8073440436
+   121 Broy./SMGL  0.30E+00   26.0     1.92252591     -3107.7720974489 -6.49E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1064.9971591709
+   122 Broy./SMGL  0.30E+00   26.1     1.86593019     -3106.3936879871  1.38E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1069.4037546551
+   123 Broy./SMGL  0.30E+00   25.8     2.00400111     -3141.7801584166 -3.54E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1068.5702359683
+   124 Broy./SMGL  0.30E+00   26.6     1.97298940     -3193.1827545302 -5.14E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1069.6394661953
+   125 Broy./SMGL  0.30E+00   25.7     1.97086219     -3150.5118973552  4.27E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1067.9304348282
+   126 Broy./SMGL  0.30E+00   26.2     1.95007830     -3173.9615497779 -2.34E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1069.4181424680
+   127 Broy./SMGL  0.30E+00   25.4     1.94781920     -3115.7909632744  5.82E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1069.0109695902
+   128 Broy./SMGL  0.30E+00   26.0     1.90638685     -3175.8511113456 -6.01E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1068.9487924963
+   129 Broy./SMGL  0.30E+00   27.0     1.66505229     -3146.4781124684  2.94E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1068.9281687491
+   130 Broy./SMGL  0.30E+00   26.9     1.74888017     -3150.4188460775 -3.94E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1068.9482565952
+   131 Broy./SMGL  0.30E+00   25.6     1.75731715     -3190.8147447406 -4.04E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1068.5612744398
+   132 Broy./SMGL  0.30E+00   25.9     1.73767282     -3186.7804091841  4.03E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1068.5484226255
+   133 Broy./SMGL  0.30E+00   26.7     1.74690385     -3179.0812997226  7.70E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1068.6598063424

@@ -1,0 +1,352 @@
+SIESTA 1.3.7  -- [1.3f1 release] (04 Feb 2004)
+Architecture  : 
+Compiler flags:  -O3  -g -traceback -check bounds
+PARALLEL version
+
+* Running on    8 nodes in parallel
+>> Start of run:   2-DEC-2013  18:24:14
+
+                           ***********************       
+                           *  WELCOME TO SIESTA  *       
+                           ***********************       
+
+reinit: Reading from standard input
+************************** Dump of input data file ****************************
+# -----------------------------------------------------------------------------
+# FDF for bcc iron
+#
+# GGA, Ferromagnetic.
+# Scalar-relativistic pseudopotential with non-linear partial-core correction
+#
+# E. Artacho, April 1999
+# -----------------------------------------------------------------------------
+SystemName       bcc Fe ferro GGA   # Descriptive name of the system
+SystemLabel            fe_cohp
+# Species and atoms
+NumberOfSpecies        1
+NumberOfAtoms          1
+%block ChemicalSpeciesLabel
+  1  26  Fe
+%endblock ChemicalSpeciesLabel
+COOP.Write T
+WFS.EnergyMax 10.0 eV
+####Diag.ParallelOverK T
+# Basis
+PAO.EnergyShift       50 meV
+PAO.BasisSize         DZP
+%block PAO.Basis
+  Fe  2
+  0  2  P
+  6. 0.
+  2  2
+  0. 0.
+%endblock PAO.Basis
+LatticeConstant       2.87 Ang
+%block LatticeVectors
+ 0.50000   0.500000  0.500000
+ 0.50000  -0.500000  0.500000
+ 0.50000   0.500000 -0.500000
+%endblock LatticeVectors
+KgridCutoff          5. Ang
+xc.functional         GGA           # Exchange-correlation functional
+xc.authors            PBE           # Exchange-correlation version
+#SpinPolarized         true          # Logical parameters are: yes or no
+MeshCutoff           300. Ry        # Mesh cutoff. real space mesh
+ParallelOverK       T
+# SCF options
+MaxSCFIterations       40           # Maximum number of SCF iter
+DM.MixingWeight       0.1           # New DM amount for next SCF cycle
+DM.Tolerance          1.d-3         # Tolerance in maximum difference
+                                    # between input and output DM
+DM.UseSaveDM          true          # to use continuation files
+DM.NumberBroyden        4           # Broyden mixing
+SolutionMethod        diagon        # OrderN or Diagon
+ElectronicTemperature  25 meV       # Temp. for Fermi smearing
+# MD options
+MD.TypeOfRun           cg           # Type of dynamics:
+MD.NumCGsteps           0           # Number of CG steps for
+AtomicCoordinatesFormat     Fractional
+%block AtomicCoordinatesAndAtomicSpecies
+  0.000000000000    0.000000000000    0.000000000000  1
+%endblock AtomicCoordinatesAndAtomicSpecies
+************************** End of input data file *****************************
+
+reinit: -----------------------------------------------------------------------
+reinit: System Name: bcc Fe ferro GGA                                           
+reinit: -----------------------------------------------------------------------
+reinit: System Label: fe_cohp             
+reinit: -----------------------------------------------------------------------
+
+initatom: Reading input for the pseudopotentials and atomic orbitals ----------
+ Species number:            1  Label: Fe Atomic number:          26
+Ground state valence configuration:   4s02  3d06
+Reading pseudopotential information in formatted form from Fe.psf
+For Fe, standard SIESTA heuristics set lmxkb to 3
+ (one more than the basis l, including polarization orbitals).
+Use PS.lmax or PS.KBprojectors blocks to override.
+ Warning: Empty PAO shell. l =           1
+ Will have a KB projector anyway...
+
+<basis_specs>
+===============================================================================
+Fe                   Z=  26    Mass=  55.850        Charge=  0.0000    
+Lmxo=2 Lmxkb=3     BasisType=split      Semic=F
+L=0  Nsemic=0  Cnfigmx=4
+          n=1  nzeta=2  polorb=1
+               vcte:    0.0000    
+               rinn:    0.0000    
+                rcs:    6.0000      0.0000    
+            lambdas:    1.0000      1.0000    
+L=1  Nsemic=0  Cnfigmx=4
+L=2  Nsemic=0  Cnfigmx=3
+          n=1  nzeta=2  polorb=0
+               vcte:    0.0000    
+               rinn:    0.0000    
+                rcs:    0.0000      0.0000    
+            lambdas:    1.0000      1.0000    
+-------------------------------------------------------------------------------
+L=0  Nkbl=1  erefs: 0.17977+309
+L=1  Nkbl=1  erefs: 0.17977+309
+L=2  Nkbl=1  erefs: 0.17977+309
+L=3  Nkbl=1  erefs: 0.17977+309
+===============================================================================
+</basis_specs>
+
+atom: Called for Fe  (Z =  26)
+
+read_vps: Pseudopotential generation method:
+read_vps: ATM3      Troullier-Martins                       
+
+read_vps: Pseudopotential generated from a relativistic atomic calculation
+read_vps: There are spin-orbit pseudopotentials available
+
+read_vps: Valence configuration (pseudopotential and basis set generation):
+4s( 2.00) rc: 2.00
+4p( 0.00) rc: 2.47
+3d( 6.00) rc: 1.70
+4f( 0.00) rc: 2.00
+Total valence charge:    8.00000
+
+read_vps: Pseudopotential includes a core correction:
+read_vps: Pseudo-core for xc-correction
+comcore: Pseudo-core radius Rcore=  3.778693
+
+xc_check: Exchange-correlation functional:
+xc_check: GGA Perdew, Burke & Ernzerhof 1996
+V l=0 = -2*Zval/r beyond r=  2.7645
+V l=1 = -2*Zval/r beyond r=  2.7645
+V l=2 = -2*Zval/r beyond r=  2.7645
+V l=3 = -2*Zval/r beyond r=  2.7645
+All V_l potentials equal beyond r=  2.4397
+This should be close to max(r_c) in ps generation
+All pots = -2*Zval/r beyond r=  2.7645
+
+VLOCAL1: 99.0% of the norm of Vloc inside      7.293 Ry
+VLOCAL1: 99.9% of the norm of Vloc inside     16.621 Ry
+atom: Maximum radius for 4*pi*r*r*local-pseudopot. charge    2.94283
+atom: Maximum radius for r*vlocal+2*Zval:    2.59703
+GHOST: No ghost state for L =  0
+GHOST: No ghost state for L =  1
+GHOST: No ghost state for L =  2
+GHOST: No ghost state for L =  3
+
+KBgen: Kleinman-Bylander projectors: 
+   l= 0   rc=  3.017329   el= -0.388304   Ekb=  3.600803   kbcos=  0.261727
+   l= 1   rc=  3.093715   el= -0.097568   Ekb=  1.679538   kbcos=  0.230886
+   l= 2   rc=  2.662772   el= -0.553240   Ekb=-17.271603   kbcos= -0.670713
+   l= 3   rc=  3.293249   el=  0.003178   Ekb= -1.739424   kbcos= -0.008533
+
+KBgen: Total number of  Kleinman-Bylander projectors:   16
+atom: -------------------------------------------------------------------------
+
+atom: SANKEY-TYPE ORBITALS:
+atom: Selected multiple-zeta basis: split     
+
+SPLIT: Orbitals with angular momentum L= 0
+
+SPLIT: Basis orbitals for state 4s
+
+   izeta = 1
+                 lambda =    1.000000
+                     rc =    6.000769
+                 energy =   -0.359899
+                kinetic =    0.368793
+    potential(screened) =   -0.728692
+       potential(ionic) =   -6.205920
+
+   izeta = 2
+                 rmatch =    5.852607
+              splitnorm =    0.150000
+                 energy =   -0.302526
+                kinetic =    0.545386
+    potential(screened) =   -0.847913
+       potential(ionic) =   -6.630017
+
+SPLIT: Orbitals with angular momentum L= 2
+
+SPLIT: Basis orbitals for state 3d
+
+SPLIT: PAO cut-off radius determinated from an
+SPLIT: energy shift=  0.003675 Ry
+
+   izeta = 1
+                 lambda =    1.000000
+                     rc =    4.791692
+                 energy =   -0.550132
+                kinetic =   10.450853
+    potential(screened) =  -11.000985
+       potential(ionic) =  -19.993212
+
+   izeta = 2
+                 rmatch =    2.235267
+              splitnorm =    0.150000
+                 energy =   -0.195934
+                kinetic =   14.378240
+    potential(screened) =  -14.574174
+       potential(ionic) =  -24.282951
+
+POLgen: Perturbative polarization orbital with L=  1
+
+POLgen: Polarization orbital for state 4s
+
+   izeta = 1
+                     rc =    6.000769
+                 energy =   -0.010549
+                kinetic =    0.693233
+    potential(screened) =   -0.703782
+       potential(ionic) =   -5.837258
+atom: Total number of Sankey-type orbitals: 15
+
+atm_pop: Valence configuration(local Pseudopot. screening):
+ 4s( 2.00)                                                            
+ 4p( 0.00)                                                            
+ 3d( 6.00)                                                            
+Vna: chval, zval:    8.00000   8.00000
+
+Vna:  Cut-off radius for the neutral-atom potential:   6.000769
+
+atom: _________________________________________________________________________
+
+prinput: Basis input ----------------------------------------------------------
+
+PAO.BasisType split     
+
+%block ChemicalSpeciesLabel
+    1   26 Fe                      # Species index, atomic number, species label
+%endblock ChemicalSpeciesLabel
+
+%block PAO.Basis                 # Define Basis set
+Fe          2                    # Species label, number of l-shells
+ n=4   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   6.001      5.853   
+   1.000      1.000   
+ n=3   2   2                         # n, l, Nzeta 
+   4.792      2.235   
+   1.000      1.000   
+%endblock PAO.Basis
+
+prinput: ----------------------------------------------------------------------
+
+
+siesta: ******************** Simulation parameters ****************************
+siesta:
+siesta: The following are some of the parameters of the simulation.
+siesta: A complete list of the parameters used, including defect values,
+siesta: can be found in file out.fdf
+siesta:
+coor:   Atomic-coordinates input format  =     Fractional
+redata: Number of spin components        =     1
+redata: SpinOrbit                        =     0
+redata: Long output                      =     F
+redata: Number of Atomic Species         =     1
+redata: Charge density info will appear in .RHO file
+redata: Write Mulliken Pop.              =     NO
+redata: Mesh Cutoff                      =   300.0000  Ry
+redata: Net charge of the system         =     0.0000 |e|
+redata: Max. number of SCF Iter          =    40
+redata: Mixing is linear
+redata: Mix DM in first SCF step ?       =     F
+redata: Write Pulay info on disk?        =     F
+redata: New DM Mixing Weight             =     0.1000
+redata: No kicks to SCF
+redata: DM Mixing Weight for Kicks       =     0.5000
+redata: DM Tolerance for SCF             =     0.001000
+redata: Use continuation files for DM    =     T
+redata: Neglect nonoverlap interactions  =     F
+redata: Method of Calculation            =     Diagonalization
+redata: Divide and Conquer               =     F
+redata: Electronic Temperature           =     0.0018  Ry
+redata: Fix the spin of the system       =     F
+redata: Dynamics option                  =     CG coord. optimization
+redata: Variable cell                    =     F
+redata: Use continuation files for CG    =     F
+redata: Maximum number of CG moves       =     0
+redata: Max atomic displ per move        =     0.2000  Bohr
+redata: Force tolerance                  =     0.0016  Ry/Bohr
+redata: ***********************************************************************
+
+siesta: Atomic coordinates (Bohr) and species
+siesta:      0.00000   0.00000   0.00000  1        1
+
+initatomlists: Number of atoms, orbitals, and projectors:      1    15    16
+
+siesta: System type = bulk      
+ Nodes, Orbitals           8          15
+ blocksizedefault           1
+
+* ProcessorY, Blocksize:    2   1
+
+
+siesta: k-grid: Number of k-points =    75
+siesta: k-grid: Cutoff             =     6.214 Ang
+siesta: k-grid: Supercell and displacements
+siesta: k-grid:    5   0   0      0.000
+siesta: k-grid:    0   5   0      0.000
+siesta: k-grid:    0   0   5      0.000
+ Using EM.ParallelOverKNum =           1
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  18.5880  4.6969   1
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  18.5880  4.6969   2
+siesta: overlap:  rmaxh   veclen  direction
+siesta: overlap:  18.5880  4.6969   3
+ label:           1 Fe                             1 s      
+ label:           2 Fe                             1 s      
+ label:           3 Fe                             1 dxy    
+ label:           4 Fe                             1 dyz    
+ label:           5 Fe                             1 dz2    
+ label:           6 Fe                             1 dxz    
+ label:           7 Fe                             1 dx2-y2 
+ label:           8 Fe                             1 dxy    
+ label:           9 Fe                             1 dyz    
+ label:          10 Fe                             1 dz2    
+ label:          11 Fe                             1 dxz    
+ label:          12 Fe                             1 dx2-y2 
+ label:          13 Fe                             1 Ppy    
+ label:          14 Fe                             1 Ppz    
+ label:          15 Fe                             1 Ppx    
+
+superc: Internal auxiliary supercell:     7 x     7 x     7  =     343
+superc: Number of atoms, orbitals, and projectors:    343  5145  5488
+ 
+* Maximum dynamic memory allocated =     1 MB
+
+siesta:                 ==============================
+                            Begin CG move =      0
+                        ==============================
+
+superc: Internal auxiliary supercell:     7 x     7 x     7  =     343
+superc: Number of atoms, orbitals, and projectors:    343  5145  5488
+
+read_ldau The LDA+U method used is from Czyzky PRB 49 14211
+
+iodm: Reading Density Matrix from files
+
+fe_cohp.DM                       
+
+InitMesh: MESH =    24 x    24 x    24 =       13824
+InitMesh: Mesh cutoff (required, used) =   300.000   386.536 Ry
+ 
+* Maximum dynamic memory allocated =    12 MB
+
+stepf: Fermi-Dirac step function

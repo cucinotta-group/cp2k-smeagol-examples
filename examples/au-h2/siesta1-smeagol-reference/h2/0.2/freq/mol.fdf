@@ -1,0 +1,112 @@
+#
+SystemName                   mol            # Descriptive name of the system
+SystemLabel                  mol            # Short name for naming files
+
+NumberOfSpecies              1             # Number of species
+NumberOfAtoms                2           # Number of atoms
+
+%block ChemicalSpeciesLabel
+ 1    1   H
+%endblock ChemicalSpeciesLabel
+
+# ps
+%block Ps.lmax
+  H     3
+%endblock Ps.lmax
+
+# Basis
+PAO.BasisType                split         # Type of basis ('nones', 'nonodes', 'split')
+PAO.SplitNorm  0.15
+
+%block PAO.Basis                           # basis
+H     2      0.00
+ n=1    0    2   E      2.07      0.50
+   5.75  1.5
+   1.000   1.000
+ n=2    1    1   E      0.89      0.01
+   5.500
+   1.000
+%endblock PAO.Basis
+
+
+# lattice vectors
+LatticeConstant              1.0 Ang
+%block LatticeVectors
+         8.86712000        0.00000000        0.00000000
+         0.00000        8.86712000        0.00000000
+         0.00000000        0.00000000       38.72
+%endblock LatticeVectors
+
+# coordinates
+AtomicCoordinatesFormat      Ang
+%block AtomicCoordinatesAndAtomicSpecies
+    3.25353201    5.72009504   18.92650888   1  H          1
+    3.25943371    5.72541282   19.67655762   1  H          2
+%endblock AtomicCoordinatesAndAtomicSpecies
+
+# constrains in relaxation
+%block GeometryConstraints
+   position 1
+%endblock GeometryConstraints
+
+# real space mesh grid
+MeshCutoff                   800.0 Ry
+%block GridCellSampling
+  0.5  0.5   0.0
+  0.5  0.0   0.5
+  0.0  0.5   0.5
+%endblock GridCellSampling
+
+# reciprocal space
+%block kgrid_Monkhorst_Pack
+  1   0   0    0.0
+  0   1   0    0.0
+  0   0   1    0.0
+%endblock kgrid_Monkhorst_Pack
+
+#ProcessorY                   4
+#BlockSize                    100
+%block ExternalElectricField
+   0.000 0.000 0.2 V/Ang
+%endblock ExternalElectricField
+
+
+# functional
+xc.functional                GGA           # 'LDA', 'GGA'
+xc.authors                   PBE           # 'CA'='PZ', 'PW92', 'PBE'
+
+# scf
+MaxSCFIterations             300
+DM.MixingWeight              0.02
+DM.Tolerance                 1.0E-4
+DM.UseSaveDM                 T
+DM.NumberPulay               6             # Pulay convergency accelerator
+
+SolutionMethod               diagon 
+ElectronicTemperature        300 K         # Default value
+
+# MD options
+MD.TypeOfRun                 fc            # Type of dynamics:
+MD.VariableCell              false         # if vary cell
+MD.NumCGsteps                300             # Number of CG steps for relaxation
+MD.MaxCGDispl                0.08 Ang     # Maximum atomic displacement at one step
+MD.MaxForceTol               0.01 eV/Ang   # Tolerance in the maximum force min(fx, fy, fz)
+MD.MaxStressTol              0.1 Gpa
+
+MD.FCDispl                 0.02 ang
+MD.FCIR                    T
+MD.FCEigenVectors          T
+
+MD.FCRead                  F
+MD.FCAtomRestart           46
+MD.FCAxisRestart           1
+
+
+#Siesta Output Flags
+SaveHS                       F           # Hamiltonian and overlap in sparse
+SaveRHO                      T
+WriteMullikenPop             1
+WriteForces                  T
+WriteCoorStep                T
+SaveElectrostaticPotential   T             # Hartree Potential file
+ 

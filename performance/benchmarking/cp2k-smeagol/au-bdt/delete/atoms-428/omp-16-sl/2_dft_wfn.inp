@@ -1,0 +1,113 @@
+&GLOBAL
+   PROJECT              dft_wfn
+   RUN_TYPE             energy
+   PRINT_LEVEL          medium
+   EXTENDED_FFT_LENGTHS .true.
+   PREFERRED_DIAG_LIBRARY SL
+&END GLOBAL
+
+&FORCE_EVAL
+   METHOD Quickstep
+
+   &DFT
+      BASIS_SET_FILE_NAME BASIS_MOLOPT
+      POTENTIAL_FILE_NAME GTH_POTENTIALS
+
+      &MGRID
+         CUTOFF 400
+      &END MGRID
+
+      &SCF
+         MAX_SCF   5
+         EPS_SCF   1e-7
+         SCF_GUESS atomic
+         ADDED_MOS 100
+
+         &SMEAR
+            ELECTRONIC_TEMPERATURE [K] 300
+            METHOD fermi_dirac
+         &END SMEAR
+
+         &MIXING
+            ALPHA   0.3
+            METHOD  broyden_mixing
+            NBUFFER 8
+         &END MIXING
+
+         &PRINT
+            &RESTART
+               FILENAME RESTART_0
+            &END RESTART
+         &END PRINT
+      &END SCF
+
+      &POISSON
+         PERIODIC xyz
+      &END POISSON
+
+      &XC
+         &XC_FUNCTIONAL pade
+         &END XC_FUNCTIONAL
+      &END XC
+
+  &KPOINTS
+         SCHEME  MONKHORST-PACK  1 1 1
+         SYMMETRY OFF
+         EPS_GEO 1.e-8
+         FULL_GRID ON
+         VERBOSE T
+         # -1 -- smallest possible number of processes per group; 0 -- all processes, > 0 -- this number of processes
+         PARALLEL_GROUP_SIZE  0
+      &END KPOINTS
+
+   &PRINT
+        &V_HARTREE_CUBE
+        STRIDE  1 1 1
+        &END  V_HARTREE_CUBE
+      &E_DENSITY_CUBE  ON
+        STRIDE 1 1 1
+      &END E_DENSITY_CUBE
+      &HIRSHFELD
+    SHAPE_FUNCTION  DENSITY
+    &END HIRSHFELD
+    &END PRINT
+&END DFT
+
+   &SUBSYS
+      &CELL
+        ABC     16.584 16.584 34.524
+        PERIODIC xyz
+      &END CELL
+
+      &TOPOLOGY
+        COORD_FILE_NAME em.xyz
+        COORD_FILE_FORMAT  XYZ
+      &END TOPOLOGY
+
+      &KIND Au
+         BASIS_SET SZV-MOLOPT-SR-GTH
+         POTENTIAL GTH-PADE-q11
+      &END KIND
+	  
+     
+      &KIND C
+        BASIS_SET DZVP-MOLOPT-SR-GTH
+        ELEMENT C
+        POTENTIAL GTH-PADE-q4
+      &END KIND
+	 
+      &KIND S
+        BASIS_SET DZVP-MOLOPT-SR-GTH
+        ELEMENT S
+        POTENTIAL GTH-PADE-q6
+      &END KIND
+     
+      &KIND H
+        BASIS_SET DZVP-MOLOPT-SR-GTH
+        ELEMENT H
+        POTENTIAL GTH-PADE-q1
+      &END KIND
+	  
+   &END SUBSYS
+&END FORCE_EVAL
+

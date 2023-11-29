@@ -1,0 +1,110 @@
+#
+SystemName                   lead          # Descriptive name of the system
+SystemLabel                  bulk          # Short name for naming files
+
+NumberOfSpecies              1             # Number of species
+NumberOfAtoms                bulk_atoms            # Number of atoms
+
+%block ChemicalSpeciesLabel
+ 1   79   Au
+%endblock ChemicalSpeciesLabel
+
+# ps
+%block Ps.lmax
+  Au    3 
+%endblock Ps.lmax
+
+# Basis
+PAO.BasisType                split         # Type of basis ('nones', 'nonodes', 'split')
+PAO.SplitNorm                0.15
+
+%block PAO.Basis                           # basis
+Au 2
+n=6   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+6.0 0.0
+n=5   2   1                         # n, l, Nzeta
+5.5
+%endblock PAO.Basis
+
+
+# lattice vectors
+LatticeConstant              1.0 Ang
+%block LatticeVectors
+         8.86712000        0.00000000        0.00000000
+         0.00000        8.86712000        0.00000000
+         0.00000000        0.00000000       8.36000000
+%endblock LatticeVectors
+
+# coordinates
+AtomicCoordinatesFormat      Ang
+%block AtomicCoordinatesAndAtomicSpecies
+bulk_struct
+%endblock AtomicCoordinatesAndAtomicSpecies
+
+# constrains in dynamics
+#%block GeometryConstraints
+#   position   from  1 to  6
+#   position   from -1 to -6
+#%endblock GeometryConstraints
+
+# real space mesh grid
+MeshCutoff                   800.0 Ry
+%block GridCellSampling
+  0.5  0.5   0.0
+  0.5  0.0   0.5
+  0.0  0.5   0.5
+%endblock GridCellSampling
+
+# reciprocal space
+%block kgrid_Monkhorst_Pack
+  K_REPLACE_EM   0   0     0.0 
+  0   K_REPLACE_EM   0     0.0
+  0   0   K_REPLACE_BULK    0.0
+%endblock kgrid_Monkhorst_Pack
+
+#ProcessorY                   4
+#BlockSize                    100
+
+# functional
+xc.functional                GGA           # 'LDA', 'GGA'
+xc.authors                   PBE           # 'CA'='PZ', 'PW92', 'PBE'
+
+# scf
+MaxSCFIterations             300
+DM.MixingWeight              0.02
+DM.Tolerance                 1.0E-4
+DM.UseSaveDM                 T
+DM.NumberPulay               6             # Pulay convergency accelerator
+DM.MixSCF1                   F
+
+SolutionMethod               diagon 
+ElectronicTemperature        300 K         # Default value
+
+# MD options
+MD.TypeOfRun                 cg            # Type of dynamics:
+MD.VariableCell              false         # if vary cell
+MD.NumCGsteps                0             # Number of CG steps for relaxation
+MD.MaxCGDispl                0.1 Ang      # Maximum atomic displacement at one step
+MD.MaxForceTol               0.03 eV/Ang   # Tolerance in the maximum force min(fx, fy, fz)
+MD.MaxStressTol              0.1 Gpa
+
+
+#Siesta Output Flags
+SaveHS                       true          # Hamiltonian and overlap in sparse
+SaveRHO                      T
+WriteMullikenPop             1
+WriteForces                  T
+WriteCoorStep                T
+SaveElectrostaticPotential   T             # Hartree Potential file
+ 
+
+##for smeagol-trans
+
+#SetBulkTransvCell           T
+BulkTransport                T
+BulkLeads                    LR
+
+WriteEDM                     T
+WriteFDM                     T
+SaveElectrostaticPotential   T             # Generate 0.*.VH file for Hartree potential leveling
+

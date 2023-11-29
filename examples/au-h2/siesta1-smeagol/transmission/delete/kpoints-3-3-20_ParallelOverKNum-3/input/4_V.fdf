@@ -1,0 +1,137 @@
+SystemName                   PROJECT_REPLACE          # Descriptive name of the system
+SystemLabel                     PROJECT_REPLACE               # Short name for naming files
+NumberOfAtoms    em_atoms
+NumberOfSpecies                 2               # Number of species
+
+%block ChemicalSpeciesLabel
+ 1   79   Au
+ 2    1   H
+%endblock ChemicalSpeciesLabel
+
+# ps
+%block Ps.lmax
+  Au    3
+  H     3
+%endblock Ps.lmax
+
+# Basis
+PAO.BasisType                split         # Type of basis ('nones', 'nonodes', 'split')
+PAO.SplitNorm  0.15
+PAO.EnergyShift              10 meV
+PAO.BasisSize                DZP
+
+%block PAO.Basis                           # basis
+Au 2
+n=6   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+6.0 0.0
+n=5   2   1                         # n, l, Nzeta
+5.5
+H     2      0.00
+ n=1    0    2   E      2.07      0.50
+   5.75  1.5
+   1.000   1.000
+ n=2    1    1   E      0.89      0.01
+   5.500
+   1.000
+%endblock PAO.Basis
+
+
+# lattice vectors
+LatticeConstant              1.0 Ang
+%block LatticeVectors
+         8.86712000        0.00000000        0.00000000
+         0.00000        8.86712000        0.00000000
+         0.00000000        0.00000000       38.72
+%endblock LatticeVectors
+
+
+
+AtomicCoordinatesFormat Ang
+
+%block AtomicCoordinatesAndAtomicSpecies
+em_struct
+%endblock AtomicCoordinatesAndAtomicSpecies 	                                             
+
+%block kgrid_Monkhorst_Pack
+  K_REPLACE_EM   0   0     0.0 
+  0   K_REPLACE_EM   0     0.0
+  0   0   1     0.0
+%endblock kgrid_Monkhorst_Pack
+
+# constrains in relaxation
+%block GeometryConstraints
+   position   from  1 to  54
+   position   from  -1 to  -45
+%endblock GeometryConstraints
+
+# real space mesh grid
+MeshCutoff                   800.0 Ry
+%block GridCellSampling
+  0.5  0.5   0.0
+  0.5  0.0   0.5
+  0.0  0.5   0.5
+%endblock GridCellSampling
+
+#ProcessorY                   4
+#BlockSize                    100
+
+
+# functional
+xc.functional                GGA           # 'LDA', 'GGA'
+xc.authors                   PBE           # 'CA'='PZ', 'PW92', 'PBE'
+
+# scf
+MaxSCFIterations             300
+DM.MixingWeight              0.02
+DM.Tolerance                 1.0E-4
+DM.UseSaveDM                 T
+DM.NumberPulay               6             # Pulay convergency accelerator
+
+SolutionMethod               diagon
+ElectronicTemperature        300 K         # Default value
+
+#Siesta Output Flags
+SaveHS                       F           # Hamiltonian and overlap in sparse
+SaveRHO                      T
+WriteMullikenPop             1
+WriteForces                  T
+WriteCoorStep                T
+SaveElectrostaticPotential   T             # Hartree Potential file
+
+
+#-----
+#smeagol
+
+#-----
+
+# Perform a transport calculation
+EMTransport              T
+
+# Set number of energy points for integrals
+NEnergReal               64
+
+# Set bias range
+VInitial             V_REPLACE eV
+VFinal               V_REPLACE eV
+NIVPoints                0
+
+# General variables
+Delta                    1e-4
+EnergLowestBound    -100.0 eV
+
+# Print transmission coefficient
+TrCoefficients           T
+InitTransmRange      -10.0 eV
+FinalTransmRange      10.0 eV
+NTransmPoints            800
+TRC.EMDOS                T
+TRC.LeadsDOS             T
+
+# Matching of Hartree potential with the leads
+HartreeLeadsBottom  HLB_REPLACE eV
+
+%block SaveBiasSteps
+ 0
+%endblock SaveBiasSteps
+
+EM.ParallelOverKNum 3
