@@ -1,0 +1,141 @@
+&GLOBAL
+   PROJECT              -0.5V
+   RUN_TYPE             ENERGY
+   PRINT_LEVEL          medium
+   EXTENDED_FFT_LENGTHS .true.
+   PREFERRED_DIAG_LIBRARY SL
+&END GLOBAL
+
+&FORCE_EVAL
+   METHOD Quickstep
+
+  &PRINT
+      &FORCES
+      &END FORCES
+   &END PRINT
+
+   &DFT
+      BASIS_SET_FILE_NAME BASIS_MOLOPT
+      POTENTIAL_FILE_NAME GTH_POTENTIALS
+      WFN_RESTART_FILE_NAME dft_wfn-RESTART_0.kp
+
+ &SMEAGOL
+         PROJECT_NAME             -0.5V
+         EMTransport              T
+
+        # Set number of energy points for integrals
+         NEnergReal               64
+
+        # Set bias range
+         VInitial [eV]            -0.5
+         VFinal   [eV]            -0.5
+         NIVPoints                0
+
+        # General variables
+         Delta                    1e-4
+         EnergLowestBound [eV]   -100.0
+
+        # Print transmission coefficient
+         TrCoefficients           T
+         InitTransmRange [eV]     -10.0
+         FinalTransmRange [eV]     10.0
+         NTransmPoints            800
+         TRC.EMDOS                T
+         TRC.LeadsDOS             T
+
+         # Matching of Hartree potential with the leads
+         HartreeLeadsBottom [eV]  1.4851610329E-001
+
+ &END SMEAGOL
+
+      &MGRID
+         CUTOFF 400
+      &END MGRID
+
+
+      &SCF
+         MAX_SCF   200
+         EPS_SCF   1e-7
+         SCF_GUESS restart
+         ADDED_MOS 100
+
+         &SMEAR
+            ELECTRONIC_TEMPERATURE [K] 293
+            METHOD fermi_dirac
+         &END SMEAR
+
+         &MIXING
+            ALPHA   0.3
+            METHOD  broyden_mixing
+            NBUFFER 8
+
+            #ALPHA   1.0
+            #METHOD  direct_p_mixing
+         &END MIXING
+
+         &PRINT
+            &RESTART
+               FILENAME ""
+            &END RESTART
+         &END PRINT
+      &END SCF
+
+    &PRINT
+        &V_HARTREE_CUBE
+        STRIDE  2 2 2
+        &END  V_HARTREE_CUBE
+      &E_DENSITY_CUBE  ON
+        STRIDE 2 2 2
+      &END E_DENSITY_CUBE
+      &HIRSHFELD
+    SHAPE_FUNCTION  DENSITY
+    &END HIRSHFELD
+    &END PRINT
+
+      &POISSON
+         POISSON_SOLVER periodic
+         PERIODIC xyz
+      &END POISSON
+
+      &XC
+         &XC_FUNCTIONAL pade
+         &END XC_FUNCTIONAL
+      &END XC
+
+      &KPOINTS
+         SCHEME  MONKHORST-PACK 1 1 1
+         SYMMETRY OFF
+         EPS_GEO 1.e-8
+         FULL_GRID ON
+         VERBOSE T
+         # -1 -- smallest possible number of processes per group; 0 -- all processes, > 0 -- this number of processes
+         PARALLEL_GROUP_SIZE  0
+      &END KPOINTS
+   &END DFT
+
+   &SUBSYS
+
+&CELL
+        ABC  12.0 12.0 36.0
+        PERIODIC xyz
+      &END CELL
+
+      &TOPOLOGY
+ &CENTER_COORDINATES
+         &END CENTER_COORDINATES
+        COORD_FILE_NAME em.xyz
+        COORD_FILE_FORMAT  XYZ
+      &END TOPOLOGY
+
+      &KIND Au
+         BASIS_SET SZV-MOLOPT-SR-GTH
+         POTENTIAL GTH-PADE-q11
+      &END KIND
+   
+      &KIND Li
+         BASIS_SET SZV-MOLOPT-SR-GTH
+         POTENTIAL GTH-PADE-q3
+      &END KIND
+
+   &END SUBSYS
+&END FORCE_EVAL
