@@ -1,0 +1,54 @@
+&FORCE_EVAL
+
+METHOD Quickstep
+ &DFT
+  BASIS_SET_FILE_NAME 			${BASISFILE}
+  POTENTIAL_FILE_NAME 			${PSEUDOFILE}
+
+  @IF ( ${RESTART} == TRUE )
+  WFN_RESTART_FILE_NAME 		${WAVEFILE} 
+  @ENDIF
+
+  &MGRID					
+    CUTOFF 				${CUTOFF} 
+    REL_CUTOFF 				${RELCUTOFF}
+    NGRIDS 				   	 4
+  &END MGRID
+
+  &QS
+     METHOD 				GPW
+     EPS_DEFAULT 			1.0E-14
+     @IF ( ${RTYPE} == CELL_OPT )
+     	EXTRAPOLATION USE_PREV_P
+     @ENDIF 
+  &END QS
+
+  @INCLUDE 'scf.inc'
+
+  &XC
+       &XC_FUNCTIONAL 			${FUNCTIONAL} 
+       &END XC_FUNCTIONAL
+  &END XC 
+
+   &KPOINTS
+     SCHEME MONKHORST-PACK      ${Kx} ${Ky} ${Kz}
+     FULL_GRID .TRUE.
+   &END KPOINTS
+
+     @IF ( ${RTYPE} == ENERGY )
+     &PRINT
+      &V_HARTREE_CUBE
+      &END V_HARTREE_CUBE
+     &END PRINT 
+     @ENDIF 
+
+ &END DFT
+
+@INCLUDE 'subsys.inc'
+
+   &PRINT
+     &TOTAL_NUMBERS ON
+     &END TOTAL_NUMBERS
+   &END PRINT
+
+&END FORCE_EVAL

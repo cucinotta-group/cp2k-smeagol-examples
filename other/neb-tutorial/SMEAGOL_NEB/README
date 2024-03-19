@@ -1,0 +1,71 @@
+The guide of NEB calculation
+
+*****Usage************************************************************************
+Firstly, you shold know the optimized initial and final structure.
+If you know the energies and forces of these structures too,
+you can skip the calculation of both structures.
+
+There are two ways to give structures.
+
+* Only initial and final structure
+=> intermediate structures are automatically generated with linear interpolation
+
+* Start from desireble structure
+=> Please write systemlabel.NEB and start calculation with UseSaveNEB=.true.
+=> Please prepare syatemlabel.NEB just like an example.
+=> Units are eV and Angstrom.
+=> If you do not know some values (e.g. forces of intermediate structure or energies),
+=> just substitute 0.0
+
+Parallelization is available.
+You can choose arbital number of beads.
+
+**** INPUT OPTIONS****************************************************************
+# MD options
+MD.TypeOfRun            neb         # Type of dynamics = neb
+MD.NumNEBsteps          30          # Maximum Number of NEB steps
+MD.NumOfImages          4           # Number of Images ( intermediate structure )
+MD.Kspring              0.02        # Spring force; default works well
+MD.IndexOfNEB           5           # n>0 => CI-NEB from nth step
+                                    # n>NumNEBsteps => IT-NEB
+                                    # n=-1 => bisection-NEB
+NEB.UseBroyden          .true.      # .true.  Broyden optimizer
+                                    # .false. projected Verlet
+MD.LengthTimeStep        0.3  fs    # time step for projected Verlet
+NEB.SkipEdge            .false.     # Skip calculations of initial and 
+                                    #  final states ; UseSaveNEB must be .ture.
+MD.MaxCGDispl           0.04 Ang    # Maximum atomic displacement
+MD.MaxForceTol          0.06 eV/Ang # Tolerance of force for each images
+MD.UseSaveNEB           .false.     # You can start from arbitary continuations
+
+NEB.ReferEtot           .false.     # .true. for the SIESTA
+                                    # .false. under the finite bias
+NEB.InterpolationScheme  spline     # linear, polynomial or spline
+NEB.derivative1          0.0        # In the case of spline, boundary consitions should be suplied
+NEB.derivativeN          0.0        # If the endpoints are stable states, 0.0
+
+#Structure
+%block FinalAtomicCoordinatesAndSpecies # if you do not start from .NEB file, put the coordinates of final state
+                                        # in the same order of your %block AtomicCoordinatesAndSpecies
+
+**** OUTPUTS *****************************************************************
+
+* systemlabel.NEB *
+The most recent reaction coordinates and gradients are written.
+This can be used for the restarting.
+It Contains energy (eV) , positon (Ang) , and TRUE forces for each bead
+
+* systemlabel.neb_history *
+The history of the coordinates, gradients and NEB forces of all intermadiate images.
+
+**** Utility *********************************************************************
+
+* neb2xsf
+ Creates .AXSF file from .NEB file
+
+* neb2ener
+ Calculates PES form ~.NEB file, by integrating forces.
+ Please input the file nema , "~.NEB", the number of bead and the number of atoms
+>Outputs
+ "landscape" ... potential energy surface
+ "potential" ... above values corresponding to beads positions

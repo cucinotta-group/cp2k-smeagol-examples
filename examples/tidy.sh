@@ -20,3 +20,7 @@ find . -name "*.RHO*" -type f -delete
 find . -name "*.LDOS*" -type f -delete
 find . -name "*.VH*" -type f -delete
 
+
+find . -type f -size +100M
+#find . -type f -size +100M  -exec zip -m '{}.zip' '{}' \;
+

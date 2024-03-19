@@ -1,0 +1,3188 @@
+SIESTA 1.4.13  -- [TDDFT/O(N)/Spin-Orbit branch] (4 November 2004)
+Architecture  : mpif90
+Compiler flags:  -O0 -g -traceback  -check 
+PARALLEL version
+
+* Running on    8 nodes in parallel
+ OMP_NUM_THREADS environment variable=1                             
+ Maximum number of Threads           1
+ In parallel region?  F
+ Number of Threads in parallel region           1
+ Node index, Thread index           0           0
+>> Start of run:   6-JUN-2012  16:41:38
+
+                           ***********************       
+                           *  WELCOME TO SIESTA  *       
+                           ***********************       
+
+reinit: Reading from standard input
+************************** Dump of input data file ****************************
+# Sample file for programs SIESTA
+# S. Sanvito, Mar. 02
+SystemName		    Au wire		# Descriptive name of the system
+SystemLabel 			Au_wire		# Short name for naming files
+NumberOfAtoms     9
+NumberOfSpecies			1               # Number of species
+PAO.BasisType			split		# Type of basis ('nones', 'nonodes', 'split')
+PAO.SplitNorm			0.15		# Amount of norm carried by the second zeta
+%block ChemicalSpeciesLabel
+  1   79  Au
+%endblock ChemicalSpeciesLabel
+%block PAO.Basis                 		# Define Basis set
+Au 2
+n=6   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+6.0 0.0
+n=5   2   1                         # n, l, Nzeta
+5.5
+%endblock PAO.Basis
+LatticeConstant 1.000 Ang
+%block LatticeVectors
+ 15.000   0.000   0.000	  1
+  0.000  15.000   0.000   1
+  0.000   0.000  25.200   1
+%endblock LatticeVectors
+AtomicCoordinatesFormat Ang
+%block AtomicCoordinatesAndAtomicSpecies
+   0.000   0.000  0.000   1  Au  1
+   0.000   0.000  2.800   1  Au  2
+   0.000   0.000  5.600   1  Au  3
+   0.000   0.000  8.400   1  Au  4
+   2.000   0.000 11.200   1  Au  5
+   0.000   0.000 14.000   1  Au  6
+   0.000   0.000 16.800   1  Au  7
+   0.000   0.000 19.600   1  Au  8
+   0.000   0.000 22.400   1  Au  8
+%endblock AtomicCoordinatesAndAtomicSpecies 	
+%block FinalAtomicCoordinatesAndAtomicSpecies
+   0.000   0.000  0.000   1  Au  1
+   0.000   0.000  2.800   1  Au  2
+   0.000   0.000  5.600   1  Au  3
+   0.000   0.000  8.400   1  Au  4
+  -1.000   0.000 11.200   1  Au  5
+   0.000   0.000 14.000   1  Au  6
+   0.000   0.000 16.800   1  Au  7
+   0.000   0.000 19.600   1  Au  8
+   0.000   0.000 22.400   1  Au  8
+%endblock FinalAtomicCoordinatesAndAtomicSpecies 	
+#kgrid_cutoff    10 Ang
+%block kgrid_Monkhorst_Pack
+  1   0   0     0.0
+  0   1   0     0.0
+  0   0   1     0.0
+%endblock kgrid_Monkhorst_Pack
+xc.functional		LDA		# 'LDA', 'GGA'
+xc.authors 	 		CA		# 'CA'='PZ', 'PW92', 'PBE'
+SpinPolarized			F		# 'T', 'F'		
+FixSpin           F
+#TotalSpin        0.0
+NonCollinearSpin		F		# 'T', 'F'
+MeshCutoff 	 		    600.0 Ry		# Equivalent plane wave cutoff for the grid
+MaxSCFIterations		10000
+DM.MixingWeight			0.1
+DM.NumberPulay			4	# Pulay convergency accelerator
+DM.MixSCF1              T     # Default value
+DM.PulayOnFile			F		# Store in memory ('F') or in files ('T')
+#DM.NumberKick         30
+#DM.KickMixingWeight   0.1
+DM.Tolerance 		5.0E-4
+NeglNonOverlapInt		F		# 'F'=do not neglect
+SolutionMethod			diagon
+ElectronicTemperature		300 K		# Default value
+DM.UseSaveDM 			T
+#MD.UseSaveXV			T
+#MD.UseSaveCG			T
+WriteForces      T
+WriteCoorXmol			T		# Write Atoms coordinates
+SaveElectrostaticPotential      T
+#SaveHS				T		# Save the Hamiltonian and Overlap matrices
+SaveRho				T		# Save the valence pseudocharge density
+#SaveDeltaRho			T
+#WriteDenchar			T		# Write Denchar output
+WriteMullikenPop		1 #write mulliken population of aromic and orbital charges
+#-----
+#smeagol
+#-----
+#%block GeometryConstraints
+#  position from 1 to 36
+#  position from -1 to -36
+#%endblock GeometryConstraints
+WriteForces      T
+WriteCoorXmol     T   # Write Atoms coordinates
+WriteMDXmol                     T
+WriteCoorStep   T
+ParallelOverK T
+EMTransport              T
+NEnergReal                0
+NEnergImCircle           16
+NEnergImLine             16
+NPoles                   16
+VInitial                 0.d0 eV
+VFinal                   0.d0 eV
+NIVPoints                0
+Delta                    1.d-4
+EnergLowestBound        -5.d0 Ry
+NSlices                  1
+TrCoefficients         T
+NTransmPoints            1
+InitTransmRange         -10.0d0 eV
+FinalTransmRange         10.0d0 eV
+TRCScaleEF               T
+#TransmissionOverK              T     # Default value
+TRC.EMPDOS              T     # Default value
+TRC.LeadsDOS              T     # Default value
+PeriodicTransp           T
+HartreeLeadsBottom     -0.57043540 eV
+HartreeLeadsLeft        0.000  Ang
+HartreeLeadsRight       0.000  Ang
+%block SaveBiasSteps
+  0
+%endblock SaveBiasSteps
+EM.SetEBD  T
+EM.CalculateForces              T
+# MD options
+MD.TypeOfRun            neb         # Type of dynamics = neb
+MD.NumNEBsteps          30          # Maximum Number of NEB steps
+MD.NumOfImages          4           # Number of Images ( intermediate structure )
+MD.Kspring              0.02        # Spring force; default works well
+MD.IndexOfNEB           5           # n>0 => CI-NEB from nth step
+                                    # n>NumNEBsteps => IT-NEB
+                                    # n=-1 => bisection-NEB
+NEB.UseBroyden          .true.      # .true.  Broyden optimizer
+                                    # .false. projected Verlet (!!!underconstruction!!!)
+NEB.SkipEdge            .false.      # Skip calculations of initial and
+                                    #  final states ; UseSaveNEB must be .ture.
+MD.MaxForceTol          0.06 eV/Ang # Tolerance of force for each images
+MD.UseSaveNEB           F      # You can start from arbitary continuations
+#Structure
+%block GeometryConstraints
+  position from 1 to 2
+  position from -1 to -2
+%endblock GeometryConstraints
+MixHamiltonian              F     # Default value
+ReadHamiltonian              F     # Default value
+DM.MixSCF1              F     # Default value
+************************** End of input data file *****************************
+
+reinit: -----------------------------------------------------------------------
+reinit: System Name: Au wire                                                    
+reinit: -----------------------------------------------------------------------
+reinit: System Label: Au_wire             
+reinit: -----------------------------------------------------------------------
+
+initatom: Reading input for the pseudopotentials and atomic orbitals ----------
+ Species number:            1  Label: Au Atomic number:          79
+Ground state valence configuration:   6s01  5d10
+Reading pseudopotential information in formatted form from Au.psf
+For Au, standard SIESTA heuristics set lmxkb to 3
+ (one more than the basis l, including polarization orbitals).
+Use PS.lmax or PS.KBprojectors blocks to override.
+ Warning: Empty PAO shell. l =           1
+ Will have a KB projector anyway...
+
+<basis_specs>
+===============================================================================
+Au                   Z=  79    Mass=  196.97        Charge=  0.0000    
+Lmxo=2 Lmxkb=3     BasisType=split      Semic=F
+L=0  Nsemic=0  Cnfigmx=6
+          n=1  nzeta=2  polorb=1
+               vcte:    0.0000    
+               rinn:    0.0000    
+                rcs:    6.0000      0.0000    
+            lambdas:    1.0000      1.0000    
+L=1  Nsemic=0  Cnfigmx=6
+L=2  Nsemic=0  Cnfigmx=5
+          n=1  nzeta=1  polorb=0
+               vcte:    0.0000    
+               rinn:    0.0000    
+                rcs:    5.5000    
+            lambdas:    1.0000    
+-------------------------------------------------------------------------------
+L=0  Nkbl=1  erefs: 0.17977+309
+L=1  Nkbl=1  erefs: 0.17977+309
+L=2  Nkbl=1  erefs: 0.17977+309
+L=3  Nkbl=1  erefs: 0.17977+309
+===============================================================================
+</basis_specs>
+
+atom: Called for Au  (Z =  79)
+
+read_vps: Pseudopotential generation method:
+read_vps: ATM3      Troullier-Martins                       
+
+read_vps: Pseudopotential generated from a relativistic atomic calculation
+read_vps: There are spin-orbit pseudopotentials available
+
+read_vps: Valence configuration (pseudopotential and basis set generation):
+6s( 1.00) rc: 2.18
+6p( 0.00) rc: 2.47
+5d(10.00) rc: 1.79
+5f( 0.00) rc: 2.00
+Total valence charge:   11.00000
+
+read_vps: Pseudopotential includes a core correction:
+read_vps: Pseudo-core for xc-correction
+comcore: Pseudo-core radius Rcore=  4.027091
+
+xc_check: Exchange-correlation functional:
+xc_check: Ceperley-Alder
+V l=0 = -2*Zval/r beyond r=  2.9833
+V l=1 = -2*Zval/r beyond r=  2.9833
+V l=2 = -2*Zval/r beyond r=  2.9833
+V l=3 = -2*Zval/r beyond r=  2.9833
+All V_l potentials equal beyond r=  2.4425
+This should be close to max(r_c) in ps generation
+All pots = -2*Zval/r beyond r=  2.9833
+
+VLOCAL1: 99.0% of the norm of Vloc inside      7.276 Ry
+VLOCAL1: 99.9% of the norm of Vloc inside     16.582 Ry
+atom: Maximum radius for 4*pi*r*r*local-pseudopot. charge    2.94627
+atom: Maximum radius for r*vlocal+2*Zval:    2.60007
+GHOST: No ghost state for L =  0
+GHOST: No ghost state for L =  1
+GHOST: No ghost state for L =  2
+GHOST: No ghost state for L =  3
+
+KBgen: Kleinman-Bylander projectors: 
+   l= 0   rc=  3.175745   el= -0.445638   Ekb=  5.072790   kbcos=  0.276607
+   l= 1   rc=  3.256140   el= -0.066324   Ekb=  2.703235   kbcos=  0.227171
+   l= 2   rc=  3.020861   el= -0.526103   Ekb= -4.704026   kbcos= -0.643795
+   l= 3   rc=  3.466145   el=  0.003438   Ekb= -2.516122   kbcos= -0.010529
+
+KBgen: Total number of  Kleinman-Bylander projectors:   16
+atom: -------------------------------------------------------------------------
+
+atom: SANKEY-TYPE ORBITALS:
+atom: Selected multiple-zeta basis: split     
+
+SPLIT: Orbitals with angular momentum L= 0
+
+SPLIT: Basis orbitals for state 6s
+
+   izeta = 1
+                 lambda =    1.000000
+                     rc =    6.083298
+                 energy =   -0.427281
+                kinetic =    0.413324
+    potential(screened) =   -0.840605
+       potential(ionic) =   -8.569369
+
+   izeta = 2
+                 rmatch =    5.643738
+              splitnorm =    0.150000
+                 energy =   -0.356838
+                kinetic =    0.642757
+    potential(screened) =   -0.999595
+       potential(ionic) =   -9.161462
+
+SPLIT: Orbitals with angular momentum L= 2
+
+SPLIT: Basis orbitals for state 5d
+
+   izeta = 1
+                 lambda =    1.000000
+                     rc =    5.504393
+                 energy =   -0.523460
+                kinetic =    4.937955
+    potential(screened) =   -5.461415
+       potential(ionic) =  -15.928016
+
+POLgen: Perturbative polarization orbital with L=  1
+
+POLgen: Polarization orbital for state 6s
+
+   izeta = 1
+                     rc =    6.083298
+                 energy =   -0.072727
+                kinetic =    0.732634
+    potential(screened) =   -0.805360
+       potential(ionic) =   -8.142092
+atom: Total number of Sankey-type orbitals: 10
+
+atm_pop: Valence configuration(local Pseudopot. screening):
+ 6s( 1.00)                                                            
+ 6p( 0.00)                                                            
+ 5d(10.00)                                                            
+Vna: chval, zval:   11.00000  11.00000
+
+Vna:  Cut-off radius for the neutral-atom potential:   6.083298
+
+atom: _________________________________________________________________________
+
+prinput: Basis input ----------------------------------------------------------
+
+PAO.BasisType split     
+
+%block ChemicalSpeciesLabel
+    1   79 Au                      # Species index, atomic number, species label
+%endblock ChemicalSpeciesLabel
+
+%block PAO.Basis                 # Define Basis set
+Au          2                    # Species label, number of l-shells
+ n=6   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   6.083      5.644   
+   1.000      1.000   
+ n=5   2   1                         # n, l, Nzeta 
+   5.504   
+   1.000   
+%endblock PAO.Basis
+
+prinput: ----------------------------------------------------------------------
+
+
+siesta: ******************** Simulation parameters ****************************
+siesta:
+siesta: The following are some of the parameters of the simulation.
+siesta: A complete list of the parameters used, including defect values,
+siesta: can be found in file out.fdf
+siesta:
+coor:   Atomic-coordinates input format  =     Cartesian coordinates
+coor:                                          (in Angstroms)
+redata: Number of spin components        =     1
+redata: SpinOrbit                        =     0
+redata: Long output                      =     F
+redata: Number of Atomic Species         =     1
+redata: Charge density info will appear in .RHO file
+redata: Write Mulliken Pop.              =     Atomic and Orbital charges
+redata: Mesh Cutoff                      =   600.0000  Ry
+redata: Net charge of the system         =     0.0000 |e|
+redata: Max. number of SCF Iter          = 10000
+redata: One Pulay mixing every           =     4 iterations
+redata: Mix DM in first SCF step ?       =     T
+redata: Write Pulay info on disk?        =     F
+redata: New DM Mixing Weight             =     0.1000
+redata: No kicks to SCF
+redata: DM Mixing Weight for Kicks       =     0.5000
+redata: DM Tolerance for SCF             =     0.000500
+redata: Use continuation files for DM    =     T
+redata: Neglect nonoverlap interactions  =     F
+redata: Method of Calculation            =     Diagonalization
+redata: Divide and Conquer               =     F
+redata: Electronic Temperature           =     0.0019  Ry
+redata: Fix the spin of the system       =     F
+redata: Dynamics option                  =     Nudged Elastic Band
+redata: Initial MD time step             =     1
+redata:   Final MD time step             =     1
+redata: Length of MD time step           =     1.0000  fs
+redata: Length of MD time step           =     1.0000  fs
+
+redata: Initial Temperature of MD run    =     0.0000  K
+redata: Perform a MD quench              =     F
+redata: ***********************************************************************
+
+siesta: Atomic coordinates (Bohr) and species
+siesta:      0.00000   0.00000   0.00000  1        1
+siesta:      0.00000   0.00000   5.29124  1        2
+siesta:      0.00000   0.00000  10.58247  1        3
+siesta:      0.00000   0.00000  15.87371  1        4
+siesta:      3.77945   0.00000  21.16494  1        5
+siesta:      0.00000   0.00000  26.45618  1        6
+siesta:      0.00000   0.00000  31.74741  1        7
+siesta:      0.00000   0.00000  37.03865  1        8
+siesta:      0.00000   0.00000  42.32988  1        9
+
+initatomlists: Number of atoms, orbitals, and projectors:      9    90   144
+
+siesta: System type = chain     
+ Nodes, Orbitals           8          90
+ blocksizedefault           8
+
+* ProcessorY, Blocksize:    2   8
+
+ label:           1 Au                             1 s      
+ label:           2 Au                             1 s      
+ label:           3 Au                             1 dxy    
+ label:           4 Au                             1 dyz    
+ label:           5 Au                             1 dz2    
+ label:           6 Au                             1 dxz    
+ label:           7 Au                             1 dx2-y2 
+ label:           8 Au                             1 Ppy    
+ label:           9 Au                             1 Ppz    
+ label:          10 Au                             1 Ppx    
+ label:          11 Au                             2 s      
+ label:          12 Au                             2 s      
+ label:          13 Au                             2 dxy    
+ label:          14 Au                             2 dyz    
+ label:          15 Au                             2 dz2    
+ label:          16 Au                             2 dxz    
+ label:          17 Au                             2 dx2-y2 
+ label:          18 Au                             2 Ppy    
+ label:          19 Au                             2 Ppz    
+ label:          20 Au                             2 Ppx    
+ label:          21 Au                             3 s      
+ label:          22 Au                             3 s      
+ label:          23 Au                             3 dxy    
+ label:          24 Au                             3 dyz    
+ label:          25 Au                             3 dz2    
+ label:          26 Au                             3 dxz    
+ label:          27 Au                             3 dx2-y2 
+ label:          28 Au                             3 Ppy    
+ label:          29 Au                             3 Ppz    
+ label:          30 Au                             3 Ppx    
+ label:          31 Au                             4 s      
+ label:          32 Au                             4 s      
+ label:          33 Au                             4 dxy    
+ label:          34 Au                             4 dyz    
+ label:          35 Au                             4 dz2    
+ label:          36 Au                             4 dxz    
+ label:          37 Au                             4 dx2-y2 
+ label:          38 Au                             4 Ppy    
+ label:          39 Au                             4 Ppz    
+ label:          40 Au                             4 Ppx    
+ label:          41 Au                             5 s      
+ label:          42 Au                             5 s      
+ label:          43 Au                             5 dxy    
+ label:          44 Au                             5 dyz    
+ label:          45 Au                             5 dz2    
+ label:          46 Au                             5 dxz    
+ label:          47 Au                             5 dx2-y2 
+ label:          48 Au                             5 Ppy    
+ label:          49 Au                             5 Ppz    
+ label:          50 Au                             5 Ppx    
+ label:          51 Au                             6 s      
+ label:          52 Au                             6 s      
+ label:          53 Au                             6 dxy    
+ label:          54 Au                             6 dyz    
+ label:          55 Au                             6 dz2    
+ label:          56 Au                             6 dxz    
+ label:          57 Au                             6 dx2-y2 
+ label:          58 Au                             6 Ppy    
+ label:          59 Au                             6 Ppz    
+ label:          60 Au                             6 Ppx    
+ label:          61 Au                             7 s      
+ label:          62 Au                             7 s      
+ label:          63 Au                             7 dxy    
+ label:          64 Au                             7 dyz    
+ label:          65 Au                             7 dz2    
+ label:          66 Au                             7 dxz    
+ label:          67 Au                             7 dx2-y2 
+ label:          68 Au                             7 Ppy    
+ label:          69 Au                             7 Ppz    
+ label:          70 Au                             7 Ppx    
+ label:          71 Au                             8 s      
+ label:          72 Au                             8 s      
+ label:          73 Au                             8 dxy    
+ label:          74 Au                             8 dyz    
+ label:          75 Au                             8 dz2    
+ label:          76 Au                             8 dxz    
+ label:          77 Au                             8 dx2-y2 
+ label:          78 Au                             8 Ppy    
+ label:          79 Au                             8 Ppz    
+ label:          80 Au                             8 Ppx    
+ label:          81 Au                             9 s      
+ label:          82 Au                             9 s      
+ label:          83 Au                             9 dxy    
+ label:          84 Au                             9 dyz    
+ label:          85 Au                             9 dz2    
+ label:          86 Au                             9 dxz    
+ label:          87 Au                             9 dx2-y2 
+ label:          88 Au                             9 Ppy    
+ label:          89 Au                             9 Ppz    
+ label:          90 Au                             9 Ppx    
+ 
+* Maximum dynamic memory allocated =     1 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      0
+                            NEB step     =      1
+                            current bead =      0
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00000000    0.00000000    5.60000000   1  Au         3
+    0.00000000    0.00000000    8.40000000   1  Au         4
+    2.00000000    0.00000000   11.20000000   1  Au         5
+    0.00000000    0.00000000   14.00000000   1  Au         6
+    0.00000000    0.00000000   16.80000000   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+read_ldau The LDA+U method used is from Czyzky PRB 49 14211
+
+neb: Read density matrix (if it exists) number =  0                 
+
+iodm: Reading Density Matrix from files
+
+  0.DM                           
+
+InitMesh: MESH =   240 x   240 x   384 =    22118400
+InitMesh: Mesh cutoff (required, used) =   600.000   641.746 Ry
+ 
+* Maximum dynamic memory allocated =   194 MB
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+
+siesta: Program's energy decomposition (eV):
+siesta: Eions   =     10845.004159
+siesta: Ena     =       607.145462
+siesta: Ekin    =      5980.154327
+siesta: Enl     =     -2309.165120
+siesta: DEna    =        36.821306
+siesta: DUscf   =         1.511900
+siesta: DUext   =         0.000000
+siesta: Exc     =     -3712.339586
+siesta: eta*DQ  =         0.000000
+siesta: Emadel  =         0.000000
+siesta: Eharris =    -10256.015317
+siesta: Eso     =         0.000000
+siesta: Etot    =    -10240.875869
+siesta: FreeEng =    -10240.875869
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10256.0153   -10240.8759   -10240.8759  0.6967  0.0000
+timer: Routine,Calls,Time,% = IterSCF        1      89.160  95.53
+ n_kp=           1
+siesta:    2   -10246.3072   -10242.2605   -10242.2605  0.2870  0.0000
+ n_kp=           1
+siesta:    3   -10241.6404   -10242.7136   -10242.7136  0.1773  0.0000
+ n_kp=           1
+siesta:    4   -10243.5796   -10242.5638   -10242.5638  0.1572  0.0000
+ n_kp=           1
+siesta:    5   -10243.7766   -10242.6969   -10242.6969  0.0758  0.0000
+ n_kp=           1
+siesta:    6   -10243.5114   -10242.9131   -10242.9131  0.0251  0.0000
+ n_kp=           1
+siesta:    7   -10243.0917   -10243.0250   -10243.0250  0.0247  0.0000
+ n_kp=           1
+siesta:    8   -10243.1616   -10243.0382   -10243.0382  0.0187  0.0000
+ n_kp=           1
+siesta:    9   -10243.1131   -10243.0873   -10243.0873  0.0028  0.0000
+ n_kp=           1
+siesta:   10   -10243.1054   -10243.0898   -10243.0898  0.0022  0.0000
+ n_kp=           1
+siesta:   11   -10243.0957   -10243.0949   -10243.0949  0.0015  0.0000
+ n_kp=           1
+siesta:   12   -10243.0977   -10243.0974   -10243.0974  0.0004  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10243.0982
+
+siesta: E_KS - E_eggbox =    -10243.0982
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000331    0.000000    0.007945
+     2   -0.010049    0.000000    0.007125
+     3    0.064794    0.000000    0.170867
+     4    0.647062    0.000000   -0.384584
+     5   -1.405329    0.000000    0.034261
+     6    0.647552    0.000000    0.360540
+     7    0.064841    0.000000   -0.193719
+     8   -0.010020    0.000000    0.046878
+     9    0.000331    0.000000   -0.034708
+----------------------------------------
+ Tot   -0.000487    0.000000    0.014605
+----------------------------------------
+ Max    1.405329
+ Res    0.342695    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    1.405329    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000580    0.000000    0.000000
+         0.000000    0.000085    0.000000
+         0.000000    0.000000    0.005557
+
+siesta: Pressure (static):         -3.32330992  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000580    0.000000    0.000000
+         0.000000    0.000085    0.000000
+         0.000000    0.000000    0.005557
+
+siesta: Pressure (total):         -3.32330992  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.997   0.948   0.107   2.000   1.979   1.889   1.980   2.000   0.020
+              0.055   0.020
+   3 11.004   0.956   0.103   2.000   1.980   1.891   1.970   2.000   0.019
+              0.067   0.019
+   4 10.985   0.987   0.061   1.999   1.989   1.927   1.952   1.995   0.012
+              0.044   0.019
+   5 10.961   1.007   0.001   1.999   1.998   1.987   1.933   1.993   0.004
+              0.029   0.011
+   6 10.985   0.987   0.061   1.999   1.989   1.927   1.952   1.995   0.012
+              0.044   0.019
+   7 11.004   0.956   0.103   2.000   1.980   1.891   1.970   2.000   0.019
+              0.066   0.019
+   8 10.997   0.948   0.108   2.000   1.979   1.889   1.980   2.000   0.020
+              0.055   0.020
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.933
+
+neb: ***Information of NEB calculation***
+neb: Spring constant (Ry/Bohr**2):0.02000000
+neb: Solves Climbing Image NEB
+neb: Number of iterations befoer CI-NEB:      5
+neb: Optimized with Broyden
+Broyden_optim: max_history for broyden:   5
+Broyden_optim: cycle on maxit: T
+Broyden_optim: initial inverse jacobian:   1.0000
+ 
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   195 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      1
+                            NEB step     =      1
+                            current bead =      5
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00000000    0.00000000    5.60000000   1  Au         3
+    0.00000000    0.00000000    8.40000000   1  Au         4
+   -1.00000000    0.00000000   11.20000000   1  Au         5
+    0.00000000    0.00000000   14.00000000   1  Au         6
+    0.00000000    0.00000000   16.80000000   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  5                 
+
+iodm: Reading Density Matrix from files
+
+  5.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10244.6591   -10244.6618   -10244.6618  0.0004  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.6615
+
+siesta: Atomic forces (eV/Ang):
+     1   -0.000316    0.000000    0.002014
+     2    0.002946    0.000000    0.020516
+     3   -0.069878    0.000000    0.057784
+     4   -0.371639    0.000000    0.203129
+     5    0.878416    0.000000    0.034438
+     6   -0.371866    0.000000   -0.226070
+     7   -0.069964    0.000000   -0.083007
+     8    0.002901    0.000000    0.033804
+     9   -0.000315    0.000000   -0.028725
+----------------------------------------
+ Tot    0.000285    0.000000    0.013882
+----------------------------------------
+ Max    0.878416
+ Res    0.207631    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.878416    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000240    0.000000    0.000000
+         0.000000    0.000085    0.000000
+         0.000000    0.000000    0.005942
+
+siesta: Pressure (static):         -3.34742261  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000240    0.000000    0.000000
+         0.000000    0.000085    0.000000
+         0.000000    0.000000    0.005942
+
+siesta: Pressure (total):         -3.34742261  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.999   0.950   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   3 11.005   0.961   0.108   2.000   1.980   1.885   1.974   2.000   0.019
+              0.059   0.019
+   4 10.992   0.958   0.094   1.999   1.985   1.918   1.947   1.997   0.016
+              0.061   0.017
+   5 10.991   0.984   0.083   1.998   1.989   1.945   1.915   1.996   0.013
+              0.054   0.014
+   6 10.992   0.958   0.094   1.999   1.985   1.918   1.947   1.997   0.016
+              0.061   0.017
+   7 11.005   0.961   0.108   2.000   1.980   1.885   1.974   2.000   0.019
+              0.059   0.019
+   8 10.999   0.950   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.983
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   196 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      2
+                            NEB step     =      1
+                            current bead =      1
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00000000    0.00000000    5.60000000   1  Au         3
+    0.00000000    0.00000000    8.40000000   1  Au         4
+    1.40000000    0.00000000   11.20000000   1  Au         5
+    0.00000000    0.00000000   14.00000000   1  Au         6
+    0.00000000    0.00000000   16.80000000   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  1                 
+
+iodm: Reading Density Matrix from files
+
+  1.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10251.5895   -10242.6470   -10242.6470  0.3328  0.0000
+ n_kp=           1
+siesta:    2   -10245.5513   -10243.4938   -10243.4938  0.1210  0.0000
+ n_kp=           1
+siesta:    3   -10243.7430   -10243.7241   -10243.7241  0.1044  0.0000
+ n_kp=           1
+siesta:    4   -10245.4384   -10243.6305   -10243.6305  0.0739  0.0000
+ n_kp=           1
+siesta:    5   -10244.2393   -10243.8816   -10243.8816  0.0367  0.0000
+ n_kp=           1
+siesta:    6   -10244.2149   -10244.0474   -10244.0474  0.0195  0.0000
+ n_kp=           1
+siesta:    7   -10244.0963   -10244.0753   -10244.0753  0.0126  0.0000
+ n_kp=           1
+siesta:    8   -10244.1336   -10244.0867   -10244.0867  0.0076  0.0000
+ n_kp=           1
+siesta:    9   -10244.1143   -10244.0953   -10244.0953  0.0030  0.0000
+ n_kp=           1
+siesta:   10   -10244.1075   -10244.0989   -10244.0989  0.0013  0.0000
+ n_kp=           1
+siesta:   11   -10244.0999   -10244.1017   -10244.1017  0.0007  0.0000
+ n_kp=           1
+siesta:   12   -10244.1035   -10244.1022   -10244.1022  0.0005  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.1031
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000347    0.000000    0.004180
+     2   -0.008073    0.000000    0.016687
+     3    0.074653    0.000000    0.104346
+     4    0.572668    0.000000    0.064181
+     5   -1.270846    0.000000    0.030690
+     6    0.572754    0.000000   -0.087534
+     7    0.074734    0.000000   -0.128503
+     8   -0.008033    0.000000    0.037608
+     9    0.000348    0.000000   -0.030915
+----------------------------------------
+ Tot    0.008551    0.000000    0.010741
+----------------------------------------
+ Max    1.270846
+ Res    0.293455    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    1.270846    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000386    0.000000    0.000000
+         0.000000    0.000083    0.000000
+         0.000000    0.000000    0.005887
+
+siesta: Pressure (static):         -3.39421198  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000386    0.000000    0.000000
+         0.000000    0.000083    0.000000
+         0.000000    0.000000    0.005887
+
+siesta: Pressure (total):         -3.39421198  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.998   0.950   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   3 11.005   0.960   0.107   2.000   1.980   1.887   1.971   2.000   0.019
+              0.062   0.019
+   4 10.988   0.968   0.080   1.999   1.987   1.925   1.944   1.996   0.014
+              0.057   0.018
+   5 10.979   0.997   0.052   1.998   1.993   1.966   1.912   1.994   0.009
+              0.045   0.012
+   6 10.988   0.968   0.080   1.999   1.987   1.925   1.944   1.996   0.014
+              0.057   0.018
+   7 11.005   0.960   0.107   2.000   1.980   1.887   1.971   2.000   0.019
+              0.062   0.019
+   8 10.998   0.950   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.963
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   196 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      3
+                            NEB step     =      1
+                            current bead =      2
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00000000    0.00000000    5.60000000   1  Au         3
+    0.00000000    0.00000000    8.40000000   1  Au         4
+    0.80000000    0.00000000   11.20000000   1  Au         5
+    0.00000000    0.00000000   14.00000000   1  Au         6
+    0.00000000    0.00000000   16.80000000   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  2                 
+
+iodm: Reading Density Matrix from files
+
+  2.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10248.5593   -10244.1304   -10244.1304  0.1299  0.0000
+ n_kp=           1
+siesta:    2   -10245.1985   -10244.5620   -10244.5620  0.0694  0.0000
+ n_kp=           1
+siesta:    3   -10244.7601   -10244.6315   -10244.6315  0.0635  0.0000
+ n_kp=           1
+siesta:    4   -10245.2376   -10244.6705   -10244.6705  0.0385  0.0000
+ n_kp=           1
+siesta:    5   -10244.4792   -10244.8864   -10244.8864  0.0195  0.0000
+ n_kp=           1
+siesta:    6   -10244.8950   -10244.8470   -10244.8470  0.0048  0.0000
+ n_kp=           1
+siesta:    7   -10244.8436   -10244.8538   -10244.8538  0.0045  0.0000
+ n_kp=           1
+siesta:    8   -10244.8545   -10244.8537   -10244.8537  0.0017  0.0000
+ n_kp=           1
+siesta:    9   -10244.8619   -10244.8532   -10244.8532  0.0011  0.0000
+ n_kp=           1
+siesta:   10   -10244.8605   -10244.8544   -10244.8544  0.0008  0.0000
+ n_kp=           1
+siesta:   11   -10244.8557   -10244.8568   -10244.8568  0.0002  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.8570
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000274    0.000000    0.001036
+     2    0.000080    0.000000    0.023347
+     3    0.061353    0.000000    0.031956
+     4    0.251476    0.000000    0.201988
+     5   -0.638583    0.000000    0.009211
+     6    0.251563    0.000000   -0.223803
+     7    0.061429    0.000000   -0.057698
+     8    0.000125    0.000000    0.030897
+     9    0.000276    0.000000   -0.027744
+----------------------------------------
+ Tot   -0.012007   -0.000001   -0.010811
+----------------------------------------
+ Max    0.638583
+ Res    0.153893    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.638583    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000167    0.000000   -0.000002
+         0.000000    0.000085    0.000000
+        -0.000002    0.000000    0.005891
+
+siesta: Pressure (static):         -3.28038276  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000167    0.000000   -0.000002
+         0.000000    0.000085    0.000000
+        -0.000002    0.000000    0.005891
+
+siesta: Pressure (total):         -3.28038276  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.999   0.951   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   3 11.004   0.960   0.108   2.000   1.980   1.884   1.975   2.000   0.019
+              0.058   0.019
+   4 10.994   0.955   0.099   1.999   1.983   1.913   1.952   1.998   0.017
+              0.061   0.017
+   5 10.996   0.977   0.093   1.999   1.987   1.933   1.923   1.997   0.015
+              0.056   0.016
+   6 10.994   0.955   0.099   1.999   1.983   1.913   1.952   1.998   0.017
+              0.061   0.017
+   7 11.004   0.960   0.109   2.000   1.980   1.884   1.975   2.000   0.019
+              0.058   0.019
+   8 10.999   0.951   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.991
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   196 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      4
+                            NEB step     =      1
+                            current bead =      3
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00000000    0.00000000    5.60000000   1  Au         3
+    0.00000000    0.00000000    8.40000000   1  Au         4
+    0.20000000    0.00000000   11.20000000   1  Au         5
+    0.00000000    0.00000000   14.00000000   1  Au         6
+    0.00000000    0.00000000   16.80000000   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  3                 
+
+iodm: Reading Density Matrix from files
+
+  3.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10246.1647   -10244.9466   -10244.9466  0.0808  0.0000
+ n_kp=           1
+siesta:    2   -10244.8799   -10245.0674   -10245.0674  0.0731  0.0000
+ n_kp=           1
+siesta:    3   -10245.1854   -10245.0428   -10245.0428  0.0632  0.0000
+ n_kp=           1
+siesta:    4   -10245.1030   -10245.0784   -10245.0784  0.0109  0.0000
+ n_kp=           1
+siesta:    5   -10245.1626   -10245.0868   -10245.0868  0.0066  0.0000
+ n_kp=           1
+siesta:    6   -10245.0883   -10245.0933   -10245.0933  0.0054  0.0000
+ n_kp=           1
+siesta:    7   -10245.0964   -10245.0926   -10245.0926  0.0031  0.0000
+ n_kp=           1
+siesta:    8   -10245.0982   -10245.0926   -10245.0926  0.0009  0.0000
+ n_kp=           1
+siesta:    9   -10245.0967   -10245.0933   -10245.0933  0.0006  0.0000
+ n_kp=           1
+siesta:   10   -10245.0918   -10245.0944   -10245.0944  0.0004  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10245.0944
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000080    0.000000    0.000074
+     2    0.002778    0.000000    0.026700
+     3    0.016950    0.000000   -0.022495
+     4    0.014081    0.000000    0.026271
+     5   -0.056892    0.000000    0.007250
+     6    0.014877    0.000000   -0.052635
+     7    0.016931    0.000000   -0.004312
+     8    0.002788    0.000000    0.027026
+     9    0.000080    0.000000   -0.026781
+----------------------------------------
+ Tot    0.011671    0.000000   -0.018902
+----------------------------------------
+ Max    0.056892
+ Res    0.019668    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.056892    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000081    0.000000    0.000002
+         0.000000    0.000085    0.000000
+         0.000002    0.000000    0.005623
+
+siesta: Pressure (static):         -3.09154263  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000081    0.000000    0.000002
+         0.000000    0.000085    0.000000
+         0.000002    0.000000    0.005623
+
+siesta: Pressure (total):         -3.09154263  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   3 11.000   0.953   0.107   2.000   1.979   1.886   1.979   2.000   0.019
+              0.057   0.019
+   4 11.000   0.952   0.107   2.000   1.980   1.889   1.976   2.000   0.019
+              0.058   0.019
+   5 11.000   0.955   0.107   2.000   1.980   1.891   1.972   2.000   0.019
+              0.057   0.019
+   6 11.000   0.952   0.107   2.000   1.980   1.889   1.976   2.000   0.019
+              0.058   0.019
+   7 11.000   0.953   0.107   2.000   1.979   1.886   1.979   2.000   0.019
+              0.057   0.019
+   8 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   99.000
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   196 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      5
+                            NEB step     =      1
+                            current bead =      4
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00000000    0.00000000    5.60000000   1  Au         3
+    0.00000000    0.00000000    8.40000000   1  Au         4
+   -0.40000000    0.00000000   11.20000000   1  Au         5
+    0.00000000    0.00000000   14.00000000   1  Au         6
+    0.00000000    0.00000000   16.80000000   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  4                 
+
+iodm: Reading Density Matrix from files
+
+  4.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          16
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10244.1674   -10245.2062   -10245.2062  0.0301  0.0000
+ n_kp=           1
+siesta:    2   -10245.2806   -10245.1018   -10245.1018  0.0254  0.0000
+ n_kp=           1
+siesta:    3   -10245.0317   -10245.1208   -10245.1208  0.0225  0.0000
+ n_kp=           1
+siesta:    4   -10244.9160   -10245.0896   -10245.0896  0.0062  0.0000
+ n_kp=           1
+siesta:    5   -10245.1162   -10245.0618   -10245.0618  0.0027  0.0000
+ n_kp=           1
+siesta:    6   -10245.0657   -10245.0654   -10245.0654  0.0020  0.0000
+ n_kp=           1
+siesta:    7   -10245.0762   -10245.0637   -10245.0637  0.0014  0.0000
+ n_kp=           1
+siesta:    8   -10245.0642   -10245.0652   -10245.0652  0.0004  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10245.0653
+
+siesta: Atomic forces (eV/Ang):
+     1   -0.000153    0.000000    0.000134
+     2   -0.003844    0.000000    0.025220
+     3   -0.034341    0.000000   -0.008795
+     4   -0.056719    0.000000    0.091150
+     5    0.182337    0.000000    0.031163
+     6   -0.057129    0.000000   -0.113831
+     7   -0.034358    0.000000   -0.017714
+     8   -0.003881    0.000000    0.028627
+     9   -0.000152    0.000000   -0.026838
+----------------------------------------
+ Tot   -0.008240    0.000000    0.009117
+----------------------------------------
+ Max    0.182337
+ Res    0.049785    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.182337    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000084    0.000000    0.000000
+         0.000000    0.000083    0.000000
+         0.000000    0.000000    0.005707
+
+siesta: Pressure (static):         -3.13680541  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000084    0.000000    0.000000
+         0.000000    0.000083    0.000000
+         0.000000    0.000000    0.005707
+
+siesta: Pressure (total):         -3.13680541  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.019
+   3 11.002   0.956   0.108   2.000   1.980   1.885   1.978   2.000   0.019
+              0.057   0.019
+   4 10.998   0.952   0.106   2.000   1.981   1.897   1.967   2.000   0.019
+              0.059   0.018
+   5 11.000   0.962   0.105   2.000   1.982   1.903   1.955   1.999   0.018
+              0.058   0.018
+   6 10.998   0.952   0.106   2.000   1.981   1.897   1.967   2.000   0.019
+              0.059   0.018
+   7 11.002   0.956   0.108   2.000   1.980   1.885   1.978   2.000   0.019
+              0.057   0.019
+   8 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.999
+
+neb: Energy Height (eV) of image:       -0.79688
+neb: Atomic forces (eV/Ang) for image:    1
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.074653    0.000000    0.104346
+     4    0.572668    0.000000    0.064181
+     5    0.000000    0.000000    0.030690
+     6    0.572754    0.000000   -0.087534
+     7    0.074734    0.000000   -0.128503
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot    1.294809    0.000000   -0.016819
+----------------------------------------
+   Max    0.572754
+   Res    0.161850    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.36431
+neb: Atomic forces (eV/Ang) for image:    2
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.061353    0.000000    0.031956
+     4    0.251476    0.000000    0.201988
+     5    0.000000    0.000000    0.009211
+     6    0.251563    0.000000   -0.223803
+     7    0.061429    0.000000   -0.057698
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot    0.625821    0.000000   -0.038346
+----------------------------------------
+   Max    0.251563
+   Res    0.092172    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.57024
+neb: Atomic forces (eV/Ang) for image:    3
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.016950    0.000000   -0.022495
+     4    0.014081    0.000000    0.026271
+     5    0.000000    0.000000    0.007250
+     6    0.014877    0.000000   -0.052635
+     7    0.016931    0.000000   -0.004312
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot    0.062838    0.000000   -0.045922
+----------------------------------------
+   Max    0.052635
+   Res    0.013651    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.53236
+neb: Atomic forces (eV/Ang) for image:    4
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3   -0.034341    0.000000   -0.008795
+     4   -0.056719    0.000000    0.091150
+     5    0.000000    0.000000    0.031163
+     6   -0.057129    0.000000   -0.113831
+     7   -0.034358    0.000000   -0.017714
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot   -0.182547    0.000000   -0.018026
+----------------------------------------
+   Max    0.113831
+   Res    0.034140    sqrt( Sum f_i^2 / 3N )
+ maxforce=  2.227641440058076E-002  0.100000000000000     
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   196 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      6
+                            NEB step     =      2
+                            current bead =      1
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00153647    0.00000000    5.60214761   1  Au         3
+    0.01178639    0.00000000    8.40132094   1  Au         4
+    1.40000000    0.00000000   11.20063165   1  Au         5
+    0.01178817    0.00000000   13.99819842   1  Au         6
+    0.00153814    0.00000000   16.79735522   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  1                 
+
+iodm: Reading Density Matrix from files
+
+  1.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=           9
+ info_c2b=          20
+ info_c2b=          16
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          23
+ info_c2b=          25
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10243.9186   -10244.1404   -10244.1404  0.0103  0.0000
+ n_kp=           1
+siesta:    2   -10244.1388   -10244.1183   -10244.1183  0.0024  0.0000
+ n_kp=           1
+siesta:    3   -10244.1214   -10244.1201   -10244.1201  0.0021  0.0000
+ n_kp=           1
+siesta:    4   -10244.1120   -10244.1202   -10244.1202  0.0015  0.0000
+ n_kp=           1
+siesta:    5   -10244.1158   -10244.1146   -10244.1146  0.0005  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.1147
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000338    0.000000    0.004546
+     2   -0.006964    0.000000    0.018284
+     3    0.080891    0.000000    0.092256
+     4    0.614018    0.000000    0.077294
+     5   -1.260949    0.000000    0.034304
+     6    0.574307    0.000000   -0.070599
+     7    0.081418    0.000000   -0.142938
+     8   -0.006976    0.000000    0.035037
+     9    0.000340    0.000000   -0.031378
+----------------------------------------
+ Tot    0.076422    0.000000    0.016807
+----------------------------------------
+ Max    1.260949
+ Res    0.295256    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    1.260949    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000370    0.000000   -0.000002
+         0.000000    0.000082    0.000000
+        -0.000003    0.000000    0.005889
+
+siesta: Pressure (static):         -3.38682717  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000370    0.000000   -0.000002
+         0.000000    0.000082    0.000000
+        -0.000003    0.000000    0.005889
+
+siesta: Pressure (total):         -3.38682717  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.998   0.949   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   3 11.005   0.960   0.107   2.000   1.980   1.887   1.972   2.000   0.019
+              0.062   0.019
+   4 10.988   0.968   0.081   1.999   1.987   1.924   1.945   1.996   0.014
+              0.057   0.018
+   5 10.980   0.997   0.053   1.998   1.993   1.966   1.912   1.994   0.009
+              0.046   0.012
+   6 10.988   0.967   0.081   1.999   1.987   1.924   1.944   1.996   0.014
+              0.057   0.018
+   7 11.005   0.960   0.107   2.000   1.980   1.887   1.972   2.000   0.019
+              0.062   0.019
+   8 10.998   0.949   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.963
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      7
+                            NEB step     =      2
+                            current bead =      2
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00126273    0.00000000    5.60065770   1  Au         3
+    0.00517577    0.00000000    8.40415723   1  Au         4
+    0.80000000    0.00000000   11.20018957   1  Au         5
+    0.00517756    0.00000000   13.99539380   1  Au         6
+    0.00126430    0.00000000   16.79881248   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  2                 
+
+iodm: Reading Density Matrix from files
+
+  2.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10244.8000   -10244.8666   -10244.8666  0.0068  0.0000
+ n_kp=           1
+siesta:    2   -10244.8796   -10244.8600   -10244.8600  0.0021  0.0000
+ n_kp=           1
+siesta:    3   -10244.8614   -10244.8621   -10244.8621  0.0020  0.0000
+ n_kp=           1
+siesta:    4   -10244.8608   -10244.8621   -10244.8621  0.0017  0.0000
+ n_kp=           1
+siesta:    5   -10244.8647   -10244.8607   -10244.8607  0.0004  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.8610
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000267    0.000000    0.001036
+     2    0.000704    0.000000    0.023848
+     3    0.063312    0.000000    0.034832
+     4    0.256274    0.000000    0.214257
+     5   -0.629928    0.000000    0.009033
+     6    0.244524    0.000000   -0.181712
+     7    0.065328    0.000000   -0.071413
+     8    0.000736    0.000000    0.029648
+     9    0.000264    0.000000   -0.027881
+----------------------------------------
+ Tot    0.001480   -0.000001    0.031649
+----------------------------------------
+ Max    0.629928
+ Res    0.151303    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.629928    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000163    0.000000   -0.000003
+         0.000000    0.000086    0.000000
+        -0.000003    0.000000    0.005890
+
+siesta: Pressure (static):         -3.27802689  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000163    0.000000   -0.000003
+         0.000000    0.000086    0.000000
+        -0.000003    0.000000    0.005890
+
+siesta: Pressure (total):         -3.27802689  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.999   0.951   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   3 11.004   0.960   0.108   2.000   1.980   1.884   1.975   2.000   0.019
+              0.058   0.019
+   4 10.995   0.955   0.099   1.999   1.983   1.913   1.952   1.998   0.017
+              0.061   0.017
+   5 10.996   0.977   0.094   1.999   1.986   1.932   1.923   1.997   0.015
+              0.056   0.016
+   6 10.995   0.955   0.099   1.999   1.983   1.913   1.952   1.998   0.017
+              0.061   0.017
+   7 11.004   0.960   0.108   2.000   1.980   1.884   1.975   2.000   0.019
+              0.058   0.019
+   8 10.999   0.951   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.991
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      8
+                            NEB step     =      2
+                            current bead =      3
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00034885    0.00000000    5.59953701   1  Au         3
+    0.00028980    0.00000000    8.40054069   1  Au         4
+    0.20000000    0.00000000   11.20014922   1  Au         5
+    0.00030619    0.00000000   13.99891669   1  Au         6
+    0.00034846    0.00000000   16.79991125   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  3                 
+
+iodm: Reading Density Matrix from files
+
+  3.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10245.0944   -10245.0946   -10245.0946  0.0009  0.0000
+ n_kp=           1
+siesta:    2   -10245.0990   -10245.0946   -10245.0946  0.0003  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10245.0951
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000082    0.000000   -0.000054
+     2    0.003130    0.000000    0.025956
+     3    0.016893    0.000000   -0.017222
+     4    0.014744    0.000000    0.029777
+     5   -0.056073    0.000000    0.005304
+     6    0.014435    0.000000   -0.042320
+     7    0.018399   -0.000001   -0.006897
+     8    0.003146    0.000000    0.027397
+     9    0.000082    0.000000   -0.026814
+----------------------------------------
+ Tot    0.014839   -0.000001   -0.004872
+----------------------------------------
+ Max    0.056073
+ Res    0.018665    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.056073    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000081    0.000000    0.000002
+         0.000000    0.000085    0.000000
+         0.000002    0.000000    0.005619
+
+siesta: Pressure (static):         -3.08981237  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000081    0.000000    0.000002
+         0.000000    0.000085    0.000000
+         0.000002    0.000000    0.005619
+
+siesta: Pressure (total):         -3.08981237  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   3 11.000   0.953   0.107   2.000   1.979   1.886   1.979   2.000   0.019
+              0.057   0.019
+   4 10.999   0.952   0.107   2.000   1.980   1.889   1.976   2.000   0.019
+              0.058   0.019
+   5 11.000   0.955   0.107   2.000   1.980   1.891   1.972   2.000   0.019
+              0.057   0.019
+   6 10.999   0.952   0.107   2.000   1.980   1.889   1.976   2.000   0.019
+              0.058   0.019
+   7 11.000   0.953   0.107   2.000   1.979   1.886   1.979   2.000   0.019
+              0.057   0.019
+   8 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   99.000
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =      9
+                            NEB step     =      2
+                            current bead =      4
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+   -0.00070679    0.00000000    5.59981899   1  Au         3
+   -0.00116736    0.00000000    8.40187601   1  Au         4
+   -0.40000000    0.00000000   11.20064139   1  Au         5
+   -0.00117581    0.00000000   13.99765718   1  Au         6
+   -0.00070714    0.00000000   16.79963542   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  4                 
+
+iodm: Reading Density Matrix from files
+
+  4.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          12
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10245.0518   -10245.0666   -10245.0666  0.0028  0.0000
+ n_kp=           1
+siesta:    2   -10245.0778   -10245.0651   -10245.0651  0.0008  0.0000
+ n_kp=           1
+siesta:    3   -10245.0666   -10245.0664   -10245.0664  0.0008  0.0000
+ n_kp=           1
+siesta:    4   -10245.0673   -10245.0664   -10245.0664  0.0007  0.0000
+ n_kp=           1
+siesta:    5   -10245.0667   -10245.0664   -10245.0664  0.0002  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10245.0664
+
+siesta: Atomic forces (eV/Ang):
+     1   -0.000151    0.000000    0.000015
+     2   -0.003927    0.000000    0.025847
+     3   -0.034366   -0.000001   -0.003905
+     4   -0.059531    0.000000    0.095060
+     5    0.179820    0.000000    0.031061
+     6   -0.056912    0.000000   -0.090494
+     7   -0.036286    0.000000   -0.021456
+     8   -0.003950    0.000000    0.027166
+     9   -0.000150    0.000000   -0.026837
+----------------------------------------
+ Tot   -0.015453    0.000000    0.036458
+----------------------------------------
+ Max    0.179820
+ Res    0.048089    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.179820    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000084    0.000000    0.000000
+         0.000000    0.000084    0.000000
+         0.000000    0.000000    0.005704
+
+siesta: Pressure (static):         -3.13602213  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000084    0.000000    0.000000
+         0.000000    0.000084    0.000000
+         0.000000    0.000000    0.005704
+
+siesta: Pressure (total):         -3.13602213  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   3 11.002   0.956   0.108   2.000   1.980   1.885   1.978   2.000   0.019
+              0.057   0.019
+   4 10.998   0.952   0.105   2.000   1.981   1.897   1.967   2.000   0.019
+              0.059   0.018
+   5 11.000   0.962   0.105   2.000   1.982   1.903   1.955   1.999   0.018
+              0.058   0.018
+   6 10.998   0.952   0.106   2.000   1.981   1.897   1.967   2.000   0.019
+              0.059   0.018
+   7 11.002   0.956   0.108   2.000   1.980   1.885   1.978   2.000   0.019
+              0.057   0.019
+   8 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.999
+
+neb: Energy Height (eV) of image:       -0.80895
+neb: Atomic forces (eV/Ang) for image:    1
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.009211    0.000000   -0.007935
+     4   -0.005445    0.000000    0.007869
+     5    0.000035    0.000000    0.032977
+     6   -0.001993    0.000000    0.017477
+     7   -0.002049    0.000000    0.000581
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot   -0.000241    0.000000    0.050968
+----------------------------------------
+   Max    0.032977
+   Res    0.007795    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.36579
+neb: Atomic forces (eV/Ang) for image:    2
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.055066    0.000000   -0.010049
+     4    0.118473    0.000000    0.273381
+     5   -0.000007    0.000000    0.009497
+     6    0.103679    0.000000   -0.241467
+     7    0.050148    0.000000    0.009371
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot    0.327360    0.000000    0.040733
+----------------------------------------
+   Max    0.273381
+   Res    0.077854    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.56669
+neb: Atomic forces (eV/Ang) for image:    3
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.016987    0.000000   -0.017131
+     4   -0.005886    0.000000    0.016290
+     5    0.000000    0.000000    0.005300
+     6   -0.011689    0.000000   -0.025614
+     7    0.005461   -0.000001    0.005308
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot    0.004872   -0.000001   -0.015846
+----------------------------------------
+   Max    0.025614
+   Res    0.008076    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.52958
+neb: Atomic forces (eV/Ang) for image:    4
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3   -0.001518   -0.000001    0.004507
+     4   -0.000153    0.000000   -0.000362
+     5   -0.000033    0.000000    0.030869
+     6   -0.008888    0.000000    0.005196
+     7    0.000864    0.000000   -0.002303
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot   -0.009728    0.000000    0.037907
+----------------------------------------
+   Max    0.030869
+   Res    0.006347    sqrt( Sum f_i^2 / 3N )
+ maxforce=  1.063272724916440E-002  0.100000000000000     
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =     10
+                            NEB step     =      3
+                            current bead =      1
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00172633    0.00000000    5.60198404   1  Au         3
+    0.01167415    0.00000000    8.40148313   1  Au         4
+    1.40000072    0.00000000   11.20131139   1  Au         5
+    0.01174709    0.00000000   13.99855866   1  Au         6
+    0.00149590    0.00000000   16.79736719   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  1                 
+
+iodm: Reading Density Matrix from files
+
+  1.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          16
+ info_c2b=          15
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10244.1155   -10244.1146   -10244.1146  0.0006  0.0000
+ n_kp=           1
+siesta:    2   -10244.1146   -10244.1147   -10244.1147  0.0004  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.1147
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000340    0.000000    0.004488
+     2   -0.006727    0.000000    0.018364
+     3    0.080652   -0.000001    0.092634
+     4    0.612906    0.000000    0.076808
+     5   -1.259098    0.000001    0.037543
+     6    0.574964    0.000001   -0.072082
+     7    0.081348    0.000000   -0.142003
+     8   -0.006948    0.000000    0.034880
+     9    0.000340    0.000000   -0.031388
+----------------------------------------
+ Tot    0.077778    0.000000    0.019244
+----------------------------------------
+ Max    1.259098
+ Res    0.294932    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    1.259098    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000370    0.000000   -0.000003
+         0.000000    0.000082    0.000000
+        -0.000003    0.000000    0.005889
+
+siesta: Pressure (static):         -3.38653097  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000370    0.000000   -0.000003
+         0.000000    0.000082    0.000000
+        -0.000003    0.000000    0.005889
+
+siesta: Pressure (total):         -3.38653097  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.998   0.949   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   3 11.005   0.960   0.106   2.000   1.980   1.887   1.972   2.000   0.019
+              0.062   0.019
+   4 10.988   0.967   0.081   1.999   1.987   1.924   1.945   1.996   0.014
+              0.057   0.018
+   5 10.980   0.997   0.053   1.998   1.993   1.966   1.912   1.994   0.009
+              0.046   0.012
+   6 10.988   0.967   0.081   1.999   1.987   1.924   1.944   1.996   0.014
+              0.057   0.018
+   7 11.005   0.960   0.107   2.000   1.980   1.887   1.972   2.000   0.019
+              0.062   0.019
+   8 10.998   0.949   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.963
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =     11
+                            NEB step     =      3
+                            current bead =      2
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00239780    0.00000000    5.60045055   1  Au         3
+    0.00761781    0.00000000    8.40979233   1  Au         4
+    0.79999986    0.00000000   11.20038534   1  Au         5
+    0.00731467    0.00000000   13.99041652   1  Au         6
+    0.00229799   -0.00000001   16.79900565   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  2                 
+
+iodm: Reading Density Matrix from files
+
+  2.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10244.8500   -10244.8649   -10244.8649  0.0069  0.0000
+ n_kp=           1
+siesta:    2   -10244.8819   -10244.8634   -10244.8634  0.0028  0.0000
+ n_kp=           1
+siesta:    3   -10244.8651   -10244.8659   -10244.8659  0.0019  0.0000
+ n_kp=           1
+siesta:    4   -10244.8679   -10244.8657   -10244.8657  0.0016  0.0000
+ n_kp=           1
+siesta:    5   -10244.8704   -10244.8660   -10244.8660  0.0005  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.8667
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000258    0.000000    0.000751
+     2    0.001133    0.000000    0.025527
+     3    0.064189    0.000000    0.046595
+     4    0.255070    0.000000    0.198365
+     5   -0.625534    0.000000    0.008553
+     6    0.249358   -0.000001   -0.154052
+     7    0.066626    0.000000   -0.078139
+     8    0.001131    0.000000    0.028229
+     9    0.000259    0.000000   -0.027654
+----------------------------------------
+ Tot    0.012489    0.000000    0.048176
+----------------------------------------
+ Max    0.625534
+ Res    0.149163    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.625534    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000159    0.000000   -0.000003
+         0.000000    0.000086    0.000000
+        -0.000003    0.000000    0.005900
+
+siesta: Pressure (static):         -3.28221674  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000159    0.000000   -0.000003
+         0.000000    0.000086    0.000000
+        -0.000003    0.000000    0.005900
+
+siesta: Pressure (total):         -3.28221674  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.999   0.951   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   3 11.004   0.960   0.107   2.000   1.980   1.884   1.976   2.000   0.019
+              0.058   0.019
+   4 10.994   0.955   0.099   1.999   1.983   1.913   1.952   1.998   0.017
+              0.061   0.017
+   5 10.996   0.976   0.096   1.999   1.986   1.932   1.922   1.997   0.015
+              0.057   0.016
+   6 10.994   0.955   0.099   1.999   1.983   1.913   1.952   1.998   0.017
+              0.061   0.017
+   7 11.004   0.960   0.108   2.000   1.980   1.884   1.976   2.000   0.019
+              0.058   0.019
+   8 10.999   0.951   0.107   2.000   1.979   1.887   1.979   2.000   0.020
+              0.057   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.992
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =     12
+                            NEB step     =      3
+                            current bead =      3
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00069899    0.00000000    5.59918389   1  Au         3
+    0.00016847    0.00000000    8.40087648   1  Au         4
+    0.20000000   -0.00000001   11.20025847   1  Au         5
+    0.00006525    0.00000001   13.99838872   1  Au         6
+    0.00046102   -0.00000003   16.80002067   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  3                 
+
+iodm: Reading Density Matrix from files
+
+  3.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          18
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10245.0991   -10245.0951   -10245.0951  0.0006  0.0000
+ n_kp=           1
+siesta:    2   -10245.0976   -10245.0955   -10245.0955  0.0005  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10245.0958
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000080    0.000000   -0.000141
+     2    0.003390    0.000000    0.025455
+     3    0.016414    0.000000   -0.012618
+     4    0.014590    0.000000    0.028402
+     5   -0.056301    0.000000    0.003927
+     6    0.014663    0.000001   -0.036968
+     7    0.018325    0.000001   -0.007975
+     8    0.003192    0.000000    0.027503
+     9    0.000082    0.000000   -0.026783
+----------------------------------------
+ Tot    0.014434    0.000002    0.000801
+----------------------------------------
+ Max    0.056301
+ Res    0.018010    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.056301    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000081    0.000000    0.000002
+         0.000000    0.000085    0.000000
+         0.000002    0.000000    0.005619
+
+siesta: Pressure (static):         -3.09011491  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000081    0.000000    0.000002
+         0.000000    0.000085    0.000000
+         0.000002    0.000000    0.005619
+
+siesta: Pressure (total):         -3.09011491  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   3 11.000   0.953   0.107   2.000   1.979   1.886   1.979   2.000   0.019
+              0.057   0.019
+   4 10.999   0.952   0.107   2.000   1.980   1.889   1.976   2.000   0.019
+              0.058   0.019
+   5 11.000   0.955   0.107   2.000   1.980   1.891   1.972   2.000   0.019
+              0.057   0.019
+   6 11.000   0.952   0.107   2.000   1.980   1.889   1.976   2.000   0.019
+              0.058   0.019
+   7 11.000   0.953   0.107   2.000   1.979   1.886   1.979   2.000   0.019
+              0.057   0.019
+   8 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   99.000
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =     13
+                            NEB step     =      3
+                            current bead =      4
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+   -0.00073808   -0.00000001    5.59991189   1  Au         3
+   -0.00117052    0.00000000    8.40186855   1  Au         4
+   -0.40000068    0.00000000   11.20127768   1  Au         5
+   -0.00135901    0.00000000   13.99776429   1  Au         6
+   -0.00068932    0.00000001   16.79958796   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  4                 
+
+iodm: Reading Density Matrix from files
+
+  4.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          16
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10245.0643   -10245.0665   -10245.0665  0.0005  0.0000
+ n_kp=           1
+siesta:    2   -10245.0673   -10245.0663   -10245.0663  0.0002  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10245.0664
+
+siesta: Atomic forces (eV/Ang):
+     1   -0.000150    0.000000    0.000029
+     2   -0.003951    0.000000    0.026355
+     3   -0.034363    0.000002   -0.005669
+     4   -0.059719    0.000001    0.096639
+     5    0.177659    0.000001    0.031577
+     6   -0.056546    0.000000   -0.090771
+     7   -0.036412   -0.000001   -0.021357
+     8   -0.003924    0.000000    0.027131
+     9   -0.000149    0.000000   -0.026841
+----------------------------------------
+ Tot   -0.017555    0.000002    0.037093
+----------------------------------------
+ Max    0.177659
+ Res    0.047950    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    0.177659    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000084    0.000000    0.000000
+         0.000000    0.000084    0.000000
+         0.000000    0.000000    0.005703
+
+siesta: Pressure (static):         -3.13516362  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000084    0.000000    0.000000
+         0.000000    0.000084    0.000000
+         0.000000    0.000000    0.005703
+
+siesta: Pressure (total):         -3.13516362  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   3 11.002   0.956   0.108   2.000   1.980   1.885   1.978   2.000   0.019
+              0.057   0.019
+   4 10.998   0.952   0.105   2.000   1.981   1.897   1.967   2.000   0.019
+              0.059   0.018
+   5 11.000   0.962   0.105   2.000   1.982   1.903   1.955   1.999   0.018
+              0.058   0.018
+   6 10.998   0.952   0.106   2.000   1.981   1.897   1.967   2.000   0.019
+              0.059   0.018
+   7 11.002   0.956   0.108   2.000   1.980   1.885   1.978   2.000   0.019
+              0.057   0.019
+   8 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.999
+
+neb: Energy Height (eV) of image:       -0.80833
+neb: Atomic forces (eV/Ang) for image:    1
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3   -0.000581   -0.000001   -0.000726
+     4   -0.002299    0.000000   -0.001350
+     5    0.000075    0.000001    0.034791
+     6   -0.002659    0.000001   -0.001209
+     7   -0.000075    0.000000    0.001303
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot   -0.005538    0.000000    0.032809
+----------------------------------------
+   Max    0.034791
+   Res    0.006746    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.36668
+neb: Atomic forces (eV/Ang) for image:    2
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.071156    0.000000    0.030685
+     4    0.283171    0.000000    0.140802
+     5   -0.000013    0.000000    0.009519
+     6    0.256346   -0.000001   -0.141215
+     7    0.084720    0.000000   -0.041177
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot    0.695380   -0.000001   -0.001387
+----------------------------------------
+   Max    0.283171
+   Res    0.086203    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.56467
+neb: Atomic forces (eV/Ang) for image:    3
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3    0.009988    0.000000   -0.016325
+     4    0.000518    0.000000    0.012433
+     5   -0.000001    0.000000    0.003923
+     6   -0.004613    0.000001   -0.016805
+     7    0.000917    0.000001   -0.000027
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot    0.006809    0.000002   -0.016802
+----------------------------------------
+   Max    0.016805
+   Res    0.005581    sqrt( Sum f_i^2 / 3N )
+
+neb: Energy Height (eV) of image:       -1.52823
+neb: Atomic forces (eV/Ang) for image:    4
+     1    0.000000    0.000000    0.000000
+     2    0.000000    0.000000    0.000000
+     3   -0.000653    0.000002   -0.001645
+     4    0.000866    0.000001   -0.000075
+     5   -0.000066    0.000001    0.031198
+     6   -0.000465    0.000000    0.001489
+     7   -0.000535   -0.000001    0.000088
+     8    0.000000    0.000000    0.000000
+     9    0.000000    0.000000    0.000000
+----------------------------------------
+   Tot   -0.000852    0.000002    0.031056
+----------------------------------------
+   Max    0.031198
+   Res    0.006024    sqrt( Sum f_i^2 / 3N )
+ maxforce=  1.101349952265575E-002  0.100000000000000     
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =     14
+                            NEB step     =      4
+                            current bead =      1
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00172744   -0.00000001    5.60197525   1  Au         3
+    0.01165661    0.00000000    8.40147862   1  Au         4
+    1.40000122    0.00000001   11.20155101   1  Au         5
+    0.01172905    0.00000000   13.99856008   1  Au         6
+    0.00149435    0.00000000   16.79737582   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  1                 
+
+iodm: Reading Density Matrix from files
+
+  1.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10244.1141   -10244.1146   -10244.1146  0.0003  0.0000
+ n_kp=           1
+ eif=  -1.17400834626631       0.295951422714982       0.000000000000000E+000
+           1 -0.439028461775662       1.900069268914772E-003
+
+siesta: E_KS(eV) =           -10244.1146
+
+siesta: Atomic forces (eV/Ang):
+     1    0.000340    0.000000    0.004486
+     2   -0.006721    0.000000    0.018431
+     3    0.080639   -0.000001    0.092336
+     4    0.612646    0.000001    0.076945
+     5   -1.258280   -0.000001    0.039113
+     6    0.575077    0.000000   -0.071908
+     7    0.081303    0.000000   -0.142137
+     8   -0.006918    0.000000    0.034895
+     9    0.000341    0.000000   -0.031384
+----------------------------------------
+ Tot    0.078426    0.000000    0.020777
+----------------------------------------
+ Max    1.258280
+ Res    0.294797    sqrt( Sum f_i^2 / 3N )
+----------------------------------------
+ Max    1.258280    constrained
+
+siesta: Stress tensor (static) (eV/Ang**3):
+         0.000370    0.000000   -0.000003
+         0.000000    0.000082    0.000000
+        -0.000003    0.000000    0.005889
+
+siesta: Pressure (static):         -3.38638863  kBar
+
+siesta: Stress tensor (total) (eV/Ang**3):
+         0.000370    0.000000   -0.000003
+         0.000000    0.000082    0.000000
+        -0.000003    0.000000    0.005889
+
+siesta: Pressure (total):         -3.38638863  kBar
+ 
+mulliken: Atomic and Orbital Populations:
+
+Species: Au                  
+Atom  Qatom  Qorb
+               6s      6s      5dxy    5dyz    5dz2    5dxz    5dx2-y2 6Ppy    
+               6Ppz    6Ppx    
+   1 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+   2 10.998   0.949   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   3 11.005   0.961   0.106   2.000   1.980   1.887   1.972   2.000   0.019
+              0.062   0.019
+   4 10.988   0.967   0.081   1.999   1.987   1.924   1.945   1.996   0.014
+              0.057   0.018
+   5 10.980   0.997   0.053   1.998   1.993   1.966   1.912   1.994   0.009
+              0.046   0.012
+   6 10.988   0.967   0.081   1.999   1.987   1.924   1.944   1.996   0.014
+              0.057   0.018
+   7 11.005   0.960   0.107   2.000   1.980   1.887   1.972   2.000   0.019
+              0.062   0.019
+   8 10.998   0.949   0.107   2.000   1.979   1.888   1.979   2.000   0.020
+              0.056   0.019
+   9 11.000   0.952   0.107   2.000   1.979   1.886   1.979   2.000   0.020
+              0.057   0.020
+
+mulliken: Qtot =   98.963
+
+ioneb: Writing NEB continuation file
+ 
+* Maximum dynamic memory allocated =   197 MB
+
+siesta:                 ==============================
+SMEAGOL                 Bias step =    0, V =  0.000 Ry
+                            NEB calculation...  
+                            Total step   =     15
+                            NEB step     =      4
+                            current bead =      2
+                        ==============================
+
+outcoor: Atomic coordinates (Ang):                          
+    0.00000000    0.00000000    0.00000000   1  Au         1
+    0.00000000    0.00000000    2.80000000   1  Au         2
+    0.00288139    0.00000000    5.60064141   1  Au         3
+    0.00948964    0.00000000    8.41083532   1  Au         4
+    0.79999977    0.00000000   11.20045114   1  Au         5
+    0.00900731   -0.00000001   13.98938759   1  Au         6
+    0.00286571   -0.00000001   16.79874739   1  Au         7
+    0.00000000    0.00000000   19.60000000   1  Au         8
+    0.00000000    0.00000000   22.40000000   1  Au         9
+
+neb: Read density matrix (if it exists) number =  2                 
+
+iodm: Reading Density Matrix from files
+
+  2.DM                           
+ n_kp=           1
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          15
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          20
+ info_c2b=          25
+ info_c2b=          20
+ info_c2b=          20
+
+siesta: iscf   Eharris(eV)      E_KS(eV)   FreeEng(eV)   dDmax  Ef(eV)
+siesta:    1   -10244.8510   -10244.8701   -10244.8701  0.0020  0.0000

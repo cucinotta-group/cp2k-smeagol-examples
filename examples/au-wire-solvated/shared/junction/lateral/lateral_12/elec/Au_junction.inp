@@ -1,0 +1,61 @@
+# calculation a restart or not ?
+@SET SCF_RESTART		FALSE
+@SET RESTART			FALSE
+@SET WAVEFILE			dummy.kp
+@SET RESTARTFILE		FALSEF
+
+# NUMERICAL
+@SET BASISFILE 			/rds/general/user/jj1921/home/BASIS_COM_MOLOPT_GTH
+@SET PSEUDOFILE 		/rds/general/user/jj1921/home/GTH_POTENTIALS
+@SET CUTOFF 			500
+@SET RELCUTOFF			40
+@SET Kx				2
+@SET Ky				2
+@SET Kz				1
+@SET BASIS_Au			TZVP-MOLOPT-SR-GTH-q11
+
+# SUBSYS
+@SET CELL_A			35.62375679346579 0.0 0.0
+@SET CELL_B			0.0 30.851078361379844 0.0
+@SET CELL_C			0.0 0.0 31.510565256804476
+@SET COORD			junction_12.xyz
+
+# MOTION 
+   
+# SCF
+@SET SCF_CONV 			1E-7
+@SET SCF_NCYCLES		500
+
+@IF ( ${SCF_RESTART} == TRUE )
+	@SET SCF_GUESS			RESTART 
+@ENDIF
+
+@IF ( ${SCF_RESTART} == FALSE ) 
+	@SET SCF_GUESS			ATOMIC
+@ENDIF
+
+@SET FUNCTIONAL 		PBE
+
+# global parameters
+@SET SYSNAME 			Au_junction
+@SET RTYPE			ENERGY 
+
+# The mandatory GLOBAL section 
+&GLOBAL
+PROJECT 			${SYSNAME} 
+RUN_TYPE 			${RTYPE} 
+PRINT_LEVEL 			MEDIUM 
+&END GLOBAL
+
+# The optional EXT_RESTART section include file 
+@IF (${RESTART}==TRUE )
+  @INCLUDE 			'restart.inc'
+@ENDIF
+
+#The mandatory FORCE_EVAL section include file 
+@INCLUDE 			'forces.inc'
+
+#The optional MOTION section include file
+@IF (${RTYPE}/=ENERGY)
+  @INCLUDE 			'motion2.inc'
+@ENDIF

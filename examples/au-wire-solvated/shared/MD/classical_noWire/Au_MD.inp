@@ -1,0 +1,113 @@
+&GLOBAL
+	PRINT_LEVEL	LOW
+	PROJECT_NAME	Au_MD
+	RUN_TYPE	MD
+&END GLOBAL
+&FORCE_EVAL
+   METHOD FIST
+	&MM
+		&FORCEFIELD
+	        &BEND
+                        ATOMS H O H
+                        KIND HARMONIC
+                        K [rad^-2kcalmol] 110.0
+                        THETA0 [deg] 104.52
+                &END BEND
+      		&BOND
+        		ATOMS O H
+        		KIND HARMONIC
+        		K [angstrom^-2kcalmol] 900.0
+        		R0 [angstrom] 0.9572
+      		&END BOND
+      		&CHARGE
+        		ATOM O
+        		CHARGE -0.834
+      		&END CHARGE
+      		&CHARGE
+       			ATOM H
+        		CHARGE 0.417
+      		&END CHARGE
+      		&CHARGE
+        		ATOM Au
+        		CHARGE 0
+      		&END CHARGE
+      		&NONBONDED
+        		&LENNARD-JONES
+          			atoms O O
+          			EPSILON [kcalmol]  0.152073
+          			SIGMA   [angstrom] 3.1507
+        			RCUT    [angstrom] 10
+        		&END LENNARD-JONES
+        		&LENNARD-JONES
+          			atoms O H
+          			EPSILON [kcalmol] 0.0836
+          			SIGMA [angstrom] 1.775
+          			RCUT  [angstrom] 10
+        		&END LENNARD-JONES
+        		&LENNARD-JONES
+          			atoms H H
+          			EPSILON [kcalmol]  0.04598
+          			SIGMA   [angstrom] 0.400
+          			RCUT    [angstrom] 10
+        		&END LENNARD-JONES
+			&LENNARD-JONES
+                                atoms Au Au
+                                EPSILON [kcalmol]  0
+                                SIGMA   [angstrom] 0
+                                RCUT    [angstrom] 0
+                        &END LENNARD-JONES
+                        &LENNARD-JONES
+                                atoms Au O
+                                EPSILON [kjmol]  3.61
+                                SIGMA   [angstrom] 2.833057924
+                                RCUT    [angstrom] 10
+                        &END LENNARD-JONES
+                        &LENNARD-JONES
+                                atoms Au H
+                                EPSILON [kjmol]  0.01
+                                SIGMA   [angstrom] 3.519049937
+                                RCUT    [angstrom] 10
+                        &END LENNARD-JONES
+		&END NONBONDED
+		&SPLINE
+     			EMAX_SPLINE 30000000000
+			UNIQUE_SPLINE .TRUE.
+			EMAX_ACCURACY 0.001
+			R0_NB 0.05
+    		&END SPLINE
+		IGNORE_MISSING_CRITICAL_PARAMS .TRUE.
+    		&END FORCEFIELD
+    		&POISSON
+      			&EWALD
+        			EWALD_TYPE spme
+        			ALPHA .3
+        			GMAX 12
+      			&END EWALD
+		&END POISSON
+	&END MM
+&SUBSYS
+	&CELL
+		A	17.811878396732904 0 0
+		B	0 15.425539180689931 0
+		C 	0 0 30.226752151153690
+		MULTIPLE_UNIT_CELL 1 1 1
+		PERIODIC XYZ   
+		SYMMETRY ORTHORHOMBIC    
+	&END CELL
+     &TOPOLOGY
+        MULTIPLE_UNIT_CELL 1 1 1
+	COORD_FILE_FORMAT xyz
+	COORD_FILE_NAME wireless.xyz
+	&GENERATE
+	 #BONDLENGTH_MAX 2
+	 CREATE_MOLECULES .TRUE.
+	 BONDPARM_FACTOR 0.7
+	&END GENERATE
+     &END TOPOLOGY
+	&PRINT
+	&MOLECULES ON
+	&END MOLECULES
+	&END PRINT
+&END SUBSYS
+&END FORCE_EVAL
+@INCLUDE 'motion.inc'

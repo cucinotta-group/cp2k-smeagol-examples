@@ -1,0 +1,1219 @@
+ DBCSR| CPU Multiplication driver                                           XSMM
+ DBCSR| Multrec recursion limit                                              512
+ DBCSR| Multiplication stack size                                           1000
+ DBCSR| Maximum elements for images                                    UNLIMITED
+ DBCSR| Multiplicative factor virtual images                                   1
+ DBCSR| Use multiplication densification                                       T
+ DBCSR| Multiplication size stacks                                             3
+ DBCSR| Use memory pool for CPU allocation                                     F
+ DBCSR| Number of 3D layers                                               SINGLE
+ DBCSR| Use MPI memory allocation                                              F
+ DBCSR| Use RMA algorithm                                                      F
+ DBCSR| Use Communication thread                                               T
+ DBCSR| Communication thread load                                             60
+ DBCSR| MPI: My node id                                                        0
+ DBCSR| MPI: Number of nodes                                                  64
+ DBCSR| OMP: Current number of threads                                         8
+ DBCSR| OMP: Max number of threads                                             8
+ DBCSR| Split modifier for TAS multiplication algorithm                  1.0E+00
+
+
+  **** **** ******  **  PROGRAM STARTED AT               2024-01-09 19:52:23.763
+ ***** ** ***  *** **   PROGRAM STARTED ON                           hx1-c08-3-1
+ **    ****   ******    PROGRAM STARTED BY                                cahart
+ ***** **    ** ** **   PROGRAM PROCESS ID                               2553461
+  **** **  *******  **  PROGRAM STARTED IN /gpfs/home/cahart/transport/melamine/
+                                           au_from-h2/capacitor/sz_kpoints-1-1-2
+                                           0-cu
+
+ CP2K| version string:                 CP2K version 2022.1 (Development Version)
+ CP2K| source code revision number:                                  git:5518aa6
+ CP2K| cp2kflags: omp libint fftw3 libxc parallel mpi3 scalapack xsmm plumed2   
+ CP2K| is freely available from                            https://www.cp2k.org/
+ CP2K| Program compiled at                          Thu 21 Sep 19:20:17 BST 2023
+ CP2K| Program compiled on                                       hx1-c12-login-1
+ CP2K| Program compiled for                                                local
+ CP2K| Data directory path    /gpfs/easybuild/prod/software/CP2K/2022.1-foss-202
+ CP2K| Input file name                                                  3_0V.inp
+
+ GLOBAL| Force Environment number                                              1
+ GLOBAL| Basis set file name                                        BASIS_MOLOPT
+ GLOBAL| Potential file name                                      GTH_POTENTIALS
+ GLOBAL| MM Potential file name                                     MM_POTENTIAL
+ GLOBAL| Coordinate file name                                             em.xyz
+ GLOBAL| Method name                                                        CP2K
+ GLOBAL| Project name                                                         0V
+ GLOBAL| Run type                                                         ENERGY
+ GLOBAL| FFT library                                                       FFTW3
+ GLOBAL| Diagonalization library                                       ScaLAPACK
+ GLOBAL| Orthonormality check for eigenvectors                          DISABLED
+ GLOBAL| Matrix multiplication library                                 ScaLAPACK
+ GLOBAL| All-to-all communication in single precision                          F
+ GLOBAL| FFTs using library dependent lengths                                  T
+ GLOBAL| Grid backend                                                       AUTO
+ GLOBAL| Global print level                                               MEDIUM
+ GLOBAL| MPI I/O enabled                                                       T
+ GLOBAL| Total number of message passing processes                            64
+ GLOBAL| Number of threads for this process                                    8
+ GLOBAL| This output is from process                                           0
+ GLOBAL| Stack size for threads created by OpenMP (OMP_STACKSIZE)        default
+ GLOBAL| CPU model name             Intel(R) Xeon(R) Platinum 8358 CPU @ 2.60GHz
+ GLOBAL| CPUID                                                              1003
+
+ MEMORY| system memory details [Kb]
+ MEMORY|                        rank 0           min           max       average
+ MEMORY| MemTotal            527652780     527652780     527652796     527652786
+ MEMORY| MemFree             513513304     512027244     513680028     513312525
+ MEMORY| Buffers                  5480          5388          5480          5468
+ MEMORY| Cached                2221916       1662072       2376560       2169763
+ MEMORY| Slab                  1656240       1326056       1765640       1639860
+ MEMORY| SReclaimable           726368        418608        764192        696345
+ MEMORY| MemLikelyFree       516467068     514113312     516598404     516184102
+
+
+ *** Fundamental physical constants (SI units) ***
+
+ *** Literature: B. J. Mohr and B. N. Taylor,
+ ***             CODATA recommended values of the fundamental physical
+ ***             constants: 2006, Web Version 5.1
+ ***             http://physics.nist.gov/constants
+
+ Speed of light in vacuum [m/s]                             2.99792458000000E+08
+ Magnetic constant or permeability of vacuum [N/A**2]       1.25663706143592E-06
+ Electric constant or permittivity of vacuum [F/m]          8.85418781762039E-12
+ Planck constant (h) [J*s]                                  6.62606896000000E-34
+ Planck constant (h-bar) [J*s]                              1.05457162825177E-34
+ Elementary charge [C]                                      1.60217648700000E-19
+ Electron mass [kg]                                         9.10938215000000E-31
+ Electron g factor [ ]                                     -2.00231930436220E+00
+ Proton mass [kg]                                           1.67262163700000E-27
+ Fine-structure constant                                    7.29735253760000E-03
+ Rydberg constant [1/m]                                     1.09737315685270E+07
+ Avogadro constant [1/mol]                                  6.02214179000000E+23
+ Boltzmann constant [J/K]                                   1.38065040000000E-23
+ Atomic mass unit [kg]                                      1.66053878200000E-27
+ Bohr radius [m]                                            5.29177208590000E-11
+
+ *** Conversion factors ***
+
+ [u] -> [a.u.]                                              1.82288848426455E+03
+ [Angstrom] -> [Bohr] = [a.u.]                              1.88972613288564E+00
+ [a.u.] = [Bohr] -> [Angstrom]                              5.29177208590000E-01
+ [a.u.] -> [s]                                              2.41888432650478E-17
+ [a.u.] -> [fs]                                             2.41888432650478E-02
+ [a.u.] -> [J]                                              4.35974393937059E-18
+ [a.u.] -> [N]                                              8.23872205491840E-08
+ [a.u.] -> [K]                                              3.15774647902944E+05
+ [a.u.] -> [kJ/mol]                                         2.62549961709828E+03
+ [a.u.] -> [kcal/mol]                                       6.27509468713739E+02
+ [a.u.] -> [Pa]                                             2.94210107994716E+13
+ [a.u.] -> [bar]                                            2.94210107994716E+08
+ [a.u.] -> [atm]                                            2.90362800883016E+08
+ [a.u.] -> [eV]                                             2.72113838565563E+01
+ [a.u.] -> [Hz]                                             6.57968392072181E+15
+ [a.u.] -> [1/cm] (wave numbers)                            2.19474631370540E+05
+ [a.u./Bohr**2] -> [1/cm]                                   5.14048714338585E+03
+ 
+
+ CELL_TOP| Volume [angstrom^3]:                                      4593.719514
+ CELL_TOP| Vector a [angstrom    14.582     0.000     0.000   |a| =    14.582000
+ CELL_TOP| Vector b [angstrom     0.000     8.866     0.000   |b| =     8.866000
+ CELL_TOP| Vector c [angstrom     0.000     0.000    35.532   |c| =    35.532000
+ CELL_TOP| Angle (b,c), alpha [degree]:                                90.000000
+ CELL_TOP| Angle (a,c), beta  [degree]:                                90.000000
+ CELL_TOP| Angle (a,b), gamma [degree]:                                90.000000
+ CELL_TOP| Numerically orthorhombic:                                         YES
+ CELL_TOP| Periodicity                                                       XYZ
+
+ GENERATE|  Preliminary Number of Bonds generated:                             0
+ GENERATE|  Achieved consistency in connectivity generation.
+
+ CELL| Volume [angstrom^3]:                                          4593.719514
+ CELL| Vector a [angstrom]:      14.582     0.000     0.000   |a| =    14.582000
+ CELL| Vector b [angstrom]:       0.000     8.866     0.000   |b| =     8.866000
+ CELL| Vector c [angstrom]:       0.000     0.000    35.532   |c| =    35.532000
+ CELL| Angle (b,c), alpha [degree]:                                    90.000000
+ CELL| Angle (a,c), beta  [degree]:                                    90.000000
+ CELL| Angle (a,b), gamma [degree]:                                    90.000000
+ CELL| Numerically orthorhombic:                                             YES
+ CELL| Periodicity                                                           XYZ
+
+ CELL_REF| Volume [angstrom^3]:                                      4593.719514
+ CELL_REF| Vector a [angstrom    14.582     0.000     0.000   |a| =    14.582000
+ CELL_REF| Vector b [angstrom     0.000     8.866     0.000   |b| =     8.866000
+ CELL_REF| Vector c [angstrom     0.000     0.000    35.532   |c| =    35.532000
+ CELL_REF| Angle (b,c), alpha [degree]:                                90.000000
+ CELL_REF| Angle (a,c), beta  [degree]:                                90.000000
+ CELL_REF| Angle (a,b), gamma [degree]:                                90.000000
+ CELL_REF| Numerically orthorhombic:                                         YES
+ CELL_REF| Periodicity                                                       XYZ
+
+ *** WARNING in cryssym.F:165 :: Symmetry library SPGLIB not available ***
+
+
+ *******************************************************************************
+                                    Kpoints
+ *******************************************************************************
+ BRILLOUIN| K-point scheme                                        Monkhorst-Pack
+ BRILLOUIN| K-Point grid                                             1    1    1
+ BRILLOUIN| Accuracy in Symmetry determination                      0.100000E-07
+ BRILLOUIN| K-Point point group symmetrization                               OFF
+ BRILLOUIN| Wavefunction type                                            COMPLEX
+ BRILLOUIN| Use full k-point grid     
+ BRILLOUIN| List of Kpoints [2 Pi/Bohr]                                        1
+ BRILLOUIN| Number           Weight            X              Y              Z
+ BRILLOUIN|     1           1.00000        0.00000        0.00000        0.00000
+ *******************************************************************************
+
+ *******************************************************************************
+ *******************************************************************************
+ **                                                                           **
+ **     #####                         ##              ##                      **
+ **    ##   ##            ##          ##              ##                      **
+ **   ##     ##                       ##            ######                    **
+ **   ##     ##  ##   ##  ##   #####  ##  ##   ####   ##    #####    #####    **
+ **   ##     ##  ##   ##  ##  ##      ## ##   ##      ##   ##   ##  ##   ##   **
+ **   ##  ## ##  ##   ##  ##  ##      ####     ###    ##   ######   ######    **
+ **    ##  ###   ##   ##  ##  ##      ## ##      ##   ##   ##       ##        **
+ **     #######   #####   ##   #####  ##  ##  ####    ##    #####   ##        **
+ **           ##                                                    ##        **
+ **                                                                           **
+ **                                                ... make the atoms dance   **
+ **                                                                           **
+ **            Copyright (C) by CP2K developers group (2000-2022)             **
+ **                      J. Chem. Phys. 152, 194103 (2020)                    **
+ **                                                                           **
+ *******************************************************************************
+
+ DFT| Spin restricted Kohn-Sham (RKS) calculation                            RKS
+ DFT| Multiplicity                                                             2
+ DFT| Number of spin states                                                    1
+ DFT| Charge                                                                   0
+ DFT| Self-interaction correction (SIC)                                       NO
+ DFT| Cutoffs: density                                              1.000000E-10
+ DFT|          gradient                                             1.000000E-10
+ DFT|          tau                                                  1.000000E-10
+ DFT|          cutoff_smoothing_range                               0.000000E+00
+ DFT| XC density smoothing                                                  NONE
+ DFT| XC derivatives                                                          PW
+
+ FUNCTIONAL| PBE:
+ FUNCTIONAL| J.P.Perdew, K.Burke, M.Ernzerhof, Phys. Rev. Letter, vol. 77, n 18,
+ FUNCTIONAL|  pp. 3865-3868, (1996){spin unpolarized}                           
+
+
+ QS| Method:                                                                 GPW
+ QS| Density plane wave grid type                        NON-SPHERICAL FULLSPACE
+ QS| Number of grid levels:                                                    4
+ QS| Density cutoff [a.u.]:                                                300.0
+ QS| Multi grid cutoff [a.u.]: 1) grid level                               300.0
+ QS|                           2) grid level                               100.0
+ QS|                           3) grid level                                33.3
+ QS|                           4) grid level                                11.1
+ QS| Grid level progression factor:                                          3.0
+ QS| Relative density cutoff [a.u.]:                                        30.0
+ QS| Interaction thresholds: eps_pgf_orb:                                1.0E-05
+ QS|                         eps_filter_matrix:                          0.0E+00
+ QS|                         eps_core_charge:                            1.0E-12
+ QS|                         eps_rho_gspace:                             1.0E-10
+ QS|                         eps_rho_rspace:                             1.0E-10
+ QS|                         eps_gvg_rspace:                             1.0E-05
+ QS|                         eps_ppl:                                    1.0E-02
+ QS|                         eps_ppnl:                                   1.0E-07
+
+
+ ATOMIC KIND INFORMATION
+
+  1. Atomic kind: Cu                                    Number of atoms:     165
+
+     Orbital Basis Set                                     SZV-MOLOPT-SR-GTH-q11
+
+       Number of orbital shell sets:                                           1
+       Number of orbital shells:                                               3
+       Number of primitive Cartesian functions:                                6
+       Number of Cartesian basis functions:                                   10
+       Number of spherical basis functions:                                    9
+       Norm type:                                                              2
+
+       Normalised Cartesian orbitals:
+
+                        Set   Shell   Orbital            Exponent    Coefficient
+
+                          1       1    2s                5.804051       0.045596
+                                                         2.947778      -0.139279
+                                                         1.271621       0.214572
+                                                         0.517174       0.085605
+                                                         0.198007      -0.138200
+                                                         0.061684      -0.053295
+
+                          1       2    3px               5.804051      -0.066551
+                                                         2.947778       0.111915
+                                                         1.271621      -0.204459
+                                                         0.517174       0.040237
+                                                         0.198007       0.099394
+                                                         0.061684       0.024283
+                          1       2    3py               5.804051      -0.066551
+                                                         2.947778       0.111915
+                                                         1.271621      -0.204459
+                                                         0.517174       0.040237
+                                                         0.198007       0.099394
+                                                         0.061684       0.024283
+                          1       2    3pz               5.804051      -0.066551
+                                                         2.947778       0.111915
+                                                         1.271621      -0.204459
+                                                         0.517174       0.040237
+                                                         0.198007       0.099394
+                                                         0.061684       0.024283
+
+                          1       3    4dx2              5.804051       9.381621
+                                                         2.947778       3.660256
+                                                         1.271621       0.792510
+                                                         0.517174       0.128389
+                                                         0.198007       0.013938
+                                                         0.061684       0.000367
+                          1       3    4dxy              5.804051      16.249444
+                                                         2.947778       6.339749
+                                                         1.271621       1.372667
+                                                         0.517174       0.222377
+                                                         0.198007       0.024141
+                                                         0.061684       0.000636
+                          1       3    4dxz              5.804051      16.249444
+                                                         2.947778       6.339749
+                                                         1.271621       1.372667
+                                                         0.517174       0.222377
+                                                         0.198007       0.024141
+                                                         0.061684       0.000636
+                          1       3    4dy2              5.804051       9.381621
+                                                         2.947778       3.660256
+                                                         1.271621       0.792510
+                                                         0.517174       0.128389
+                                                         0.198007       0.013938
+                                                         0.061684       0.000367
+                          1       3    4dyz              5.804051      16.249444
+                                                         2.947778       6.339749
+                                                         1.271621       1.372667
+                                                         0.517174       0.222377
+                                                         0.198007       0.024141
+                                                         0.061684       0.000636
+                          1       3    4dz2              5.804051       9.381621
+                                                         2.947778       3.660256
+                                                         1.271621       0.792510
+                                                         0.517174       0.128389
+                                                         0.198007       0.013938
+                                                         0.061684       0.000367
+
+       Atomic covalent radius [Angstrom]:                                  1.170
+
+       Atomic van der Waals radius [Angstrom]:                             1.400
+
+     GTH Potential information for                                   GTH-PBE-q11
+
+       Description:                       Goedecker-Teter-Hutter pseudopotential
+                                           Goedecker et al., PRB 54, 1703 (1996)
+                                          Hartwigsen et al., PRB 58, 3641 (1998)
+                                                      Krack, TCA 114, 145 (2005)
+
+       Gaussian exponent of the core charge distribution:               1.779993
+       Electronic configuration (s p d ...):                           1   0  10
+
+       Parameters of the local part of the GTH pseudopotential:
+
+                          rloc        C1          C2          C3          C4
+                        0.530000
+
+       Parameters of the non-local part of the GTH pseudopotential:
+
+                   l      r(l)      h(i,j,l)
+
+                   0    0.431355    9.693805   -6.470165    1.935952
+                                   -6.470165   11.501774   -4.998607
+                                    1.935952   -4.998607    3.967521
+                   1    0.561392    2.545473   -0.784636
+                                   -0.784636    0.928394
+                   2    0.264555  -12.828614
+
+
+ MOLECULE KIND INFORMATION
+
+
+ All atoms are their own molecule, skipping detailed information
+
+
+ TOTAL NUMBERS AND MAXIMUM NUMBERS
+
+  Total number of            - Atomic kinds:                                   1
+                             - Atoms:                                        165
+                             - Shell sets:                                   165
+                             - Shells:                                       495
+                             - Primitive Cartesian functions:                990
+                             - Cartesian basis functions:                   1650
+                             - Spherical basis functions:                   1485
+
+  Maximum angular momentum of the orbital basis functions:                     2
+
+
+ MODULE QUICKSTEP: ATOMIC COORDINATES IN ANGSTROM
+
+   Atom Kind Element         X             Y             Z       Z(eff)     Mass
+      1    1 Cu   29      0.000000      0.000000      0.000000  11.0000  63.5460
+      2    1 Cu   29      0.000000      2.955000      0.000000  11.0000  63.5460
+      3    1 Cu   29      0.000000      5.911000      0.000000  11.0000  63.5460
+      4    1 Cu   29      2.956000      0.000000      0.000000  11.0000  63.5460
+      5    1 Cu   29      2.956000      2.955000      0.000000  11.0000  63.5460
+      6    1 Cu   29      2.956000      5.911000      0.000000  11.0000  63.5460
+      7    1 Cu   29      5.912000      0.000000      0.000000  11.0000  63.5460
+      8    1 Cu   29      5.912000      2.955000      0.000000  11.0000  63.5460
+      9    1 Cu   29      5.912000      5.911000      0.000000  11.0000  63.5460
+     10    1 Cu   29      8.670000      0.000000      0.000000  11.0000  63.5460
+     11    1 Cu   29      8.670000      2.955000      0.000000  11.0000  63.5460
+     12    1 Cu   29      8.670000      5.911000      0.000000  11.0000  63.5460
+     13    1 Cu   29     11.626000      0.000000      0.000000  11.0000  63.5460
+     14    1 Cu   29     11.626000      2.955000      0.000000  11.0000  63.5460
+     15    1 Cu   29     11.626000      5.911000      0.000000  11.0000  63.5460
+     16    1 Cu   29      1.478000      1.478000      2.090000  11.0000  63.5460
+     17    1 Cu   29      1.478000      4.433000      2.090000  11.0000  63.5460
+     18    1 Cu   29      1.478000      7.389000      2.090000  11.0000  63.5460
+     19    1 Cu   29      4.434000      1.478000      2.090000  11.0000  63.5460
+     20    1 Cu   29      4.434000      4.433000      2.090000  11.0000  63.5460
+     21    1 Cu   29      4.434000      7.389000      2.090000  11.0000  63.5460
+     22    1 Cu   29      7.192000      1.478000      2.090000  11.0000  63.5460
+     23    1 Cu   29      7.192000      4.433000      2.090000  11.0000  63.5460
+     24    1 Cu   29      7.192000      7.389000      2.090000  11.0000  63.5460
+     25    1 Cu   29     10.148000      1.478000      2.090000  11.0000  63.5460
+     26    1 Cu   29     10.148000      4.433000      2.090000  11.0000  63.5460
+     27    1 Cu   29     10.148000      7.389000      2.090000  11.0000  63.5460
+     28    1 Cu   29     13.104000      1.478000      2.090000  11.0000  63.5460
+     29    1 Cu   29     13.104000      4.433000      2.090000  11.0000  63.5460
+     30    1 Cu   29     13.104000      7.389000      2.090000  11.0000  63.5460
+     31    1 Cu   29      0.000000      0.000000      4.180000  11.0000  63.5460
+     32    1 Cu   29      0.000000      2.955000      4.180000  11.0000  63.5460
+     33    1 Cu   29      0.000000      5.911000      4.180000  11.0000  63.5460
+     34    1 Cu   29      2.956000      0.000000      4.180000  11.0000  63.5460
+     35    1 Cu   29      2.956000      2.955000      4.180000  11.0000  63.5460
+     36    1 Cu   29      2.956000      5.911000      4.180000  11.0000  63.5460
+     37    1 Cu   29      5.912000      0.000000      4.180000  11.0000  63.5460
+     38    1 Cu   29      5.912000      2.955000      4.180000  11.0000  63.5460
+     39    1 Cu   29      5.912000      5.911000      4.180000  11.0000  63.5460
+     40    1 Cu   29      8.670000      0.000000      4.180000  11.0000  63.5460
+     41    1 Cu   29      8.670000      2.955000      4.180000  11.0000  63.5460
+     42    1 Cu   29      8.670000      5.911000      4.180000  11.0000  63.5460
+     43    1 Cu   29     11.626000      0.000000      4.180000  11.0000  63.5460
+     44    1 Cu   29     11.626000      2.955000      4.180000  11.0000  63.5460
+     45    1 Cu   29     11.626000      5.911000      4.180000  11.0000  63.5460
+     46    1 Cu   29      1.478000      1.478000      6.270000  11.0000  63.5460
+     47    1 Cu   29      1.478000      4.433000      6.270000  11.0000  63.5460
+     48    1 Cu   29      1.478000      7.389000      6.270000  11.0000  63.5460
+     49    1 Cu   29      4.434000      1.478000      6.270000  11.0000  63.5460
+     50    1 Cu   29      4.434000      4.433000      6.270000  11.0000  63.5460
+     51    1 Cu   29      4.434000      7.389000      6.270000  11.0000  63.5460
+     52    1 Cu   29      7.192000      1.478000      6.270000  11.0000  63.5460
+     53    1 Cu   29      7.192000      4.433000      6.270000  11.0000  63.5460
+     54    1 Cu   29      7.192000      7.389000      6.270000  11.0000  63.5460
+     55    1 Cu   29     10.148000      1.478000      6.270000  11.0000  63.5460
+     56    1 Cu   29     10.148000      4.433000      6.270000  11.0000  63.5460
+     57    1 Cu   29     10.148000      7.389000      6.270000  11.0000  63.5460
+     58    1 Cu   29     13.104000      1.478000      6.270000  11.0000  63.5460
+     59    1 Cu   29     13.104000      4.433000      6.270000  11.0000  63.5460
+     60    1 Cu   29     13.104000      7.389000      6.270000  11.0000  63.5460
+     61    1 Cu   29      0.000000      0.000000      8.360000  11.0000  63.5460
+     62    1 Cu   29      0.000000      2.955000      8.360000  11.0000  63.5460
+     63    1 Cu   29      0.000000      5.911000      8.360000  11.0000  63.5460
+     64    1 Cu   29      2.956000      0.000000      8.360000  11.0000  63.5460
+     65    1 Cu   29      2.956000      2.955000      8.360000  11.0000  63.5460
+     66    1 Cu   29      2.956000      5.911000      8.360000  11.0000  63.5460
+     67    1 Cu   29      5.912000      0.000000      8.360000  11.0000  63.5460
+     68    1 Cu   29      5.912000      2.955000      8.360000  11.0000  63.5460
+     69    1 Cu   29      5.912000      5.911000      8.360000  11.0000  63.5460
+     70    1 Cu   29      8.670000      0.000000      8.360000  11.0000  63.5460
+     71    1 Cu   29      8.670000      2.955000      8.360000  11.0000  63.5460
+     72    1 Cu   29      8.670000      5.911000      8.360000  11.0000  63.5460
+     73    1 Cu   29     11.626000      0.000000      8.360000  11.0000  63.5460
+     74    1 Cu   29     11.626000      2.955000      8.360000  11.0000  63.5460
+     75    1 Cu   29     11.626000      5.911000      8.360000  11.0000  63.5460
+     76    1 Cu   29      1.478000      1.478000     10.450000  11.0000  63.5460
+     77    1 Cu   29      1.478000      4.433000     10.450000  11.0000  63.5460
+     78    1 Cu   29      1.478000      7.389000     10.450000  11.0000  63.5460
+     79    1 Cu   29      4.434000      1.478000     10.450000  11.0000  63.5460
+     80    1 Cu   29      4.434000      4.433000     10.450000  11.0000  63.5460
+     81    1 Cu   29      4.434000      7.389000     10.450000  11.0000  63.5460
+     82    1 Cu   29      7.192000      1.478000     10.450000  11.0000  63.5460
+     83    1 Cu   29      7.192000      4.433000     10.450000  11.0000  63.5460
+     84    1 Cu   29      7.192000      7.389000     10.450000  11.0000  63.5460
+     85    1 Cu   29     10.148000      1.478000     10.450000  11.0000  63.5460
+     86    1 Cu   29     10.148000      4.433000     10.450000  11.0000  63.5460
+     87    1 Cu   29     10.148000      7.389000     10.450000  11.0000  63.5460
+     88    1 Cu   29     13.104000      1.478000     10.450000  11.0000  63.5460
+     89    1 Cu   29     13.104000      4.433000     10.450000  11.0000  63.5460
+     90    1 Cu   29     13.104000      7.389000     10.450000  11.0000  63.5460
+     91    1 Cu   29      1.478000      1.478000     25.082000  11.0000  63.5460
+     92    1 Cu   29      1.478000      4.433000     25.082000  11.0000  63.5460
+     93    1 Cu   29      1.478000      7.389000     25.082000  11.0000  63.5460
+     94    1 Cu   29      4.434000      1.478000     25.082000  11.0000  63.5460
+     95    1 Cu   29      4.434000      4.433000     25.082000  11.0000  63.5460
+     96    1 Cu   29      4.434000      7.389000     25.082000  11.0000  63.5460
+     97    1 Cu   29      7.192000      1.478000     25.082000  11.0000  63.5460
+     98    1 Cu   29      7.192000      4.433000     25.082000  11.0000  63.5460
+     99    1 Cu   29      7.192000      7.389000     25.082000  11.0000  63.5460
+    100    1 Cu   29     10.148000      1.478000     25.082000  11.0000  63.5460
+    101    1 Cu   29     10.148000      4.433000     25.082000  11.0000  63.5460
+    102    1 Cu   29     10.148000      7.389000     25.082000  11.0000  63.5460
+    103    1 Cu   29     13.104000      1.478000     25.082000  11.0000  63.5460
+    104    1 Cu   29     13.104000      4.433000     25.082000  11.0000  63.5460
+    105    1 Cu   29     13.104000      7.389000     25.082000  11.0000  63.5460
+    106    1 Cu   29      0.000000      0.000000     27.172000  11.0000  63.5460
+    107    1 Cu   29      0.000000      2.955000     27.172000  11.0000  63.5460
+    108    1 Cu   29      0.000000      5.911000     27.172000  11.0000  63.5460
+    109    1 Cu   29      2.956000      0.000000     27.172000  11.0000  63.5460
+    110    1 Cu   29      2.956000      2.955000     27.172000  11.0000  63.5460
+    111    1 Cu   29      2.956000      5.911000     27.172000  11.0000  63.5460
+    112    1 Cu   29      5.912000      0.000000     27.172000  11.0000  63.5460
+    113    1 Cu   29      5.912000      2.955000     27.172000  11.0000  63.5460
+    114    1 Cu   29      5.912000      5.911000     27.172000  11.0000  63.5460
+    115    1 Cu   29      8.670000      0.000000     27.172000  11.0000  63.5460
+    116    1 Cu   29      8.670000      2.955000     27.172000  11.0000  63.5460
+    117    1 Cu   29      8.670000      5.911000     27.172000  11.0000  63.5460
+    118    1 Cu   29     11.626000      0.000000     27.172000  11.0000  63.5460
+    119    1 Cu   29     11.626000      2.955000     27.172000  11.0000  63.5460
+    120    1 Cu   29     11.626000      5.911000     27.172000  11.0000  63.5460
+    121    1 Cu   29      1.478000      1.478000     29.262000  11.0000  63.5460
+    122    1 Cu   29      1.478000      4.433000     29.262000  11.0000  63.5460
+    123    1 Cu   29      1.478000      7.389000     29.262000  11.0000  63.5460
+    124    1 Cu   29      4.434000      1.478000     29.262000  11.0000  63.5460
+    125    1 Cu   29      4.434000      4.433000     29.262000  11.0000  63.5460
+    126    1 Cu   29      4.434000      7.389000     29.262000  11.0000  63.5460
+    127    1 Cu   29      7.192000      1.478000     29.262000  11.0000  63.5460
+    128    1 Cu   29      7.192000      4.433000     29.262000  11.0000  63.5460
+    129    1 Cu   29      7.192000      7.389000     29.262000  11.0000  63.5460
+    130    1 Cu   29     10.148000      1.478000     29.262000  11.0000  63.5460
+    131    1 Cu   29     10.148000      4.433000     29.262000  11.0000  63.5460
+    132    1 Cu   29     10.148000      7.389000     29.262000  11.0000  63.5460
+    133    1 Cu   29     13.104000      1.478000     29.262000  11.0000  63.5460
+    134    1 Cu   29     13.104000      4.433000     29.262000  11.0000  63.5460
+    135    1 Cu   29     13.104000      7.389000     29.262000  11.0000  63.5460
+    136    1 Cu   29      0.000000      0.000000     31.352000  11.0000  63.5460
+    137    1 Cu   29      0.000000      2.955000     31.352000  11.0000  63.5460
+    138    1 Cu   29      0.000000      5.911000     31.352000  11.0000  63.5460
+    139    1 Cu   29      2.956000      0.000000     31.352000  11.0000  63.5460
+    140    1 Cu   29      2.956000      2.955000     31.352000  11.0000  63.5460
+    141    1 Cu   29      2.956000      5.911000     31.352000  11.0000  63.5460
+    142    1 Cu   29      5.912000      0.000000     31.352000  11.0000  63.5460
+    143    1 Cu   29      5.912000      2.955000     31.352000  11.0000  63.5460
+    144    1 Cu   29      5.912000      5.911000     31.352000  11.0000  63.5460
+    145    1 Cu   29      8.670000      0.000000     31.352000  11.0000  63.5460
+    146    1 Cu   29      8.670000      2.955000     31.352000  11.0000  63.5460
+    147    1 Cu   29      8.670000      5.911000     31.352000  11.0000  63.5460
+    148    1 Cu   29     11.626000      0.000000     31.352000  11.0000  63.5460
+    149    1 Cu   29     11.626000      2.955000     31.352000  11.0000  63.5460
+    150    1 Cu   29     11.626000      5.911000     31.352000  11.0000  63.5460
+    151    1 Cu   29      1.478000      1.478000     33.442000  11.0000  63.5460
+    152    1 Cu   29      1.478000      4.433000     33.442000  11.0000  63.5460
+    153    1 Cu   29      1.478000      7.389000     33.442000  11.0000  63.5460
+    154    1 Cu   29      4.434000      1.478000     33.442000  11.0000  63.5460
+    155    1 Cu   29      4.434000      4.433000     33.442000  11.0000  63.5460
+    156    1 Cu   29      4.434000      7.389000     33.442000  11.0000  63.5460
+    157    1 Cu   29      7.192000      1.478000     33.442000  11.0000  63.5460
+    158    1 Cu   29      7.192000      4.433000     33.442000  11.0000  63.5460
+    159    1 Cu   29      7.192000      7.389000     33.442000  11.0000  63.5460
+    160    1 Cu   29     10.148000      1.478000     33.442000  11.0000  63.5460
+    161    1 Cu   29     10.148000      4.433000     33.442000  11.0000  63.5460
+    162    1 Cu   29     10.148000      7.389000     33.442000  11.0000  63.5460
+    163    1 Cu   29     13.104000      1.478000     33.442000  11.0000  63.5460
+    164    1 Cu   29     13.104000      4.433000     33.442000  11.0000  63.5460
+    165    1 Cu   29     13.104000      7.389000     33.442000  11.0000  63.5460
+
+
+
+ SCF PARAMETERS         Density guess:                                   RESTART
+                        --------------------------------------------------------
+                        max_scf:                                             500
+                        max_scf_history:                                       0
+                        max_diis:                                              4
+                        --------------------------------------------------------
+                        eps_scf:                                        1.00E-06
+                        eps_scf_history:                                0.00E+00
+                        eps_diis:                                       1.00E-01
+                        eps_eigval:                                     1.00E-05
+                        --------------------------------------------------------
+                        level_shift [a.u.]:                             0.000000
+                        added MOs                                       100    0
+                        --------------------------------------------------------
+                        Mixing method:                            BROYDEN_MIXING
+                                                charge density mixing in g-space
+                        --------------------------------------------------------
+                        Smear method:                                FERMI_DIRAC
+                        Electronic temperature [K]:                        300.0
+                        Electronic temperature [a.u.]:                  9.50E-04
+                        Accuracy threshold:                             1.00E-10
+                        --------------------------------------------------------
+                        No outer SCF
+
+ PW_GRID| Information for grid number                                          1
+ PW_GRID| Grid distributed over                                    64 processors
+ PW_GRID| Real space group dimensions                                    64    1
+ PW_GRID| the grid is blocked:                                                NO
+ PW_GRID| Cutoff [a.u.]                                                    300.0
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1           -108     107                Points:         216
+ PW_GRID|   Bounds   2            -66      65                Points:         132
+ PW_GRID|   Bounds   3           -262     262                Points:         525
+ PW_GRID| Volume element (a.u.^3)  0.2071E-02     Volume (a.u.^3)     30999.9563
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                           233887.5      233928      233712
+ PW_GRID|   G-Rays                                1082.8        1083        1082
+ PW_GRID|   Real Space Points                   233887.5      277200      207900
+
+ PW_GRID| Information for grid number                                          2
+ PW_GRID| Number of the reference grid                                         1
+ PW_GRID| Grid distributed over                                    64 processors
+ PW_GRID| Real space group dimensions                                    64    1
+ PW_GRID| the grid is blocked:                                                NO
+ PW_GRID| Cutoff [a.u.]                                                    100.0
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1            -63      62                Points:         126
+ PW_GRID|   Bounds   2            -37      37                Points:          75
+ PW_GRID|   Bounds   3           -154     153                Points:         308
+ PW_GRID| Volume element (a.u.^3)  0.1065E-01     Volume (a.u.^3)     30999.9563
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                            45478.1       46746       44100
+ PW_GRID|   G-Rays                                 360.9         371         350
+ PW_GRID|   Real Space Points                    45478.1       46200       23100
+
+ PW_GRID| Information for grid number                                          3
+ PW_GRID| Number of the reference grid                                         1
+ PW_GRID| Grid distributed over                                    64 processors
+ PW_GRID| Real space group dimensions                                    64    1
+ PW_GRID| the grid is blocked:                                                NO
+ PW_GRID| Cutoff [a.u.]                                                     33.3
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1            -36      35                Points:          72
+ PW_GRID|   Bounds   2            -22      21                Points:          44
+ PW_GRID|   Bounds   3            -87      87                Points:         175
+ PW_GRID| Volume element (a.u.^3)  0.5592E-01     Volume (a.u.^3)     30999.9563
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                             8662.5        9504        7992
+ PW_GRID|   G-Rays                                 120.3         132         111
+ PW_GRID|   Real Space Points                     8662.5       15400        7700
+
+ PW_GRID| Information for grid number                                          4
+ PW_GRID| Number of the reference grid                                         1
+ PW_GRID| Grid distributed over                                    64 processors
+ PW_GRID| Real space group dimensions                                     8    8
+ PW_GRID| the grid is blocked:                                                NO
+ PW_GRID| Cutoff [a.u.]                                                     11.1
+ PW_GRID| spherical cutoff:                                                   NO
+ PW_GRID|   Bounds   1            -21      20                Points:          42
+ PW_GRID|   Bounds   2            -12      12                Points:          25
+ PW_GRID|   Bounds   3            -52      52                Points:         105
+ PW_GRID| Volume element (a.u.^3)  0.2812         Volume (a.u.^3)     30999.9563
+ PW_GRID| Grid span                                                    FULLSPACE
+ PW_GRID|   Distribution                         Average         Max         Min
+ PW_GRID|   G-Vectors                             1722.7        2226        1134
+ PW_GRID|   G-Rays                                  41.0          53          27
+ PW_GRID|   Real Space Points                     1722.7        2520        1575
+
+ POISSON| Solver                                                        PERIODIC
+ POISSON| Periodicity                                                        XYZ
+
+ RS_GRID| Information for grid number                                          1
+ RS_GRID|   Bounds   1           -108     107                Points:         216
+ RS_GRID|   Bounds   2            -66      65                Points:         132
+ RS_GRID|   Bounds   3           -262     262                Points:         525
+ RS_GRID| Real space distribution over                                  4 groups
+ RS_GRID| Real space distribution along direction                              1
+ RS_GRID| Border size                                                         32
+ RS_GRID| Real space distribution over                                 16 groups
+ RS_GRID| Real space distribution along direction                              3
+ RS_GRID| Border size                                                         32
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                 118.0         118         118
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                  96.8          97          96
+
+ RS_GRID| Information for grid number                                          2
+ RS_GRID|   Bounds   1            -63      62                Points:         126
+ RS_GRID|   Bounds   2            -37      37                Points:          75
+ RS_GRID|   Bounds   3           -154     153                Points:         308
+ RS_GRID| Real space distribution over                                  4 groups
+ RS_GRID| Real space distribution along direction                              1
+ RS_GRID| Border size                                                         24
+ RS_GRID| Real space distribution over                                 16 groups
+ RS_GRID| Real space distribution along direction                              3
+ RS_GRID| Border size                                                         24
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                  79.5          80          79
+ RS_GRID|   Distribution                         Average         Max         Min
+ RS_GRID|   Planes                                  67.2          68          67
+
+ RS_GRID| Information for grid number                                          3
+ RS_GRID|   Bounds   1            -36      35                Points:          72
+ RS_GRID|   Bounds   2            -22      21                Points:          44
+ RS_GRID|   Bounds   3            -87      87                Points:         175
+ RS_GRID| Real space fully replicated
+ RS_GRID| Group size                                                           1
+
+ RS_GRID| Information for grid number                                          4
+ RS_GRID|   Bounds   1            -21      20                Points:          42
+ RS_GRID|   Bounds   2            -12      12                Points:          25
+ RS_GRID|   Bounds   3            -52      52                Points:         105
+ RS_GRID| Real space fully replicated
+ RS_GRID| Group size                                                           1
+
+ KPOINTS| Number of kpoint groups                                              1
+ KPOINTS| Size of each kpoint group                                           64
+ KPOINTS| Number of kpoints per group                                          1
+
+ Number of electrons:                                                       1815
+ Number of occupied orbitals:                                                908
+ Number of molecular orbitals:                                              1008
+
+ Number of orbital functions:                                               1485
+ Number of independent orbital functions:                                   1485
+
+ Extrapolation method: initial_guess
+
+ *** WARNING in qs_initial_guess.F:310 :: User requested to restart the   ***
+ *** wavefunction from the file named: 2_dft_wfn-RESTART_0.kp. This file  ***
+ *** does not exist. Please check the existence of the file or change     ***
+ *** properly the value of the keyword WFN_RESTART_FILE_NAME. Calculation ***
+ *** continues using ATOMIC GUESS.                                        ***
+
+
+ Atomic guess: The first density matrix is obtained in terms of atomic orbitals
+               and electronic configurations assigned to each atomic kind
+
+ Guess for atomic kind: Cu
+
+ Electronic structure
+    Total number of core electrons                                         18.00
+    Total number of valence electrons                                      11.00
+    Total number of electrons                                              29.00
+    Multiplicity                                                   not specified
+    S   [  2.00  2.00  2.00] 1.00
+    P   [  6.00  6.00]
+    D     10.00
+
+
+ *******************************************************************************
+                  Iteration          Convergence                     Energy [au]
+ *******************************************************************************
+                          1         0.00000                     -47.683697334677
+
+ Energy components [Hartree]           Total Energy ::          -47.683697334677
+                                        Band Energy ::           14.731056708996
+                                     Kinetic Energy ::           71.764095175825
+                                   Potential Energy ::         -119.447792510502
+                                      Virial (-V/T) ::            1.664450617232
+                                        Core Energy ::          -89.141216275929
+                                          XC Energy ::           -7.614783644628
+                                     Coulomb Energy ::           49.072302585881
+                       Total Pseudopotential Energy ::         -160.991070026009
+                       Local Pseudopotential Energy ::         -111.515494653691
+                    Nonlocal Pseudopotential Energy ::          -49.475575372317
+                                        Confinement ::            0.857585742544
+
+ Orbital energies  State     L     Occupation   Energy[a.u.]          Energy[eV]
+
+                       1     0          1.000      -0.049826           -1.355827
+
+                       1     2         10.000       1.478088           40.220827
+
+
+ Total Electron Density at R=0:                                         0.000225
+ Re-scaling the density matrix to get the right number of electrons
+                  # Electrons              Trace(P)               Scaling factor
+                         1815              1815.000                        1.000
+
+
+ SCF WAVEFUNCTION OPTIMIZATION
+
+  Step     Update method      Time    Convergence         Total energy    Change
+  ------------------------------------------------------------------------------
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9999995196
+     1 NoMix/SMGL  0.30E+00   34.7     1.96497199     -7928.5387140179 -7.93E+03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1700.0666962824
+     2 Broy./SMGL  0.30E+00    2.7     6.59289552     -8591.7969503983 -6.63E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1780.2370775303
+     3 Broy./SMGL  0.30E+00    2.7     4.75649370     -7535.0698383484  1.06E+03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1870.1906805147
+     4 Broy./SMGL  0.30E+00    2.7     5.38442873     -7703.3552436722 -1.68E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1864.1876498202
+     5 Broy./SMGL  0.30E+00    2.8     2.04073716     -8524.2520271182 -8.21E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1822.7201721377
+     6 Broy./SMGL  0.30E+00    2.8     1.09535189     -7854.0237255647  6.70E+02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1805.3574155806
+     7 Broy./SMGL  0.30E+00    2.8     1.21239161     -7821.2654500427  3.28E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1811.2675966210
+     8 Broy./SMGL  0.30E+00    2.8     0.66998426     -7812.8006028496  8.46E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1818.5908852719
+     9 Broy./SMGL  0.30E+00    2.8     0.65168039     -7873.6500171256 -6.08E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1819.6237577554
+    10 Broy./SMGL  0.30E+00    2.8     0.12013848     -7912.2460127304 -3.86E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1816.6624747188
+    11 Broy./SMGL  0.30E+00    2.9     0.06871311     -7925.8779767759 -1.36E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1815.6364022339
+    12 Broy./SMGL  0.30E+00    2.8     0.03034481     -7929.3091737798 -3.43E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1815.3692461756
+    13 Broy./SMGL  0.30E+00    2.8     0.05439819     -7926.1865198659  3.12E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9182517002
+    14 Broy./SMGL  0.30E+00    2.8     0.03462660     -7943.0203600215 -1.68E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.5262208030
+    15 Broy./SMGL  0.30E+00    2.8     0.04724855     -7947.2293659542 -4.21E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.6296815060
+    16 Broy./SMGL  0.30E+00    2.8     0.00758628     -7932.7757627079  1.45E+01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.7769402020
+    17 Broy./SMGL  0.30E+00    2.8     0.00587054     -7935.1133718647 -2.34E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.8554551170
+    18 Broy./SMGL  0.30E+00    2.8     0.00050524     -7936.7915210550 -1.68E+00
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9415651296
+    19 Broy./SMGL  0.30E+00    2.8     0.00079408     -7936.7356079916  5.59E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9907019682
+    20 Broy./SMGL  0.30E+00    2.8     0.00059212     -7936.6152121306  1.20E-01
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1815.0170201800
+    21 Broy./SMGL  0.30E+00    2.8     0.00045158     -7936.6261746655 -1.10E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1815.0162178972
+    22 Broy./SMGL  0.30E+00    2.8     0.00025811     -7936.6092489857  1.69E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1815.0161711472
+    23 Broy./SMGL  0.30E+00    2.8     0.00023741     -7936.6339269932 -2.47E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1815.0098636566
+    24 Broy./SMGL  0.30E+00    2.8     0.00026212     -7936.6450692187 -1.11E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1815.0032258725
+    25 Broy./SMGL  0.30E+00    2.8     0.00012299     -7936.6608080218 -1.57E-02
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9896788651
+    26 Broy./SMGL  0.30E+00    2.8     0.00007532     -7936.6670033851 -6.20E-03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9867539808
+    27 Broy./SMGL  0.30E+00    2.8     0.00003549     -7936.6624423425  4.56E-03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9901429774
+    28 Broy./SMGL  0.30E+00    2.8     0.00001577     -7936.6617334431  7.09E-04
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9930057890
+    29 Broy./SMGL  0.30E+00    2.8     0.00001318     -7936.6645163004 -2.78E-03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9947933782
+    30 Broy./SMGL  0.30E+00    2.8     0.00001178     -7936.6665387040 -2.02E-03
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9943101026
+    31 Broy./SMGL  0.30E+00    2.8     0.00000704     -7936.6674772089 -9.39E-04
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9954014078
+    32 Broy./SMGL  0.30E+00    2.8     0.00001417     -7936.6676353860 -1.58E-04
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9952833519
+    33 Broy./SMGL  0.30E+00    2.8     0.00000578     -7936.6686176081 -9.82E-04
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9949686710
+    34 Broy./SMGL  0.30E+00    2.7     0.00000918     -7936.6683630574  2.55E-04
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9953695286
+    35 Broy./SMGL  0.30E+00    2.8     0.00000600     -7936.6683626353  4.22E-07
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9952143044
+    36 Broy./SMGL  0.30E+00    2.8     0.00000278     -7936.6684113591 -4.87E-05
+ SMEAGOL DEBUG| Number of electrons in the unit cell =      1814.9952780650
+    37 Broy./SMGL  0.30E+00    2.8     0.00000099     -7936.6682016768  2.10E-04
+
+  *** SCF run converged in    37 steps ***
+
+
+  Electronic density on regular grids:      -1814.9952780650        0.0047219350
+  Core density on regular grids:             1814.9999997817       -0.0000002183
+  Total charge density on r-space grids:        0.0047217167
+  Total charge density g-space grids:           0.0047217167
+
+  Overlap energy of the core charge distribution:               0.00000000512231
+  Self energy of the core charge distribution:             -10626.45758068958094
+  Core Hamiltonian energy:                                   3586.49093722683119
+  Hartree energy:                                             374.38077734472614
+  Exchange-correlation energy:                              -1271.08233556387881
+  Electronic entropic energy:                                   0.00000000000000
+  Fermi energy:                                                 0.00000000000000
+
+  Total energy:                                             -7936.66820167677997
+
+ The electron density is written in cube file format to the file:
+
+ 0V-ELECTRON_DENSITY-1_0.cube
+
+ !-----------------------------------------------------------------------------!
+                     Mulliken Population Analysis
+
+ #  Atom  Element  Kind  Atomic population                           Net charge
+       1     Cu       1         11.000353                             -0.000353
+       2     Cu       1         11.000377                             -0.000377
+       3     Cu       1         11.000344                             -0.000344
+       4     Cu       1         10.999117                              0.000883
+       5     Cu       1         10.999140                              0.000860
+       6     Cu       1         10.999105                              0.000895
+       7     Cu       1         11.002355                             -0.002355
+       8     Cu       1         11.002382                             -0.002382
+       9     Cu       1         11.002349                             -0.002349
+      10     Cu       1         10.997295                              0.002705
+      11     Cu       1         10.997321                              0.002679
+      12     Cu       1         10.997287                              0.002713
+      13     Cu       1         11.000844                             -0.000844
+      14     Cu       1         11.000867                             -0.000867
+      15     Cu       1         11.000833                             -0.000833
+      16     Cu       1         11.001113                             -0.001113
+      17     Cu       1         11.001103                             -0.001103
+      18     Cu       1         11.001136                             -0.001136
+      19     Cu       1         10.997583                              0.002417
+      20     Cu       1         10.997575                              0.002425
+      21     Cu       1         10.997608                              0.002392
+      22     Cu       1         11.002670                             -0.002670
+      23     Cu       1         11.002663                             -0.002663
+      24     Cu       1         11.002696                             -0.002696
+      25     Cu       1         10.999381                              0.000619
+      26     Cu       1         10.999368                              0.000632
+      27     Cu       1         10.999404                              0.000596
+      28     Cu       1         11.000644                             -0.000644
+      29     Cu       1         11.000635                             -0.000635
+      30     Cu       1         11.000668                             -0.000668
+      31     Cu       1         11.000739                             -0.000739
+      32     Cu       1         11.000765                             -0.000765
+      33     Cu       1         11.000733                             -0.000733
+      34     Cu       1         10.999304                              0.000696
+      35     Cu       1         10.999330                              0.000670
+      36     Cu       1         10.999295                              0.000705
+      37     Cu       1         11.002405                             -0.002405
+      38     Cu       1         11.002434                             -0.002434
+      39     Cu       1         11.002402                             -0.002402
+      40     Cu       1         10.997513                              0.002487
+      41     Cu       1         10.997541                              0.002459
+      42     Cu       1         10.997509                              0.002491
+      43     Cu       1         11.000968                             -0.000968
+      44     Cu       1         11.000994                             -0.000994
+      45     Cu       1         11.000961                             -0.000961
+      46     Cu       1         10.998682                              0.001318
+      47     Cu       1         10.998669                              0.001331
+      48     Cu       1         10.998707                              0.001293
+      49     Cu       1         10.995681                              0.004319
+      50     Cu       1         10.995672                              0.004328
+      51     Cu       1         10.995708                              0.004292
+      52     Cu       1         11.001516                             -0.001516
+      53     Cu       1         11.001507                             -0.001507
+      54     Cu       1         11.001545                             -0.001545
+      55     Cu       1         10.997576                              0.002424
+      56     Cu       1         10.997562                              0.002438
+      57     Cu       1         10.997601                              0.002399
+      58     Cu       1         10.998795                              0.001205
+      59     Cu       1         10.998783                              0.001217
+      60     Cu       1         10.998821                              0.001179
+      61     Cu       1         11.011376                             -0.011376
+      62     Cu       1         11.011404                             -0.011404
+      63     Cu       1         11.011381                             -0.011381
+      64     Cu       1         11.011109                             -0.011109
+      65     Cu       1         11.011133                             -0.011133
+      66     Cu       1         11.011110                             -0.011110
+      67     Cu       1         11.009779                             -0.009779
+      68     Cu       1         11.009809                             -0.009809
+      69     Cu       1         11.009791                             -0.009791
+      70     Cu       1         11.007252                             -0.007252
+      71     Cu       1         11.007278                             -0.007278
+      72     Cu       1         11.007258                             -0.007258
+      73     Cu       1         11.012308                             -0.012308
+      74     Cu       1         11.012333                             -0.012333
+      75     Cu       1         11.012312                             -0.012312
+      76     Cu       1         10.989730                              0.010270
+      77     Cu       1         10.989723                              0.010277
+      78     Cu       1         10.989735                              0.010265
+      79     Cu       1         10.990854                              0.009146
+      80     Cu       1         10.990851                              0.009149
+      81     Cu       1         10.990862                              0.009138
+      82     Cu       1         10.993112                              0.006888
+      83     Cu       1         10.993108                              0.006892
+      84     Cu       1         10.993121                              0.006879
+      85     Cu       1         10.989840                              0.010160
+      86     Cu       1         10.989832                              0.010168
+      87     Cu       1         10.989845                              0.010155
+      88     Cu       1         10.989921                              0.010079
+      89     Cu       1         10.989914                              0.010086
+      90     Cu       1         10.989926                              0.010074
+      91     Cu       1         10.969084                              0.030916
+      92     Cu       1         10.969087                              0.030913
+      93     Cu       1         10.969088                              0.030912
+      94     Cu       1         10.970633                              0.029367
+      95     Cu       1         10.970640                              0.029360
+      96     Cu       1         10.970640                              0.029360
+      97     Cu       1         10.970229                              0.029771
+      98     Cu       1         10.970237                              0.029763
+      99     Cu       1         10.970237                              0.029763
+     100     Cu       1         10.969220                              0.030780
+     101     Cu       1         10.969223                              0.030777
+     102     Cu       1         10.969223                              0.030777
+     103     Cu       1         10.969169                              0.030831
+     104     Cu       1         10.969173                              0.030827
+     105     Cu       1         10.969174                              0.030826
+     106     Cu       1         11.032811                             -0.032811
+     107     Cu       1         11.032832                             -0.032832
+     108     Cu       1         11.032799                             -0.032799
+     109     Cu       1         11.030828                             -0.030828
+     110     Cu       1         11.030848                             -0.030848
+     111     Cu       1         11.030814                             -0.030814
+     112     Cu       1         11.034049                             -0.034049
+     113     Cu       1         11.034073                             -0.034073
+     114     Cu       1         11.034042                             -0.034042
+     115     Cu       1         11.028443                             -0.028443
+     116     Cu       1         11.028466                             -0.028466
+     117     Cu       1         11.028434                             -0.028434
+     118     Cu       1         11.033403                             -0.033403
+     119     Cu       1         11.033424                             -0.033424
+     120     Cu       1         11.033391                             -0.033391
+     121     Cu       1         10.998763                              0.001237
+     122     Cu       1         10.998750                              0.001250
+     123     Cu       1         10.998786                              0.001214
+     124     Cu       1         10.995224                              0.004776
+     125     Cu       1         10.995214                              0.004786
+     126     Cu       1         10.995250                              0.004750
+     127     Cu       1         11.000706                             -0.000706
+     128     Cu       1         11.000697                             -0.000697
+     129     Cu       1         11.000732                             -0.000732
+     130     Cu       1         10.996895                              0.003105
+     131     Cu       1         10.996879                              0.003121
+     132     Cu       1         10.996918                              0.003082
+     133     Cu       1         10.998443                              0.001557
+     134     Cu       1         10.998431                              0.001569
+     135     Cu       1         10.998466                              0.001534
+     136     Cu       1         11.000464                             -0.000464
+     137     Cu       1         11.000487                             -0.000487
+     138     Cu       1         11.000455                             -0.000455
+     139     Cu       1         10.999212                              0.000788
+     140     Cu       1         10.999235                              0.000765
+     141     Cu       1         10.999199                              0.000801
+     142     Cu       1         11.002459                             -0.002459
+     143     Cu       1         11.002486                             -0.002486
+     144     Cu       1         11.002453                             -0.002453
+     145     Cu       1         10.997394                              0.002606
+     146     Cu       1         10.997419                              0.002581
+     147     Cu       1         10.997386                              0.002614
+     148     Cu       1         11.000954                             -0.000954
+     149     Cu       1         11.000977                             -0.000977
+     150     Cu       1         11.000943                             -0.000943
+     151     Cu       1         11.000834                             -0.000834
+     152     Cu       1         11.000824                             -0.000824
+     153     Cu       1         11.000857                             -0.000857
+     154     Cu       1         10.997288                              0.002712
+     155     Cu       1         10.997281                              0.002719
+     156     Cu       1         10.997314                              0.002686
+     157     Cu       1         11.002347                             -0.002347
+     158     Cu       1         11.002341                             -0.002341
+     159     Cu       1         11.002374                             -0.002374
+     160     Cu       1         10.999108                              0.000892
+     161     Cu       1         10.999096                              0.000904
+     162     Cu       1         10.999131                              0.000869
+     163     Cu       1         11.000345                             -0.000345
+     164     Cu       1         11.000335                             -0.000335
+     165     Cu       1         11.000368                             -0.000368
+ # Total charge                           1814.995175                  0.004825
+
+ !-----------------------------------------------------------------------------!
+
+ ENERGY| Total FORCE_EVAL ( QS ) energy [a.u.]:            -7936.668201676779972
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                                DBCSR STATISTICS                             -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ COUNTER                                    TOTAL       BLAS       SMM       ACC
+ flops inhomo. stacks                           0       0.0%      0.0%      0.0%
+ flops total                         0.000000E+00       0.0%      0.0%      0.0%
+ flops max/rank                      0.000000E+00       0.0%      0.0%      0.0%
+ matmuls inhomo. stacks                         0       0.0%      0.0%      0.0%
+ matmuls total                                  0       0.0%      0.0%      0.0%
+ number of processed stacks                     0       0.0%      0.0%      0.0%
+ average stack size                                     0.0       0.0       0.0
+ marketing flops                     0.000000E+00
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                      DBCSR MESSAGE PASSING PERFORMANCE                      -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ ROUTINE             CALLS      AVE VOLUME [Bytes]
+ MP_Bcast                1                     12.
+ MP_Allreduce         1130                      8.
+ MP_Alltoall           360                 128445.
+ -------------------------------------------------------------------------------
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                                DBM STATISTICS                               -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+    M  x    N  x    K                                          COUNT     PERCENT
+ -------------------------------------------------------------------------------
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                                GRID STATISTICS                              -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ LP    KERNEL             BACKEND                              COUNT     PERCENT
+ 4     collocate ortho    REF                                8229432      50.11%
+ 4     integrate ortho    REF                                8012868      48.79%
+ 0     collocate general  REF                                  95040       0.58%
+ 0     integrate general  REF                                  84480       0.51%
+ -------------------------------------------------------------------------------
+
+ MEMORY| Estimated peak process memory [MiB]                                1118
+
+ -------------------------------------------------------------------------------
+ ----                             MULTIGRID INFO                            ----
+ -------------------------------------------------------------------------------
+ count for grid        1:          62172          cutoff [a.u.]          300.00
+ count for grid        2:          84273          cutoff [a.u.]          100.00
+ count for grid        3:          68082          cutoff [a.u.]           33.33
+ count for grid        4:          91263          cutoff [a.u.]           11.11
+ total gridlevel count  :         305790
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                         MESSAGE PASSING PERFORMANCE                         -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+
+ ROUTINE             CALLS      AVE VOLUME [Bytes]
+ MP_Group                5
+ MP_Bcast             2511                  86511.
+ MP_Allreduce         1487                   1092.
+ MP_Sync                 4
+ MP_Alltoall           836                9943531.
+ MP_ISendRecv         9450                  71680.
+ MP_Wait             13307
+ MP_ISend             7792                 161644.
+ MP_IRecv             8572                 147149.
+ MP_Recv              1380                 380160.
+ MP_Write_All            2                  57354.
+ -------------------------------------------------------------------------------
+
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                           R E F E R E N C E S                               -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ 
+ CP2K version 2022.1 (Development Version), the CP2K developers group (2022).
+ CP2K is freely available from https://www.cp2k.org/ .
+
+ Kuehne,Thomas D.; Iannuzzi,Marcella; Del Ben,Mauro;
+ Rybkin,Vladimir V.; Seewald,Patrick; Stein,Frederick; Laino,Teodoro;
+ Khaliullin,Rustam Z.; Schuett,Ole; Schiffmann,Florian; Golze,Dorothea;
+ Wilhelm,Jan; Chulkov,Sergey; Bani-Hashemian,Mohammad Hossein;
+ Weber,Valery; Borstnik,Urban; Taillefumier,Mathieu;
+ Jakobovits,Alice Shoshana; Lazzaro,Alfio; Pabst,Hans; Mueller,Tiziano;
+ Schade,Robert; Guidon,Manuel; Andermatt,Samuel; Holmberg,Nico;
+ Schenter,Gregory K.; Hehn,Anna; Bussy,Augustin; Belleflamme,Fabian;
+ Tabacchi,Gloria; Gloess,Andreas; Lass,Michael; Bethune,Iain;
+ Mundy,Christopher J.; Plessl,Christian; Watkins,Matt;
+ VandeVondele,Joost; Krack,Matthias; Hutter,Juerg. 
+ The Journal of Chemical Physics, 152 (19), (2020). 
+ CP2K: An electronic structure and molecular dynamics software package -
+ Quickstep: Efficient and accurate electronic structure calculations.
+ https://doi.org/10.1063/5.0007045
+
+ Schuett, Ole; Messmer, Peter; Hutter, Juerg; VandeVondele, Joost. 
+ Electronic Structure Calculations on Graphics Processing Units, John
+ Wiley & Sons, Ltd, 173-190 (2016). 
+ GPU-Accelerated Sparse Matrix-Matrix Multiplication for
+ Linear Scaling Density Functional Theory.
+ https://doi.org/10.1002/9781118670712.ch8
+
+ Heinecke, A; Henry, G; Hutchinson, M; Pabst, H. 
+ Proceedings of Intl. Supercomputing Conference, 981-991 (2016). 
+ LIBXSMM: Accelerating Small Matrix Multiplications
+ by Runtime Code Generation.
+ https://doi.org/10.1109/SC.2016.83
+
+ Borstnik, U; VandeVondele, J; Weber, V; Hutter, J. 
+ PARALLEL COMPUTING, 40 (5-6), 47-58 (2014). 
+ Sparse matrix multiplication: The distributed block-compressed sparse
+ row library.
+ https://doi.org/10.1016/j.parco.2014.03.012
+
+ Hutter, J; Iannuzzi, M; Schiffmann, F; VandeVondele, J. 
+ WIREs Comput Mol Sci., 4 (1), 15-25 (2014). 
+ CP2K: atomistic simulations of condensed matter systems.
+ https://doi.org/10.1002/wcms.1159
+
+ VandeVondele, J; Hutter, J. 
+ JOURNAL OF CHEMICAL PHYSICS, 127 (11), 114105 (2007). 
+ Gaussian basis sets for accurate calculations on molecular systems in
+ gas and condensed phases.
+ https://doi.org/10.1063/1.2770708
+
+ Krack, M. 
+ THEORETICAL CHEMISTRY ACCOUNTS, 114 (1-3), 145-152 (2005). 
+ Pseudopotentials for H to Kr optimized for gradient-corrected
+ exchange-correlation functionals.
+ https://doi.org/10.1007/s00214-005-0655-y
+
+ VandeVondele, J; Krack, M; Mohamed, F; Parrinello, M; Chassaing, T;
+ Hutter, J. COMPUTER PHYSICS COMMUNICATIONS, 167 (2), 103-128 (2005). 
+ QUICKSTEP: Fast and accurate density functional calculations using a
+ mixed Gaussian and plane waves approach.
+ https://doi.org/10.1016/j.cpc.2004.12.014
+
+ Frigo, M; Johnson, SG. 
+ PROCEEDINGS OF THE IEEE, 93 (2), 216-231 (2005). 
+ The design and implementation of FFTW3.
+ https://doi.org/10.1109/JPROC.2004.840301
+
+ Hartwigsen, C; Goedecker, S; Hutter, J. 
+ PHYSICAL REVIEW B, 58 (7), 3641-3662 (1998). 
+ Relativistic separable dual-space Gaussian pseudopotentials from H to Rn.
+ https://doi.org/10.1103/PhysRevB.58.3641
+
+ Lippert, G; Hutter, J; Parrinello, M. 
+ MOLECULAR PHYSICS, 92 (3), 477-487 (1997). 
+ A hybrid Gaussian and plane wave density functional scheme.
+ https://doi.org/10.1080/002689797170220
+
+ Perdew, JP; Burke, K; Ernzerhof, M. 
+ PHYSICAL REVIEW LETTERS, 77 (18), 3865-3868 (1996). 
+ Generalized gradient approximation made simple.
+ https://doi.org/10.1103/PhysRevLett.77.3865
+
+ Goedecker, S; Teter, M; Hutter, J. 
+ PHYSICAL REVIEW B, 54 (3), 1703-1710 (1996). 
+ Separable dual-space Gaussian pseudopotentials.
+ https://doi.org/10.1103/PhysRevB.54.1703
+
+
+ -------------------------------------------------------------------------------
+ -                                                                             -
+ -                                T I M I N G                                  -
+ -                                                                             -
+ -------------------------------------------------------------------------------
+ SUBROUTINE                       CALLS  ASD         SELF TIME        TOTAL TIME
+                                MAXIMUM       AVERAGE  MAXIMUM  AVERAGE  MAXIMUM
+ CP2K                                 1  1.0    0.006    0.010  138.065  138.071
+ qs_energies                          1  2.0    0.000    0.000  137.954  137.956
+ scf_env_do_scf                       1  3.0    0.000    0.000  135.358  135.362
+ scf_env_do_scf_inner_loop           37  4.0    0.001    0.023  135.358  135.362
+ run_smeagol_emtrans                 38  5.9  109.172  109.577  110.551  110.556
+ qs_scf_new_mos_kp                   37  5.0    0.000    0.000  109.389  109.394
+ qs_ks_update_qs_env                 37  5.0    0.000    0.000   15.542   15.545
+ rebuild_ks_matrix                   37  6.0    0.000    0.000   15.471   15.474
+ qs_ks_build_kohn_sham_matrix        37  7.0    0.095    0.229   15.471   15.474
+ pw_transfer                        745  9.9    0.022    0.028    8.643    8.887
+ fft_wrap_pw1pw2                    671 11.0    0.004    0.005    8.566    8.808
+ fft_wrap_pw1pw2_300                446 12.3    0.520    0.586    8.153    8.404
+ qs_rho_update_rho_low               38  5.0    0.000    0.000    8.179    8.183
+ calculate_rho_elec                  38  6.0    0.044    0.052    8.179    8.182
+ qs_vxc_create                       37  8.0    0.000    0.000    8.033    8.035
+ xc_vxc_pw_create                    37  9.0    0.082    0.097    8.032    8.035
+ fft3d_ps                           671 13.0    3.648    4.069    6.829    7.147
+ sum_up_and_integrate                37  8.0    0.016    0.018    6.351    6.353
+ integrate_v_rspace                  37  9.0    0.001    0.001    6.336    6.338
+ grid_collocate_task_list            38  7.0    5.616    5.749    5.616    5.749
+ xc_rho_set_and_dset_create          37 10.0    0.066    0.077    4.625    5.131
+ xc_pw_derive                       222 11.0    0.001    0.002    4.713    5.005
+ grid_integrate_task_list            37 10.0    4.400    4.506    4.400    4.506
+ xc_pw_divergence                    37 10.0    0.001    0.001    3.218    3.499
+ mp_alltoall_z22v                   671 15.0    2.345    3.062    2.345    3.062
+ -------------------------------------------------------------------------------
+
+ The number of warnings for this run is : 2
+ 
+ -------------------------------------------------------------------------------
+  **** **** ******  **  PROGRAM ENDED AT                 2024-01-09 19:54:42.497
+ ***** ** ***  *** **   PROGRAM RAN ON                               hx1-c08-3-1
+ **    ****   ******    PROGRAM RAN BY                                    cahart
+ ***** **    ** ** **   PROGRAM PROCESS ID                               2553461
+  **** **  *******  **  PROGRAM STOPPED IN /gpfs/home/cahart/transport/melamine/
+                                           au_from-h2/capacitor/sz_kpoints-1-1-2
+                                           0-cu

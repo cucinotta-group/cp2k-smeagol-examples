@@ -11,6 +11,7 @@ job_directory="kpoints-3-3-20_omp-2_ParallelOverKNum-3_contour-single_dynamic-14
 replace=V_REPLACE_JOB
 job_file=run.slurm
 template_folder=template
+template_folder=template_au-sz-6s
 
 if [ -d $job_directory ] ; then
 	rm -r $job_directory

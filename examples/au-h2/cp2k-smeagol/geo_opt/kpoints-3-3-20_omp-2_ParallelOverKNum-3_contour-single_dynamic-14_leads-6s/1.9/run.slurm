@@ -40,8 +40,9 @@ sed -i -e "s/KPOINTS_REPLACE/$kpoints_em/g"  3_0V.inp
 sed -i -e "s/KPOINTS_REPLACE/$kpoints_em/g"  4_V.inp
 
 #srun --hint=nomultithread --distribution=block:block $cp2k -i 1_bulkLR.inp -o log_1-bulkLR.out
-bulk_folder=/work/e05/e05/cahart/postdoc/transport/cp2k-smeagol-examples/au-h2/cp2k-smeagol/transmission/kpoints-3-3-20_omp-2_ParallelOverKNum-3_contour-single
+bulk_folder=/work/e05/e05/cahart/postdoc/transport/cp2k-smeagol-examples/au-h2/cp2k-smeagol/transmission/kpoints-3-3-20_omp-2_ParallelOverKNum-3_contour-single_6s
 cp $bulk_folder/*bulk* .
+wait
 
 #srun --hint=nomultithread --distribution=block:block $cp2k -i 2_dft_wfn.inp -o log_2_dft_wfn.out
 dft_folder=$bulk_folder

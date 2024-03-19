@@ -1,0 +1,345 @@
+#SpinOrbit                .true.
+#NonCollinearSpin         .true.
+#SpinPolarized            .true.
+
+
+SystemName            melamine    # Descriptive name of the system
+SystemLabel           melamine    # Short name for naming files
+
+
+# Species and atoms
+NumberOfSpecies        5
+NumberOfAtoms     183
+
+%block ChemicalSpeciesLabel
+ 1 1 H
+ 2 6 C
+ 3 7 N 
+ 4 79 Au
+ 5 79 Au_d
+%endblock ChemicalSpeciesLabel
+
+# Basis
+%block PAO.Basis                 # Define Basis set
+Au   1      0.00000
+n=6   0   1   E     2.71398     3.29203
+     5.62600
+%endblock PAO.Basis
+
+%block PS.lmax
+ Au   1
+%endblock PS.lmax
+
+%block kgrid_Monkhorst_Pack
+  2   0    0     0.0
+  0   4    0     0.0
+  0   0    1     0.0
+%endblock kgrid_Monkhorst_Pack 
+xc.functional         GGA           # Exchange-correlation functional
+xc.authors            PBE             # Exchange-correlation version
+
+
+MeshCutoff          200. Ry         # Mesh cutoff. real space mesh 
+
+# SCF options
+MaxSCFIterations       1000         # Maximum number of SCF iter
+DM.MixingWeight       0.02            # New DM amount for next SCF cycle
+DM.Tolerance          1.d-4         # Tolerance in maximum difference
+DM.NumberPulay        25
+
+SolutionMethod        Diagon       # OrderN or Diagon
+ElectronicTemperature  150 K        # Temp. for Fermi smearing
+#ProcessorY  5
+#BlockSize   15
+
+# ===========================================================
+##For Smeagol-trans
+InitTransport   F     #reset "nsc process" as siesta or not,'true' as siesta
+EMTransport              T     #NEGF method or not
+NSlices                  1    # the number of layers for x in mx
+PeriodicTransp           T     #mx periodic calculation or not
+#UseLeadGF    T    #see manual
+
+#GF Integral Setup
+NEnergReal                0      # E-points for NE
+NEnergImCircle           16     # E-points for EQ-Circle
+NEnergImLine             16      # E-points for EQ-Line
+NPoles                   16      # E-points for EQ-Pole
+Delta                    1.d-4
+EnergLowestBound        -6.0d0  Ry   # Absolute value
+
+
+#Bias Setup
+VInitial                 0.0 eV
+VFinal                   0.0 eV
+NIVPoints                0
+%block SaveBiasSteps
+  0
+%endblock SaveBiasSteps
+
+#Fock shift Control(!!!!Vary Every Time while Smeagol-trans!!!!)
+HartreeLeadsBottom        -5.26330853   eV    # Matlab: VHplot('0.lead.VH')
+HartreeLeadsLeft           0.000  Ang           #The mx's atomic z-coordinates of the corresponding 'HartreeLeadsBottom' position at left
+HartreeLeadsRight          0.000  Ang    # The mx's atomic z-coordinates of the corresponding 'HartreeLeadsBottom' position at right
+
+##Transport Output Flags
+TrCoefficients                 F   #generate '*.TRC' file or not
+TransmissionOverk        T    #generate '*.TRC.k.up/down' file,containning infor about T(E,k)
+NTransmPoints            100  
+TRCScaleEf    T
+InitTransmRange        -15.0 eV    #(!!!!Vary Every Time with respect to lead's Ef while Smeagol-trans!!!!)
+FinalTransmRange        15.0 eV
+
+
+SaveElectrostaticPotential    T
+SaveRHO    T
+
+#Sensible parameters for structural change
+FullRamp   T
+MixHamiltonian     F # F
+ReadHamiltonian    F # F
+DM.MixSCF1         F # F
+DM.UseSaveDM   T
+
+# MD options
+MD.TypeOfRun            neb         # Type of dynamics = neb
+MD.NumNEBsteps          60          # Maximum Number of NEB steps
+MD.NumOfImages          9           # Number of Images ( intermediate structure )
+MD.Kspring              0.02        # Spring force; default works well
+MD.IndexOfNEB           60          # n>0 => CI-NEB from nth step
+                                    # n>NumNEBsteps => IT-NEB
+                                    # n=-1 => bisection-NEB
+NEB.UseBroyden          .true.      # .true.  Broyden optimizer
+                                    # .false. projected Verlet
+MD.LengthTimeStep        0.3  fs    # time step for projected Verlet
+NEB.SkipEdge            .true.     # Skip calculations of initial and
+                                    #  final states ; UseSaveNEB must be .ture.
+MD.MaxCGDispl           0.04 Ang    # Maximum atomic displacement
+MD.MaxForceTol          0.06 eV/Ang # Tolerance of force for each images
+MD.UseSaveNEB           .true.      # You can start from arbitary continuations
+
+NEB.ReferEtot           .false.     # .true. for the SIESTA
+                                    # .false. under the finite bias
+NEB.InterpolationScheme  linear     # linear, polynomial or spline
+NEB.derivative1          0.0        # In the case of spline, boundary consitions should be suplied
+NEB.derivativeN          0.0        # If the endpoints are stable states, 0.0
+
+MD.VariableCell          F           # Unit cell relaxation
+
+
+%block GeometryConstraints
+  position from 1 to 93
+  position from 104 to 183
+%endblock GeometryConstraints
+
+
+#Force Options
+EM.CalculateForces              T
+EM.SetEBD  T
+
+WriteForces      T
+WriteCoorXmol     T   # Write Atoms coordinates
+WriteMDXmol                     T
+#WriteMDhistory                  T
+WriteEigenvalues                F
+Sigma.SVDTolZero  1.0d-7
+EM.Timings T
+Sigma.WriteToDisk              F     # Default value
+WriteCoorStep   T
+
+LatticeConstant  1.000 Ang
+
+%block LatticeVectors
+  12.76327700    0.00000000    0.00000000
+   0.00000000    7.65796600    0.00000000
+   0.00000000    1.27632800   32.66000000
+%endblock LatticeVectors
+
+# Atomic coordinates
+AtomicCoordinatesFormat     Ang 
+%block AtomicCoordinatesAndAtomicSpecies
+  0.00000000   1.27632818   0.00000000 4 #  Au 1
+  2.55265588   1.27632818   0.00000000 4 #  Au 2
+  5.10531096   1.27632818   0.00000000 4 #  Au 3
+  7.65796644   1.27632818   0.00000000 4 #  Au 4
+ 10.21062192   1.27632818   0.00000000 4 #  Au 5
+  0.00000000   3.82898366   0.00000000 4 #  Au 6
+  2.55265588   3.82898366   0.00000000 4 #  Au 7
+  5.10531096   3.82898366   0.00000000 4 #  Au 8
+  7.65796644   3.82898366   0.00000000 4 #  Au 9
+ 10.21062192   3.82898366   0.00000000 4 #  Au 10
+  0.00000000   6.38163870   0.00000000 4 #  Au 11
+  2.55265588   6.38163870   0.00000000 4 #  Au 12
+  5.10531096   6.38163870   0.00000000 4 #  Au 13
+  7.65796644   6.38163870   0.00000000 4 #  Au 14
+ 10.21062192   6.38163870   0.00000000 4 #  Au 15
+  1.27632814   2.55265592   1.80500000 4 #  Au 16
+  3.82898322   2.55265592   1.80500000 4 #  Au 17
+  6.38163870   2.55265592   1.80500000 4 #  Au 18
+  8.93429418   2.55265592   1.80500000 4 #  Au 19
+ 11.48694966   2.55265592   1.80500000 4 #  Au 20
+  1.27632814   5.10531096   1.80500000 4 #  Au 21
+  3.82898322   5.10531096   1.80500000 4 #  Au 22
+  6.38163870   5.10531096   1.80500000 4 #  Au 23
+  8.93429418   5.10531096   1.80500000 4 #  Au 24
+ 11.48694966   5.10531096   1.80500000 4 #  Au 25
+  1.27632814   7.65796644   1.80500000 4 #  Au 26
+  3.82898322   7.65796644   1.80500000 4 #  Au 27
+  6.38163870   7.65796644   1.80500000 4 #  Au 28
+  8.93429418   7.65796644   1.80500000 4 #  Au 29
+ 11.48694966   7.65796644   1.80500000 4 #  Au 30
+  0.00000000   1.27632818   3.61000000 4 #  Au 31
+  2.55265588   1.27632818   3.61000000 4 #  Au 32
+  5.10531096   1.27632818   3.61000000 4 #  Au 33
+  7.65796644   1.27632818   3.61000000 4 #  Au 34
+ 10.21062192   1.27632818   3.61000000 4 #  Au 35
+  0.00000000   3.82898366   3.61000000 4 #  Au 36
+  2.55265588   3.82898366   3.61000000 4 #  Au 37
+  5.10531096   3.82898366   3.61000000 4 #  Au 38
+  7.65796644   3.82898366   3.61000000 4 #  Au 39
+ 10.21062192   3.82898366   3.61000000 4 #  Au 40
+  0.00000000   6.38163870   3.61000000 4 #  Au 41
+  2.55265588   6.38163870   3.61000000 4 #  Au 42
+  5.10531096   6.38163870   3.61000000 4 #  Au 43
+  7.65796644   6.38163870   3.61000000 4 #  Au 44
+ 10.21062192   6.38163870   3.61000000 4 #  Au 45
+  1.27632814   2.55265592   5.41500000 4 #  Au 46
+  3.82898322   2.55265592   5.41500000 4 #  Au 47
+  6.38163870   2.55265592   5.41500000 4 #  Au 48
+  8.93429418   2.55265592   5.41500000 4 #  Au 49
+ 11.48694966   2.55265592   5.41500000 4 #  Au 50
+  1.27632814   5.10531096   5.41500000 4 #  Au 51
+  3.82898322   5.10531096   5.41500000 4 #  Au 52
+  6.38163870   5.10531096   5.41500000 4 #  Au 53
+  8.93429418   5.10531096   5.41500000 4 #  Au 54
+ 11.48694966   5.10531096   5.41500000 4 #  Au 55
+  1.27632814   7.65796644   5.41500000 4 #  Au 56
+  3.82898322   7.65796644   5.41500000 4 #  Au 57
+  6.38163870   7.65796644   5.41500000 4 #  Au 58
+  8.93429418   7.65796644   5.41500000 4 #  Au 59
+ 11.48694966   7.65796644   5.41500000 4 #  Au 60
+  0.00000000   1.27632818   7.22000000 5 #  Au 61
+  2.55265588   1.27632818   7.22000000 5 #  Au 62
+  5.10531096   1.27632818   7.22000000 5 #  Au 63
+  7.65796644   1.27632818   7.22000000 5 #  Au 64
+ 10.21062192   1.27632818   7.22000000 5 #  Au 65
+  0.00000000   3.82898366   7.22000000 5 #  Au 66
+  2.55265588   3.82898366   7.22000000 5 #  Au 67
+  5.10531096   3.82898366   7.22000000 5 #  Au 68
+  7.65796644   3.82898366   7.22000000 5 #  Au 69
+ 10.21062192   3.82898366   7.22000000 5 #  Au 70
+  0.00000000   6.38163870   7.22000000 5 #  Au 71
+  2.55265588   6.38163870   7.22000000 5 #  Au 72
+  5.10531096   6.38163870   7.22000000 5 #  Au 73
+  7.65796644   6.38163870   7.22000000 5 #  Au 74
+ 10.21062192   6.38163870   7.22000000 5 #  Au 75
+  1.27632814   2.55265592   9.02500000 5 #  Au 76
+  3.82898322   2.55265592   9.02500000 5 #  Au 77
+  6.38163870   2.55265592   9.02500000 5 #  Au 78
+  8.93429418   2.55265592   9.02500000 5 #  Au 79
+ 11.48694966   2.55265592   9.02500000 5 #  Au 80
+  1.27632814   5.10531096   9.02500000 5 #  Au 81
+  3.82898322   5.10531096   9.02500000 5 #  Au 82
+  6.38163870   5.10531096   9.02500000 5 #  Au 83
+  8.93429418   5.10531096   9.02500000 5 #  Au 84
+ 11.48694966   5.10531096   9.02500000 5 #  Au 85
+  1.27632814   7.65796644   9.02500000 5 #  Au 86
+  3.82898322   7.65796644   9.02500000 5 #  Au 87
+  6.38163870   7.65796644   9.02500000 5 #  Au 88
+  8.93429418   7.65796644   9.02500000 5 #  Au 89
+ 11.48694966   7.65796644   9.02500000 5 #  Au 90
+  4.04244940   3.88653974  11.04195172 3 #   N 91
+  8.71495420   3.88826364  11.04424070 3 #   N 92
+  6.37895074   3.90859442  11.05022785 3 #   N 93
+  5.11468409   3.86381453  13.10922940 3 #   N 94
+  7.50462704   3.85870851  13.08810260 3 #   N 95
+  6.44594113   3.83929439  15.10962570 3 #   N 96
+  5.18497446   3.88720117  11.78648517 2 #   C 97
+  7.56031415   3.88687672  11.73206004 2 #   C 98
+  6.28657645   3.85458500  13.82619710 2 #   C 99
+  3.22099523   3.87603096  11.65899592 1 #   H 100
+  9.55795934   3.87664149  11.62895154 1 #   H 101
+  5.51146816   3.83615762  15.54648157 1 #   H 102
+  8.34937444   3.84372282  13.66180271 1 #   H 103
+  6.38163882   3.82898329  20.02500000 5 #  Au 104
+  5.10531146   2.55265597  21.83000000 5 #  Au 105
+  7.65796659   2.55265597  21.83000000 5 #  Au 106
+  5.10531146   5.10531106  21.83000000 5 #  Au 107
+  7.65796659   5.10531106  21.83000000 5 #  Au 108
+  1.27632816   1.27632820  23.63500000 4 #  Au 109
+  3.82898369   1.27632820  23.63500000 4 #  Au 110
+  6.38163882   1.27632820  23.63500000 4 #  Au 111
+  8.93429435   1.27632820  23.63500000 4 #  Au 112
+ 11.48694988   1.27632820  23.63500000 4 #  Au 113
+  1.27632816   3.82898329  23.63500000 4 #  Au 114
+  3.82898369   3.82898329  23.63500000 4 #  Au 115
+  6.38163882   3.82898329  23.63500000 4 #  Au 116
+  8.93429435   3.82898329  23.63500000 4 #  Au 117
+ 11.48694988   3.82898329  23.63500000 4 #  Au 118
+  1.27632816   6.38163882  23.63500000 4 #  Au 119
+  3.82898369   6.38163882  23.63500000 4 #  Au 120
+  6.38163882   6.38163882  23.63500000 4 #  Au 121
+  8.93429435   6.38163882  23.63500000 4 #  Au 122
+ 11.48694988   6.38163882  23.63500000 4 #  Au 123
+  0.00000000   2.55265623  25.44000000 4 #  Au 124
+  2.55265593   2.55265623  25.44000000 4 #  Au 125
+  5.10531106   2.55265623  25.44000000 4 #  Au 126
+  7.65796659   2.55265623  25.44000000 4 #  Au 127
+ 10.21062211   2.55265623  25.44000000 4 #  Au 128
+  0.00000000   5.10531176  25.44000000 4 #  Au 129
+  2.55265593   5.10531176  25.44000000 4 #  Au 130
+  5.10531106   5.10531176  25.44000000 4 #  Au 131
+  7.65796659   5.10531176  25.44000000 4 #  Au 132
+ 10.21062211   5.10531176  25.44000000 4 #  Au 133
+  0.00000000   7.65796685  25.44000000 4 #  Au 134
+  2.55265593   7.65796685  25.44000000 4 #  Au 135
+  5.10531106   7.65796685  25.44000000 4 #  Au 136
+  7.65796659   7.65796685  25.44000000 4 #  Au 137
+ 10.21062211   7.65796685  25.44000000 4 #  Au 138
+  1.27632816   3.82898399  27.24500000 4 #  Au 139
+  3.82898329   3.82898399  27.24500000 4 #  Au 140
+  6.38163882   3.82898399  27.24500000 4 #  Au 141
+  8.93429435   3.82898399  27.24500000 4 #  Au 142
+ 11.48694988   3.82898399  27.24500000 4 #  Au 143
+  1.27632816   6.38163908  27.24500000 4 #  Au 144
+  3.82898329   6.38163908  27.24500000 4 #  Au 145
+  6.38163882   6.38163908  27.24500000 4 #  Au 146
+  8.93429435   6.38163908  27.24500000 4 #  Au 147
+ 11.48694988   6.38163908  27.24500000 4 #  Au 148
+  1.27632816   8.93429461  27.24500000 4 #  Au 149
+  3.82898329   8.93429461  27.24500000 4 #  Au 150
+  6.38163882   8.93429461  27.24500000 4 #  Au 151
+  8.93429435   8.93429461  27.24500000 4 #  Au 152
+ 11.48694988   8.93429461  27.24500000 4 #  Au 153
+  0.00000000   2.55265623  29.05000000 4 #  Au 154
+  2.55265593   2.55265623  29.05000000 4 #  Au 155
+  5.10531106   2.55265623  29.05000000 4 #  Au 156
+  7.65796659   2.55265623  29.05000000 4 #  Au 157
+ 10.21062211   2.55265623  29.05000000 4 #  Au 158
+  0.00000000   5.10531176  29.05000000 4 #  Au 159
+  2.55265593   5.10531176  29.05000000 4 #  Au 160
+  5.10531106   5.10531176  29.05000000 4 #  Au 161
+  7.65796659   5.10531176  29.05000000 4 #  Au 162
+ 10.21062211   5.10531176  29.05000000 4 #  Au 163
+  0.00000000   7.65796685  29.05000000 4 #  Au 164
+  2.55265593   7.65796685  29.05000000 4 #  Au 165
+  5.10531106   7.65796685  29.05000000 4 #  Au 166
+  7.65796659   7.65796685  29.05000000 4 #  Au 167
+ 10.21062211   7.65796685  29.05000000 4 #  Au 168
+  1.27632816   3.82898399  30.85500000 4 #  Au 169
+  3.82898329   3.82898399  30.85500000 4 #  Au 170
+  6.38163882   3.82898399  30.85500000 4 #  Au 171
+  8.93429435   3.82898399  30.85500000 4 #  Au 172
+ 11.48694988   3.82898399  30.85500000 4 #  Au 173
+  1.27632816   6.38163908  30.85500000 4 #  Au 174
+  3.82898329   6.38163908  30.85500000 4 #  Au 175
+  6.38163882   6.38163908  30.85500000 4 #  Au 176
+  8.93429435   6.38163908  30.85500000 4 #  Au 177
+ 11.48694988   6.38163908  30.85500000 4 #  Au 178
+  1.27632816   8.93429461  30.85500000 4 #  Au 179
+  3.82898329   8.93429461  30.85500000 4 #  Au 180
+  6.38163882   8.93429461  30.85500000 4 #  Au 181
+  8.93429435   8.93429461  30.85500000 4 #  Au 182
+ 11.48694988   8.93429461  30.85500000 4 #  Au 183
+%endblock AtomicCoordinatesAndAtomicSpecies
+

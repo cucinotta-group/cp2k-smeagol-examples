@@ -1,0 +1,35 @@
+#!/bin/bash  --login 
+#PBS -N junction_14
+#PBS -l select=1:ncpus=100:mem=1000GB 
+#PBS -l walltime=48:00:00
+#PBS -j oe
+##PBS -J 1-8
+
+cd $PBS_O_WORKDIR
+echo "<qsub_standard_output>" 
+date 
+echo "<qstat -f $PBS_JOBID>" 
+qstat -f $PBS_JOBID 
+echo "</qstat -f $PBS_JOBID>"
+# Make sure any symbolic links are resolved to absolute path 
+export PBS_O_WORKDIR=$(readlink -f $PBS_O_WORKDIR) 
+
+# Set the number of threads to 1 
+#   This prevents any system libraries from automatically  
+#   using threading. 
+export OMP_NUM_THREADS=1 
+env 
+echo "</qsub_standard_output>" 
+
+
+echo Initial list of module loaded 
+module load mpi/intel-2018  intel-suite/2017.6   cp2k/6.1-intel-mpi
+module list -l
+
+CASE_IN=Au_junction.inp
+CASE_OUT=Au_junction.out
+
+mpiexec cp2k.popt -i $CASE_IN -o $CASE_OUT
+
+
+

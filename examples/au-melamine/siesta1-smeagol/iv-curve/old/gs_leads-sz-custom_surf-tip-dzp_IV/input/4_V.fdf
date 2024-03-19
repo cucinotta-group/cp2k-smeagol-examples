@@ -1,0 +1,137 @@
+SystemName                   PROJECT_REPLACE          # Descriptive name of the system
+SystemLabel                     PROJECT_REPLACE               # Short name for naming files
+NumberOfAtoms    em_atoms
+NumberOfSpecies                 7               # Number of species
+
+PAO.BasisType                   split
+ 
+%block ChemicalSpeciesLabel
+1 79 Au_bulk
+2 7 N
+3 6  C
+4 1  H
+5 79 Au
+6 79 Au_surf
+7 79 Au_tip
+%endblock ChemicalSpeciesLabel
+
+%block PAO.BasisSizes
+C DZP
+H DZP
+N DZP
+Au_surf DZP
+Au_tip DZP
+%endblock PAO.BasisSizes
+
+%block PAO.Basis
+  Au_bulk  2
+n=6  0  1
+6.500
+1.00
+n=5  2  1
+5.850
+1.00
+
+  Au  2
+n=6  0  1
+6.500
+1.00
+n=5  2  1
+5.850
+1.00
+%endblock PAO.Basis
+
+LatticeConstant 1.000 Ang
+
+%block LatticeVectors
+   14.582     0.000   0.000        1
+  0.000    8.866     0.000   1
+  0.000   0.000    35.532  1
+%endblock LatticeVectors
+
+AtomicCoordinatesFormat Ang
+
+%block AtomicCoordinatesAndAtomicSpecies
+em_struct
+%endblock AtomicCoordinatesAndAtomicSpecies 	                                             
+
+%block kgrid_Monkhorst_Pack
+  K_REPLACE_EM_X   0   0     0.0 
+  0   K_REPLACE_EM_Y   0     0.0
+  0   0   1     0.0
+%endblock kgrid_Monkhorst_Pack
+
+xc.functional		LDA		# 'LDA', 'GGA'
+xc.authors 	 		CA		# 'CA'='PZ', 'PW92', 'PBE'
+SpinPolarized			F		# 'T', 'F'		
+#FixSpin           F
+#TotalSpin        0.0    
+
+NonCollinearSpin		F		# 'T', 'F'
+MeshCutoff 	 		    200 Ry		# Equivalent plane wave cutoff for the grid
+MaxSCFIterations		500
+
+DM.MixingWeight			0.1
+DM.NumberPulay			4	# Pulay convergency accelerator
+DM.MixSCF1			    T
+MixHamiltonian      T
+
+DM.PulayOnFile			F		# Store in memory ('F') or in files ('T')
+#DM.NumberKick         30
+#DM.KickMixingWeight   0.1
+DM.Tolerance 		1.0E-4
+NeglNonOverlapInt		F		# 'F'=do not neglect
+
+SolutionMethod			diagon
+ElectronicTemperature		300 K		# Default value
+
+DM.UseSaveDM 			T
+
+#MD.UseSaveXV			T
+#MD.UseSaveCG			T
+
+WriteForces      T
+WriteCoorXmol			T		# Write Atoms coordinates
+
+SaveElectrostaticPotential      T
+#SaveHS				T		# Save the Hamiltonian and Overlap matrices
+SaveRho				T		# Save the valence pseudocharge density
+#SaveDeltaRho			T
+#WriteDenchar			T		# Write Denchar output
+WriteMullikenPop		0 #write mulliken population of aromic and orbital charges
+
+
+#-----
+#smeagol
+
+#-----
+
+# Perform a transport calculation
+EMTransport              T
+
+# Set number of energy points for integrals
+NEnergReal               64
+
+# Set bias range
+VInitial             VInitial_REPLACE  eV
+VFinal                 VFinal_REPLACE    eV
+NIVPoints                  NIVPoints_REPLACE
+
+# General variables
+Delta                    1e-4
+EnergLowestBound    -100.0 eV
+
+# Print transmission coefficient
+TrCoefficients           F
+InitTransmRange      -10.0 eV
+FinalTransmRange      10.0 eV
+NTransmPoints            800
+TRC.EMDOS                T
+TRC.LeadsDOS             T
+
+# Matching of Hartree potential with the leads
+HartreeLeadsBottom  HLB_REPLACE eV
+
+%block SaveBiasSteps
+ VBlock_REPLACE
+%endblock SaveBiasSteps

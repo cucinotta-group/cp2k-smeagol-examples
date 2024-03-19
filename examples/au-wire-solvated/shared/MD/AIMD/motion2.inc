@@ -1,0 +1,29 @@
+&MOTION
+	@INCLUDE 'MD.inc'
+	&CONSTRAINT
+     		&FIXED_ATOMS
+		COMPONENTS_TO_FIX XYZ
+		LIST 499..534
+		#MOLNAME MOL2
+     		&END FIXED_ATOMS
+   	&END CONSTRAINT
+   	&PRINT
+     		&TRAJECTORY	ON
+       		&EACH
+      		MD 10
+       		&END EACH
+     		&END TRAJECTORY
+     		&VELOCITIES	ON
+     		&EACH
+		MD 10
+     		&END EACH
+     		&END VELOCITIES
+		&RESTART_HISTORY OFF
+		&END RESTART_HISTORY
+		&STRESS	ON
+		&EACH
+                MD 10
+                &END EACH
+		&END STRESS
+   	&END PRINT
+&END MOTION

@@ -1,0 +1,185 @@
+# Sample file for programs SIESTA
+# S. Sanvito, Mar. 02
+
+SystemName		    Au wire		# Descriptive name of the system
+SystemLabel 			Au_wire		# Short name for naming files
+NumberOfAtoms     9
+NumberOfSpecies			1               # Number of species
+
+PAO.BasisType			split		# Type of basis ('nones', 'nonodes', 'split')
+PAO.SplitNorm			0.15		# Amount of norm carried by the second zeta
+
+%block ChemicalSpeciesLabel
+  1   79  Au
+%endblock ChemicalSpeciesLabel
+
+%block PAO.Basis                 		# Define Basis set
+Au 2
+n=6   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+6.0 0.0
+n=5   2   1                         # n, l, Nzeta
+5.5
+%endblock PAO.Basis
+
+LatticeConstant 1.000 Ang
+
+%block LatticeVectors
+ 15.000   0.000   0.000	  1
+  0.000  15.000   0.000   1
+  0.000   0.000  25.200   1
+%endblock LatticeVectors
+
+AtomicCoordinatesFormat Ang
+
+%block AtomicCoordinatesAndAtomicSpecies
+   0.000   0.000  0.000   1  Au  1
+   0.000   0.000  2.800   1  Au  2
+   0.000   0.000  5.600   1  Au  3
+   0.000   0.000  8.400   1  Au  4
+   1.000   0.000 11.200   1  Au  5
+   0.000   0.000 14.000   1  Au  6
+   0.000   0.000 16.800   1  Au  7
+   0.000   0.000 19.600   1  Au  8
+   0.000   0.000 22.400   1  Au  8
+%endblock AtomicCoordinatesAndAtomicSpecies 	 
+ 
+%block FinalAtomicCoordinatesAndAtomicSpecies
+   0.000   0.000  0.000   1  Au  1
+   0.000   0.000  2.800   1  Au  2
+   0.000   0.000  5.600   1  Au  3
+   0.000   0.000  8.400   1  Au  4
+  -1.000   0.000 11.200   1  Au  5
+   0.000   0.000 14.000   1  Au  6
+   0.000   0.000 16.800   1  Au  7
+   0.000   0.000 19.600   1  Au  8
+   0.000   0.000 22.400   1  Au  8
+%endblock FinalAtomicCoordinatesAndAtomicSpecies 	 
+                                              
+#kgrid_cutoff    10 Ang
+
+%block kgrid_Monkhorst_Pack
+  1   0   0     0.0 
+  0   1   0     0.0
+  0   0   1     0.0
+%endblock kgrid_Monkhorst_Pack
+
+xc.functional		LDA		# 'LDA', 'GGA'
+xc.authors 	 		CA		# 'CA'='PZ', 'PW92', 'PBE'
+SpinPolarized			F		# 'T', 'F'		
+FixSpin           F
+#TotalSpin        0.0    
+
+NonCollinearSpin		F		# 'T', 'F'
+MeshCutoff 	 		    600.0 Ry		# Equivalent plane wave cutoff for the grid
+MaxSCFIterations		10000
+
+DM.MixingWeight			0.1
+DM.NumberPulay			4	# Pulay convergency accelerator
+DM.MixSCF1              T     # Default value
+
+DM.PulayOnFile			F		# Store in memory ('F') or in files ('T')
+#DM.NumberKick         30
+#DM.KickMixingWeight   0.1
+DM.Tolerance 		5.0E-4
+NeglNonOverlapInt		F		# 'F'=do not neglect
+
+SolutionMethod			diagon
+ElectronicTemperature		300 K		# Default value
+
+DM.UseSaveDM 			T
+
+#MD.UseSaveXV			T
+#MD.UseSaveCG			T
+
+WriteForces      T
+WriteCoorXmol			T		# Write Atoms coordinates
+
+SaveElectrostaticPotential      T
+#SaveHS				T		# Save the Hamiltonian and Overlap matrices
+SaveRho				T		# Save the valence pseudocharge density
+#SaveDeltaRho			T
+#WriteDenchar			T		# Write Denchar output
+WriteMullikenPop		1 #write mulliken population of aromic and orbital charges
+
+
+#-----
+#smeagol
+
+#-----
+
+
+#%block GeometryConstraints
+#  position from 1 to 36
+#  position from -1 to -36
+#%endblock GeometryConstraints
+
+WriteForces      T
+WriteCoorXmol     T   # Write Atoms coordinates
+WriteMDXmol                     T
+WriteCoorStep   T
+ParallelOverK T
+    
+
+
+EMTransport              T
+NEnergReal                0
+NEnergImCircle           16
+NEnergImLine             16
+NPoles                   16
+VInitial                 0.d0 eV
+VFinal                   0.d0 eV
+NIVPoints                0
+Delta                    1.d-4
+EnergLowestBound        -5.d0 Ry
+NSlices                  1
+TrCoefficients         T
+NTransmPoints            1
+InitTransmRange         -10.0d0 eV
+FinalTransmRange         10.0d0 eV
+TRCScaleEF               T
+#TransmissionOverK              T     # Default value
+TRC.EMPDOS              T     # Default value
+TRC.LeadsDOS              T     # Default value
+
+PeriodicTransp           T
+HartreeLeadsBottom     -0.57043540 eV
+HartreeLeadsLeft        0.000  Ang
+HartreeLeadsRight       0.000  Ang
+
+%block SaveBiasSteps
+  0
+%endblock SaveBiasSteps
+
+
+
+EM.SetEBD  T
+EM.CalculateForces              T
+
+
+# MD options
+MD.TypeOfRun            neb         # Type of dynamics = neb
+MD.NumNEBsteps          30          # Maximum Number of NEB steps
+MD.NumOfImages          4           # Number of Images ( intermediate structure )
+MD.Kspring              0.02        # Spring force; default works well
+MD.IndexOfNEB           5           # n>0 => CI-NEB from nth step
+                                    # n>NumNEBsteps => IT-NEB
+                                    # n=-1 => bisection-NEB
+NEB.UseBroyden          .true.      # .true.  Broyden optimizer
+                                    # .false. projected Verlet (!!!underconstruction!!!)
+NEB.SkipEdge            .false.      # Skip calculations of initial and 
+                                    #  final states ; UseSaveNEB must be .ture.
+MD.MaxForceTol          0.06 eV/Ang # Tolerance of force for each images
+MD.UseSaveNEB           F      # You can start from arbitary continuations
+
+#Structure
+
+%block GeometryConstraints
+  position from 1 to 2
+  position from -1 to -2
+%endblock GeometryConstraints
+
+
+
+MixHamiltonian              F     # Default value
+ReadHamiltonian              F     # Default value
+DM.MixSCF1              F     # Default value

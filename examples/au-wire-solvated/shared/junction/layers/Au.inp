@@ -1,0 +1,61 @@
+# calculation a restart or not ?
+@SET SCF_RESTART		LT_RSCF
+@SET RESTART			LT_R
+@SET WAVEFILE			LT_WF
+@SET RESTARTFILE		LT_RF
+
+# NUMERICAL
+@SET BASISFILE 			/rds/general/user/jj1921/home/BASIS_COM_MOLOPT_GTH
+@SET PSEUDOFILE 		/rds/general/user/jj1921/home/GTH_POTENTIALS
+@SET CUTOFF 			LT_cutoff
+@SET RELCUTOFF			LT_relcutoff
+@SET Kx				K_x
+@SET Ky				K_y
+@SET Kz				K_z
+@SET BASIS_Au			LT_basis_set
+
+# SUBSYS
+@SET CELL_A			LT_A
+@SET CELL_B			LT_B
+@SET CELL_C			LT_C
+@SET COORD			LT_coord
+
+# MOTION 
+   
+# SCF
+@SET SCF_CONV 			1E-7
+@SET SCF_NCYCLES		500
+
+@IF ( ${SCF_RESTART} == TRUE )
+	@SET SCF_GUESS			RESTART 
+@ENDIF
+
+@IF ( ${SCF_RESTART} == FALSE ) 
+	@SET SCF_GUESS			ATOMIC
+@ENDIF
+
+@SET FUNCTIONAL 		PBE
+
+# global parameters
+@SET SYSNAME 			Au_slab
+@SET RTYPE			LT_RTYPE 
+
+# The mandatory GLOBAL section 
+&GLOBAL
+PROJECT 			${SYSNAME} 
+RUN_TYPE 			${RTYPE} 
+PRINT_LEVEL 			MEDIUM 
+&END GLOBAL
+
+# The optional EXT_RESTART section include file 
+@IF (${RESTART}==TRUE )
+  @INCLUDE 			'restart.inc'
+@ENDIF
+
+#The mandatory FORCE_EVAL section include file 
+@INCLUDE 			'forces.inc'
+
+#The optional MOTION section include file
+@IF (${RTYPE}/=ENERGY)
+  @INCLUDE 			'LT_motion'
+@ENDIF

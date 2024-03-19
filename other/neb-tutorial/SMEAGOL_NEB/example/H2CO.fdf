@@ -1,0 +1,86 @@
+SystemName       H2CO     # Descriptive name of the system
+SystemLabel      H2CO        # Short name for naming files
+
+# Output options
+WriteMullikenPop       1    
+
+# Species and atoms
+NumberOfSpecies        3       
+NumberOfAtoms          4    
+%block ChemicalSpeciesLabel
+  1  1  H
+  2  6  C
+  3  8  O
+%endblock ChemicalSpeciesLabel
+
+# Basis
+PAO.EnergyShift       25 meV
+%block PAO.BasisSizes
+H   DZP
+C   DZP
+O   DZP
+%endblock PAO.BasisSizes
+
+# System
+LatticeConstant       1.000 Ang  
+%block LatticeVectors          
+ 15.000000   0.000000   0.000000
+  0.000000  15.000000   0.000000
+  0.000000   0.000000  15.000000
+%endblock LatticeVectors
+
+xc.functional         GGA           # Exchange-correlation functional
+xc.authors            PBE           # Exchange-correlation version
+
+MeshCutoff           200. Ry        # Mesh cutoff. real space mesh 
+
+# SCF options
+MaxSCFIterations      100           # Maximum number of SCF iter
+DM.MixingWeight       0.02          # New DM amount for next SCF cycle
+DM.Tolerance         0.5d-3         # Tolerance in maximum difference
+DM.NumberPulay        20
+
+SolutionMethod        diagon        # OrderN or Diagon
+OccupationFunction       FD
+ElectronicTemperature   150 K       # Temp. for Fermi smearing
+
+#Spin
+SpinPolarized   .false.
+FixSpin         .false.
+
+# MD options
+MD.TypeOfRun            neb         # Type of dynamics:
+MD.NumNEBsteps          1           # Maximum Number of NEB steps
+MD.NumOfImages          4           # Number of Images
+MD.Kspring              0.02        # Spring force; default works well
+MD.IndexOfNEB           2           # n>0 => CI-NEB from nth step
+                                    # n>NumNEBsteps => IT-NEB
+                                    # n=-1 => bisection-NEB
+NEB.UseBroyden          .true.      # .true. oprimizes whole elastic band
+NEB.SkipEdge            .true.      # Skip calculations of initial and 
+                                    #  final states if UseSaveNEB = .ture.
+MD.MaxForceTol          0.06 eV/Ang # Tolerance of force for each images
+MD.Broyden.Cycle.On.Maxit  .true.   # We recommend .true. for global hessian, 
+                                    # .false. for individual hessian
+#MD.VariableCell         .true.     ! under construction !
+MD.UseSaveNEB           .true.      # You can start from arbitary continuations
+
+%block GeometryConstraints
+position 2 
+%endblock GeometryConstraints
+
+# Atomic coordinates
+AtomicCoordinatesFormat     Ang 
+%block AtomicCoordinatesAndAtomicSpecies
+  0.00000000   1.22438253   0.00000000 3 #   O 1
+  0.00000000   0.00000000   0.00000000 2 #   C 2
+ -0.96361063  -0.60270000   0.00000000 1 #   H 3
+  0.96361023  -0.60270000   0.00000000 1 #   H 4
+%endblock AtomicCoordinatesAndAtomicSpecies
+
+%block FinalAtomicCoordinatesAndAtomicSpecies  
+  0.02064949   1.36663632   0.00000717 3 #   O 1
+  0.00000000   0.00000000   0.00000000 2 #   C 2
+ -0.89472184   1.71362007   0.00000000 1 #   H 3
+  0.94082249  -0.58978180  -0.00000009 1 #   H 4
+%endblock FinalAtomicCoordinatesAndAtomicSpecies

@@ -1,0 +1,213 @@
+&GLOBAL
+   PROJECT              2.0V
+   RUN_TYPE             ENERGY
+   PRINT_LEVEL          medium
+   EXTENDED_FFT_LENGTHS .true.
+   #WALLTIME 00:18:00
+&END GLOBAL
+
+&MOTION
+  &CONSTRAINT
+      &FIXED_ATOMS
+         LIST 1..93, 104..183
+      &END FIXED_ATOMS
+   &END CONSTRAINT
+  &GEO_OPT
+    TYPE MINIMIZATION
+    MAX_ITER 200
+    OPTIMIZER BFGS
+    MAX_DR    1.0E-03
+    MAX_FORCE 1.0E-03
+    RMS_DR    1.0E-03
+    RMS_FORCE 1.0E-03
+  &END GEO_OPT
+ &PRINT
+     &TRAJECTORY  ON
+       UNIT angstrom
+       FORMAT  XMOL
+     &END TRAJECTORY
+     &FORCES  SILENT
+       UNIT hartree*bohr^-1
+       FORMAT  XMOL
+     &END FORCES
+   &END PRINT
+&END MOTION
+
+&FORCE_EVAL
+   METHOD Quickstep
+
+&PRINT
+      &FORCES
+      &END FORCES
+   &END PRINT
+
+   &DFT
+      BASIS_SET_FILE_NAME BASIS_MOLOPT
+      BASIS_SET_FILE_NAME BASIS_CUSTOM
+      POTENTIAL_FILE_NAME GTH_POTENTIALS
+      #WFN_RESTART_FILE_NAME 2_dft_wfn-RESTART_0.kp
+      WFN_RESTART_FILE_NAME 1.5V-RESTART_0.kp
+
+ &SMEAGOL
+         PROJECT_NAME             2.0V
+         EMTransport              T
+
+        # Set number of energy points for integrals
+         NEnergReal               64
+
+        # Set bias range
+         VInitial [eV]            2.0
+         VFinal   [eV]            2.0
+         NIVPoints                0
+
+        # General variables
+         Delta                    1e-4
+         EnergLowestBound [eV]   -100.0
+         EM.ParallelOverKNum      4
+
+        # Print transmission coefficient
+         TrCoefficients           F
+         InitTransmRange [eV]     -10.0
+         FinalTransmRange [eV]     10.0
+         NTransmPoints            800
+         TRC.EMDOS                T
+         TRC.LeadsDOS             T
+
+         # Matching of Hartree potential with the leads
+         HartreeLeadsBottom [eV]  -1.1094635641E+001
+      &END SMEAGOL
+	  
+ &QS        
+   EXTRAPOLATION LINEAR_P
+ &END QS
+
+      &MGRID
+         CUTOFF 600
+	 REL_CUTOFF 60
+      &END MGRID
+
+      &SCF
+         MAX_SCF   500
+         EPS_SCF   1e-6
+         SCF_GUESS RESTART
+         ADDED_MOS 100
+
+         &SMEAR
+            ELECTRONIC_TEMPERATURE [K] 300
+            METHOD fermi_dirac
+         &END SMEAR
+
+         &MIXING
+            ALPHA   0.3
+            METHOD  broyden_mixing
+            NBUFFER 8
+         &END MIXING
+
+         &PRINT
+            &RESTART
+               FILENAME RESTART_0
+            &END RESTART
+         &END PRINT
+      &END SCF
+
+      &POISSON
+         PERIODIC xyz
+      &END POISSON
+
+      &XC
+         &XC_FUNCTIONAL PBE
+         &END XC_FUNCTIONAL
+      &END XC
+	  
+      &KPOINTS
+         SCHEME  MONKHORST-PACK  2 4 1
+         SYMMETRY OFF
+         EPS_GEO 1.e-8
+         FULL_GRID ON
+         VERBOSE T
+         # -1 -- smallest possible number of processes per group; 0 -- all processes, > 0 -- this number of processes
+         PARALLEL_GROUP_SIZE  -1
+      &END KPOINTS
+
+    &PRINT
+        &V_HARTREE_CUBE
+        STRIDE  4 4 4
+        &END  V_HARTREE_CUBE
+      &E_DENSITY_CUBE  ON
+        STRIDE 4 4 4
+      &END E_DENSITY_CUBE
+      &HIRSHFELD
+       FILENAME charges
+    SHAPE_FUNCTION  DENSITY
+    &END HIRSHFELD
+    &END PRINT
+&END DFT
+
+   &SUBSYS
+      &CELL
+        ABC   14.582 8.866  37.532
+        PERIODIC xyz
+      &END CELL
+
+      &TOPOLOGY
+        COORD_FILE_NAME em.xyz
+        COORD_FILE_FORMAT  XYZ
+      &END TOPOLOGY
+
+      &KIND Au_bulk
+         ELEMENT Au
+         BASIS_SET SZV-MOLOPT-SR-GTH-q11
+         POTENTIAL GTH-PBE-q11
+         #BASIS_SET SZV-CUSTOM-q1
+         #POTENTIAL GTH-PADE-q1
+      &END KIND
+
+      &KIND Au_tip
+         ELEMENT Au
+         #BASIS_SET SZV-MOLOPT-SR-GTH-q11
+         #POTENTIAL GTH-PBE-q11
+         BASIS_SET DZVP-MOLOPT-SR-GTH-q11
+         POTENTIAL GTH-PBE-q11
+         #BASIS_SET SZV-CUSTOM-q1
+         #POTENTIAL GTH-PADE-q1
+      &END KIND
+
+      &KIND Au_surf
+         ELEMENT Au
+         #BASIS_SET SZV-MOLOPT-SR-GTH-q11
+         #POTENTIAL GTH-PBE-q11
+         BASIS_SET DZVP-MOLOPT-SR-GTH-q11
+         POTENTIAL GTH-PBE-q11
+         #BASIS_SET SZV-CUSTOM-q1
+         #POTENTIAL GTH-PADE-q1
+       &END KIND
+
+      &KIND Au
+         ELEMENT Au
+         BASIS_SET SZV-MOLOPT-SR-GTH-q11
+         POTENTIAL GTH-PBE-q11
+         #BASIS_SET SZV-CUSTOM-q1
+         #POTENTIAL GTH-PADE-q1
+      &END KIND
+
+     &KIND C
+         ELEMENT C
+         BASIS_SET DZVP-MOLOPT-GTH-q4
+         POTENTIAL GTH-PBE-q4
+      &END KIND
+
+     &KIND N
+         ELEMENT N
+         BASIS_SET DZVP-MOLOPT-GTH-q5
+         POTENTIAL GTH-PBE-q5
+      &END KIND
+
+      &KIND H
+        ELEMENT H
+        BASIS_SET DZVP-MOLOPT-SR-GTH
+        POTENTIAL GTH-PBE-q1
+      &END KIND
+
+   &END SUBSYS
+&END FORCE_EVAL
+
